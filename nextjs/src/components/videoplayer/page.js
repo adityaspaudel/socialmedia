@@ -15,6 +15,18 @@ const VideoPlayer = () => {
 					src="vid-1.mp4"
 					type="video/mp4"
 				/>
+				<source
+					src="vid-2.mp4"
+					type="video/mp4"
+				/>
+				<source
+					src="vid-3.mp4"
+					type="video/mp4"
+				/>
+				<source
+					src="vid-4.mp4"
+					type="video/mp4"
+				/>
 			</video>
 		</div>
 	);
