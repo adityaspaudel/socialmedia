@@ -1,15 +1,22 @@
-// import React from 'react'
+// import "../styles/globals.css";
+// import Sidebar from "../components/Sidebar";
 
-// const Sidebar = () => {
-//   return (
-//     <div>Sidebar</div>
-//   )
+// function MyApp({ Component, pageProps }) {
+// 	return (
+// 		<div className="flex">
+// 			<Sidebar />
+// 			<main className="flex-1">
+// 				<Component {...pageProps} />
+// 			</main>
+// 		</div>
+// 	);
 // }
 
-// export default Sidebar
+// export default MyApp;
+
+
 
 //solution2-------------------------
-"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -34,7 +41,6 @@ const Sidebar = () => {
 							stroke="currentColor"
 							viewBox="0 0 24 24"
 							xmlns="http://www.w3.org/2000/svg">
-                
 							<path
 								strokeLinecap="round"
 								strokeLinejoin="round"
