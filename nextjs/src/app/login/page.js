@@ -27,7 +27,7 @@ const Login = () => {
 				</div>
 
 				<div className="flex gap-20 m-auto sm:">
-					<button className="bg-green-600">Login</button>
+					<Link href="/home"><button className="bg-green-600">Login</button></Link>
 					<button>Signup</button>
 				</div>
 			</form>

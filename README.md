@@ -4,14 +4,17 @@
 
 _Text_
 
-###Project has following modules installed
+### Project has following modules installed & Used
 
-1. Nextjs
-2. Tailwind Css
-3. NextUI
-4. Chartjs
+1. Nextjs installed
+2. Tailwind Css installed
+3. NextUI installed
+4. Chartjs installed
 
-5. Shadcn
-6. React Icons
-7. Lucide-react
-8. formik & yup validation
+5. Shadcn installed
+6. React Icons installed
+7. Lucide-react installed
+8. formik & yup validation installed
+9. Vite
+10. V0
+11. util
