@@ -15,6 +15,6 @@ _Text_
 6. React Icons installed
 7. Lucide-react installed
 8. formik & yup validation installed
-9. Vite
-10. V0
-11. util
+<!-- 9. Vite -->
+9. V0
+10. util

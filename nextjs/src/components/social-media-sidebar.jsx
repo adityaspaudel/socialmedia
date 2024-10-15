@@ -15,7 +15,7 @@ import Link from "next/link";
 
 export function SocialMediaSidebarComponent() {
 	return (
-		<div className="flex h-screen w-64 flex-col bg-blue-50 justify-between border-r bg-background p-4">
+		<div className="flex h-screen w-[25%] flex-col bg-blue-50 justify-between border-r bg-background p-4 fixed left-0">
 			<div className="space-y-4">
 				<Link href="/home">
 					<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
@@ -81,8 +81,8 @@ export function SocialMediaSidebarComponent() {
 						{/* <AvatarFallback>UN</AvatarFallback> */}
 					</Avatar>
 					<div>
-						<p className="text-sm font-medium leading-none">User Name</p>
-						<p className="text-sm text-muted-foreground">@username</p>
+						<p className="text-sm font-medium leading-none">John Cena</p>
+						<p className="text-sm text-muted-foreground">@johncena</p>
 					</div>
 				</div>
 				<div className="space-y-1">

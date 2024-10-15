@@ -10,16 +10,68 @@ const Home = () => {
 	return (
 		<div className="flex gap-4 ">
 			<SocialMediaSidebarComponent />
-			<div className="bg-blue-50 w-[60%]">
-				<div className="text-center p-4">Home</div>
-				{/* <div>Home</div> */}
+			<div className="bg-blue-50 ml-[370px] w-[40%]">
+				<div className="text-center p-4">
+					<div>Home</div>
 
-				
+					<div className="flex flex-col gap-4">
+						<div>
+							<Image
+								src="/cartoon-cute.jpg"
+								alt="cartoon-cute"
+								width={600}
+								height={400}
+							/>
+						</div>
+						<div>
+							<Image
+								src="/cartoon-1.jpg"
+								alt="cartoon-cute"
+								width={600}
+								height={400}
+							/>
+						</div>
+						<div>
+							<Image
+								src="/cartoon-2.jpg"
+								alt="cartoon-cute"
+								width={600}
+								height={400}
+							/>
+						</div>
+						<div>
+							<Image
+								src="/cartoon-cute.jpg"
+								alt="cartoon-cute"
+								width={600}
+								height={400}
+							/>
+						</div>
+						<div>
+							<Image
+								src="/cartoon-3.jpg"
+								alt="cartoon-cute"
+								width={600}
+								height={400}
+							/>
+						</div>
+						<div>
+							<Image
+								src="/cartoon-4.jpg"
+								alt="cartoon-cute"
+								width={600}
+								height={400}
+							/>
+						</div>
+					</div>
+				</div>
+
+				{/* <div>Home</div> */}
 			</div>
 			{/* <VideoPlayer /> */}
 
-			<div className="flex flex-col gap-2 bg-blue-50 p-4">
-				<div>users you may know</div>
+			<div className="flex flex-col  w-[30%] gap-2 bg-blue-50 p-4 fixed right-0">
+				<div className="text-center">users you may know</div>
 				<AvatarGroup
 					className="flex flex-col"
 					isBordered
