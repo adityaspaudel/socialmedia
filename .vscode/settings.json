@@ -1,0 +1,7 @@
+{
+	"editor.stickyScroll.scrollWithEditor": false,
+	"workbench.tree.enableStickyScroll": false,
+	"editor.fontWeight": "400",
+	"editor.fontFamily": "consolas",
+	"files.autoSave": "afterDelay"
+}
