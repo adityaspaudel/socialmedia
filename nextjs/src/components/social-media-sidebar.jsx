@@ -15,7 +15,9 @@ import Link from "next/link";
 
 export function SocialMediaSidebarComponent() {
 	return (
-		<div className="flex h-screen w-[25%] flex-col bg-blue-50 justify-between border-r bg-background p-4 fixed left-0">
+		<div
+			className="flex h-screen md:max-w-[10%] xl:max-w-[20%]  
+		 flex-col bg-blue-50 justify-between border-r bg-background p-4 fixed left-0">
 			<div className="space-y-4">
 				<Link href="/home">
 					<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
@@ -27,7 +29,7 @@ export function SocialMediaSidebarComponent() {
 						<Button
 							variant="ghost"
 							className="w-full justify-start">
-							<Home className="mr-2 h-4 w-4" />
+							<Home className="mr-2 h-4 w-4 " />
 							Home
 						</Button>
 					</Link>
@@ -52,7 +54,7 @@ export function SocialMediaSidebarComponent() {
 							variant="ghost"
 							className="w-full justify-start">
 							<Mail className="mr-2 h-4 w-4" />
-							Messages
+							<span className="md:invisible xl:visible">Messages</span>
 						</Button>
 					</Link>
 					<Link href="/user/profile">
@@ -63,12 +65,14 @@ export function SocialMediaSidebarComponent() {
 							Profile
 						</Button>
 					</Link>
-					<Button
-						variant="ghost"
-						className="w-full justify-start">
-						<Users className="mr-2 h-4 w-4" />
-						Friends
-					</Button>
+					<Link href="/user/friends">
+						<Button
+							variant="ghost"
+							className="w-full justify-start">
+							<Users className="mr-2 h-4 w-4" />
+							Friends
+						</Button>
+					</Link>
 				</div>
 			</div>
 			<div className="space-y-4">

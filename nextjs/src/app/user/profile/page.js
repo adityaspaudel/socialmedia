@@ -12,8 +12,8 @@ const UserProfile = () => {
 				{/* <Sidebar className="" /> */}
 				<SocialMediaSidebarComponent />
 			</div>
-			{/* right-contents---------------------------------------- */}
-			<div className="flex flex-col  max-w-[80%]">
+			{/* right-side-contents---------------------------------------- */}
+			<div className="flex flex-col   md:max-w-[90%] xl:max-w-[80%]   absolute right-0">
 				<div className="w-[100%] bg-red-100 text-black">
 					<div className="flex p-12 gap-12">
 						<div className="w-[20%]  bg-red-600">
