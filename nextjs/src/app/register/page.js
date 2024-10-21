@@ -1,11 +1,11 @@
-import { ValidationSchemaExample } from '@/components/formikYupValidation/page'
+import {  ValidationSchemaSignup } from '@/components/formikYupSignup/page'
 import React from 'react'
 
 const SignUpForm = () => {
   return (
     <div className='m-auto'>
       
-      <ValidationSchemaExample />
+      <ValidationSchemaSignup />
     </div>
   )
 }

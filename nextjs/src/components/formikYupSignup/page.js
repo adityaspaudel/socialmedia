@@ -16,7 +16,7 @@ const SignupSchema = Yup.object().shape({
 	email: Yup.string().email("Invalid email").required("Required"),
 });
 
-export const ValidationSchemaExample = () => (
+export const ValidationSchemaSignup = () => (
 	<div>
 		<div className="flex flex-col gap-2 bg-green-400 justify-center items-center">
 			<h1>Signup Form</h1>
@@ -26,13 +26,14 @@ export const ValidationSchemaExample = () => (
 					firstName: "",
 					lastName: "",
 					email: "",
+					picked: "",
 				}}
 				validationSchema={SignupSchema}
 				onSubmit={(values) => {
 					// same shape as initial values
 					console.log(values);
 				}}>
-				{({ errors, touched }) => (
+				{({ errors, touched, values }) => (
 					<Form className="flex flex-col gap-2 w-[400px] p-4">
 						<label htmlFor="firstName">First Name:</label>
 						<Field
@@ -62,6 +63,30 @@ export const ValidationSchemaExample = () => (
 						/>
 						<div className="text-red-400 italic text-sm">
 							{errors.email && touched.email ? <div>{errors.email}</div> : null}
+
+							{/* radio group---------------------------------------------- */}
+						</div>
+						{/* <div id="my-radio-group">Picked</div> */}
+						<div
+							role="group"
+							aria-labelledby="my-radio-group">
+							<label>
+								<Field
+									type="radio"
+									name="picked"
+									value="Male"
+								/>
+								Male
+							</label>
+							<label>
+								<Field
+									type="radio"
+									name="picked"
+									value="Female"
+								/>
+								Female
+							</label>
+							{/* <div>Picked: {values.picked}</div> */}
 						</div>
 						<button
 							className="w-[100px] bg-red-600 rounded-md text-white"

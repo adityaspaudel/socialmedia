@@ -45,12 +45,16 @@ export function UserSettingsSidebar({ className }) {
 								src="https://github.com/shadcn.png"
 								alt="@shadcn"
 							/> */}
-							<Image src="/cartoon-cute.jpg" height={100} width={100} />
+							<Image
+								src="/cartoon-cute.jpg"
+								height={100}
+								width={100}
+							/>
 							<AvatarFallback>CN</AvatarFallback>
 						</Avatar>
 						<div>
-							<p className="text-sm font-medium leading-none">John Cena</p>
-							<p className="text-sm text-muted-foreground">@johncena</p>
+							<p className="text-sm font-medium leading-none">Username</p>
+							<p className="text-sm text-muted-foreground">@username</p>
 						</div>
 					</div>
 					<div className="space-y-1">
@@ -94,7 +98,7 @@ export function UserSettingsSidebar({ className }) {
 							variant="ghost"
 							className="w-full justify-start"
 							asChild>
-							<Link href="/settings/blocked">
+							<Link href="/user/blockedLists">
 								<UserX className="mr-2 h-4 w-4" />
 								Blocked Accounts
 							</Link>
