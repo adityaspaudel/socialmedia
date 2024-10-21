@@ -1,7 +1,14 @@
+import { SocialMediaSidebarComponent } from "@/components/social-media-sidebar";
 import React from "react";
 
 const UserMessages = () => {
-	return <div>UserMessages</div>;
+	return (
+		<div>
+			<SocialMediaSidebarComponent />
+
+			<div>UserMessages</div>
+		</div>
+	);
 };
 
 export default UserMessages;

@@ -1,3 +1,4 @@
+import { SocialMediaSidebarComponent } from "@/components/social-media-sidebar";
 import React from "react";
 
 const Friends = () => {
@@ -63,12 +64,24 @@ const Friends = () => {
 		],
 	};
 	return (
-		<div className="flex flex-col justify-center items-center gap-10">
-			your Friends list
-			<div className="flex flex-col  gap-2">
-				{personList.people.map((item) => (
-					<div className="flex gap-4"> <img src={item.avatar} height={40} width={40} /> {item.name}</div>
-				))}
+		<div className="flex">
+			<SocialMediaSidebarComponent />
+			<div className="flex flex-col absolute  left-[20%] p-4 w-[80%] gap-10 bg-blue-100">
+				<div class="text-3xl font-bold">Your Friends list</div>
+				<div className="flex flex-col  gap-2">
+					{personList.people.map((item) => (
+						<div className="flex gap-4 ">
+							{" "}
+							<img
+								className="rounded-full"
+								src={item.avatar}
+								height={40}
+								width={40}
+							/>{" "}
+							{item.name}
+						</div>
+					))}
+				</div>
 			</div>
 		</div>
 	);

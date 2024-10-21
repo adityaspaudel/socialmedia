@@ -4,7 +4,7 @@ import React from "react";
 
 const Login = () => {
 	return (
-		<div className="m-auto w-[40%] bg-red-500 border-2 justify-center  content-center rounded-md">
+		<div className="m-auto w-[40%] bg-red-500 border-2 justify-center  items rounded-md">
 			<form className="flex flex-col m-auto mt-10 mb-10 w-[90%] bg-gray-500 rounded-md">
 				<label for="username">Username</label>
 				<input
@@ -28,7 +28,7 @@ const Login = () => {
 
 				<div className="flex gap-20 m-auto sm:">
 					<Link href="/home"><button className="bg-green-600">Login</button></Link>
-					<button>Signup</button>
+					<Link href="/register"><button>Signup</button></Link>
 				</div>
 			</form>
 		</div>
