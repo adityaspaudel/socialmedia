@@ -27,8 +27,8 @@ export function SocialMediaSidebarComponent() {
 	}, []);
 	return (
 		<div
-			className="flex h-screen sm:max-w-[10%] md:max-w-[20%] xl:max-w-[20%]  
-		 flex-col bg-blue-50 justify-between border-r bg-background p-4 fixed left-0">
+			className="flex flex-col h-screen sm:w-[100px] md:w-[200px] xl:w-[100px]  
+		  bg-blue-50 justify-between border-r bg-background p-4">
 			<div className="space-y-4">
 				<Link href="/home">
 					<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight hover:underline">
@@ -39,7 +39,7 @@ export function SocialMediaSidebarComponent() {
 					<Link href="/home">
 						<Button
 							variant="ghost"
-							className="w-full justify-start hover:bg-red-400">
+							className="w-full justify-start hover:bg-gray-200">
 							<Home className="mr-2 h-8 w-8 " />
 							<span className="">Home</span>
 						</Button>
@@ -48,7 +48,7 @@ export function SocialMediaSidebarComponent() {
 					<Button
 						// onClick={() => alert("Hello World!")}
 						variant="ghost"
-						className="flex gap-2 w-full justify-start myInput hover:bg-red-400">
+						className="flex gap-2 w-full justify-start myInput hover:bg-gray-200">
 						<Search className="mr-2 h-8 w-8 sm:h-6 sm:w-6" />
 						<input
 							className="w-full bg-transparent focus:outline-none"
@@ -63,7 +63,7 @@ export function SocialMediaSidebarComponent() {
 					<Link href="/user/notifications">
 						<Button
 							variant="ghost"
-							className="w-full justify-start hover:bg-red-400">
+							className="w-full justify-start hover:bg-gray-200">
 							<Bell className="mr-2 h-8 w-8 sm:h-6 sm:w-6" />
 							<span>Notifications</span>
 						</Button>
@@ -71,7 +71,7 @@ export function SocialMediaSidebarComponent() {
 					<Link href="/user/messages">
 						<Button
 							variant="ghost"
-							className="w-full justify-start hover:bg-red-400">
+							className="w-full justify-start hover:bg-gray-200">
 							<Mail className="mr-2 h-8 w-8 sm:h-6 sm:w-6 " />
 							<span className=" invisible sm:invisible md:visible">
 								Messages
@@ -81,7 +81,7 @@ export function SocialMediaSidebarComponent() {
 					<Link href="/user/profile">
 						<Button
 							variant="ghost"
-							className="w-full justify-start hover:bg-red-400">
+							className="w-full justify-start hover:bg-gray-200">
 							<User className="mr-2 h-8 w-8 sm:h-6 sm:w-6" />
 							<span>Profile</span>
 						</Button>
@@ -89,7 +89,7 @@ export function SocialMediaSidebarComponent() {
 					<Link href="/user/friends">
 						<Button
 							variant="ghost"
-							className="w-full justify-start hover:bg-red-400">
+							className="w-full justify-start hover:bg-gray-200">
 							<Users className="mr-2 h-8 w-8 sm:h-6 sm:w-6" />
 							<span className="fri">Friends</span>
 						</Button>
@@ -97,8 +97,10 @@ export function SocialMediaSidebarComponent() {
 				</div>
 			</div>
 			<div className="space-y-4 p-2">
-				<div className="flex items-center space-x-2 rounded-md border  hover:bg-red-400">
-					<Link href="/user/profile" className="flex items-center">
+				<div className="flex items-center space-x-2 rounded-md border  hover:bg-gray-200">
+					<Link
+						href="/user/profile"
+						className="flex items-center">
 						<Avatar>
 							<AvatarImage
 								src="/cartoon-cute.jpg"
@@ -106,7 +108,7 @@ export function SocialMediaSidebarComponent() {
 							/>
 							{/* <AvatarFallback>UN</AvatarFallback> */}
 						</Avatar>
-						<div className="flex flex-col">
+						<div className="flex flex-col ">
 							<p className="text-sm font-medium leading-none">User Name</p>
 							<p className="text-sm text-muted-foreground">@username</p>
 						</div>
@@ -117,7 +119,7 @@ export function SocialMediaSidebarComponent() {
 					<Link href="/user/usersettings">
 						<Button
 							variant="ghost"
-							className="w-full justify-start hover:bg-red-400">
+							className="w-full justify-start hover:bg-gray-200">
 							<Settings className="mr-2 h-8 w-8 sm:h-6 sm:w-6" />
 							<span className="sett">Setting</span>
 						</Button>
@@ -126,7 +128,7 @@ export function SocialMediaSidebarComponent() {
 					<Link href="/login">
 						<Button
 							variant="ghost"
-							className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-400">
+							className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-gray-200">
 							<LogOut className="mr-2 h-8 w-8 sm:h-6 sm:w-6" />
 							<span className="logout">Log out</span>
 						</Button>

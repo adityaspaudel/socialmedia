@@ -3,66 +3,76 @@ import Sidebar from "@/components/sidebar2/page";
 import { SocialMediaSidebarComponent } from "@/components/social-media-sidebar";
 import VideoPlayer from "@/components/videoplayer/page";
 import { Avatar, AvatarGroup } from "@nextui-org/avatar";
+import { Ellipsis } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Home = () => {
+	const [usersList, setUsersList] = useState([]);
+	useEffect(() => {
+		fetchUsersList();
+	}, []);
+	const picsLink = {
+		img1: "/cartoon-cute.jpg",
+		img2: "/cartoon-1.jpg",
+		img3: "/cartoon-2.jpg",
+		img4: "/cartoon-cute.jpg",
+		img5: "/cartoon-3.jpg",
+		img6: "/cartoon-4.jpg",
+		img7: "/connect-kura.png",
+	};
+
+	const fetchUsersList = async () => {
+		const data = await fetch("https://api.escuelajs.co/api/v1/users");
+		let usersList11 = await data.json();
+		setUsersList(usersList11);
+	};
 	return (
-		<div className="flex gap-4 ">
+		<div className="flex gap-4 justify-center ">
 			<SocialMediaSidebarComponent />
-			<div className="bg-blue-50 ml-[370px] w-[40%]">
+			<div className="bg-blue-50  sm:w-[600px]">
 				<div className="text-center p-4">
 					<div>Home</div>
+					<div>
+						{Object.values(usersList).map((item) => {
+							return (
+								<div>
+									<h2>{item.id}</h2>
+									<div className="flex gap-4 justify-between">
+										<div className="flex gap-2">
+											<div className="italic  font-bold">{item.email}</div>
+											<div></div>
+											{item.name}
+										</div>
+										{/* <div>
+											<Image
+												src={item.avatar}
+												height={50}
+												width={50}
+											/>
+										</div> */}
 
+										<div>
+											<Ellipsis />
+										</div>
+									</div>
+								</div>
+							);
+						})}
+					</div>
+					{/* pictures rendered from  /public */}
 					<div className="flex flex-col gap-4">
-						<div>
-							<Image
-								src="/cartoon-cute.jpg"
-								alt="cartoon-cute"
-								width={600}
-								height={400}
-							/>
-						</div>
-						<div>
-							<Image
-								src="/cartoon-1.jpg"
-								alt="cartoon-cute"
-								width={600}
-								height={400}
-							/>
-						</div>
-						<div>
-							<Image
-								src="/cartoon-2.jpg"
-								alt="cartoon-cute"
-								width={600}
-								height={400}
-							/>
-						</div>
-						<div>
-							<Image
-								src="/cartoon-cute.jpg"
-								alt="cartoon-cute"
-								width={600}
-								height={400}
-							/>
-						</div>
-						<div>
-							<Image
-								src="/cartoon-3.jpg"
-								alt="cartoon-cute"
-								width={600}
-								height={400}
-							/>
-						</div>
-						<div>
-							<Image
-								src="/cartoon-4.jpg"
-								alt="cartoon-cute"
-								width={600}
-								height={400}
-							/>
-						</div>
+						{Object.values(picsLink).map((item, id) => {
+							return (
+								<div key={id}>
+									<Image
+										src={item}
+										height={600}
+										width={600}
+									/>
+								</div>
+							);
+						})}
 					</div>
 				</div>
 
@@ -70,7 +80,7 @@ const Home = () => {
 			</div>
 			{/* <VideoPlayer /> */}
 
-			<div className="flex flex-col  w-[30%] gap-2 bg-blue-50 p-4 fixed right-0">
+			<div className="flex flex-col  w-[200px] gap-2 bg-blue-50 p-4 ">
 				<div className="text-center">users you may know</div>
 				<AvatarGroup
 					className="flex flex-col"

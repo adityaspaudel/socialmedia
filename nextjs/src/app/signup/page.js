@@ -28,11 +28,11 @@ const Signup = () => {
 		}
 	}
 	return (
-		<div className="w-[60%] m-auto ">
+		<div className="w-[60%] m-auto bg-gradient-to-tl from-blue-400 to-blue-500">
 			{/* <VideoPlayer/> */}
 			<form
 				onsubmit="console.log('You clicked submit.'); return false"
-				className="flex flex-col gap-8 bg-pink-100 p-4 m-auto text-green-400 rounded-2xl"
+				className="flex flex-col gap-8  p-4 m-auto  rounded-2xl"
 				action="">
 				<div className="flex flex-col gap-2">
 					<label htmlFor="firstname">

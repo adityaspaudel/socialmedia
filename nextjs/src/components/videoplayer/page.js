@@ -32,7 +32,7 @@ const VideoPlayer = () => {
 				controls
 				autoPlay>
 				<source
-					className="vidSource"
+					className="vidSource" 
 					src="vid-3.mp4"
 					type="video/mp4"
 				/>

@@ -18,7 +18,7 @@ const SignupSchema = Yup.object().shape({
 
 export const ValidationSchemaSignup = () => (
 	<div>
-		<div className="flex flex-col gap-2 bg-green-400 justify-center items-center">
+		<div className="flex flex-col gap-2 bg-gradient-to-tl from-blue-400 to-blue-500 justify-center items-center">
 			<h1>Signup Form</h1>
 			<Formik
 				className="flex flex-col gap-2 "
@@ -32,6 +32,8 @@ export const ValidationSchemaSignup = () => (
 				onSubmit={(values) => {
 					// same shape as initial values
 					console.log(values);
+					alert("submitted successfully");
+					location.href = "/welcome";
 				}}>
 				{({ errors, touched, values }) => (
 					<Form className="flex flex-col gap-2 w-[400px] p-4">
