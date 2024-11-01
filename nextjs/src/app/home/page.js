@@ -33,7 +33,7 @@ const Home = () => {
 			<div className="bg-blue-50  sm:w-[600px]">
 				<div className="text-center p-4">
 					<div>Home</div>
-					<div>
+					{/* <div>
 						{Object.values(usersList).map((item) => {
 							return (
 								<div>
@@ -44,13 +44,13 @@ const Home = () => {
 											<div></div>
 											{item.name}
 										</div>
-										{/* <div>
-											<Image
-												src={item.avatar}
-												height={50}
-												width={50}
-											/>
-										</div> */}
+										 <div>
+										// 	<Image
+										// 		src={item.avatar}
+										// 		height={50}
+										// 		width={50}
+										// 	/>
+										// </div> 
 
 										<div>
 											<Ellipsis />
@@ -59,7 +59,7 @@ const Home = () => {
 								</div>
 							);
 						})}
-					</div>
+					</div> */}
 					{/* pictures rendered from  /public */}
 					<div className="flex flex-col gap-4">
 						{Object.values(picsLink).map((item, id) => {
