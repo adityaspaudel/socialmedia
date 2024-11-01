@@ -6,7 +6,7 @@ import React from "react";
 
 const UserProfile = () => {
 	return (
-		<div className="flex gap-4 text-sm">
+		<div className="flex gap-4 text-sm bg-blue-100">
 			{/* left-sidebar -----------------------------------------*/}
 			<div>
 				{/* <Sidebar className="" /> */}
@@ -14,8 +14,8 @@ const UserProfile = () => {
 			</div>
 
 			{/* right-side-contents---------------------------------------- */}
-			<div className="flex flex-col sm:w-[400px] md:w-[600px] xl:m[800] bg-yellow-100 ">
-				<div className="w-full bg-red-100 text-black">
+			<div className="flex flex-col sm:w-[400px] md:w-[600px] xl:m[800px]">
+				<div className="w-full  text-black">
 					<div className="flex p-12 gap-12">
 						{/* profile picture -----------------------------------*/}
 						<div className="w-[200px]  h-[200px] bg-red-600">
@@ -33,10 +33,14 @@ const UserProfile = () => {
 									<li className="italic">@username</li>
 								</div>
 								<div className="flex gap-12">
-									<Link href="/user/editprofile">
-										<li className="hover:bg-blue-200 p-2">Edit profile</li>
+									<Link
+										className="hover:bg-blue-200 p-2"
+										href="/user/editprofile">
+										<li>Edit profile</li>
 									</Link>
-									<Link href="/user/usersettings">
+									<Link
+										className="hover:bg-blue-200 p-2"
+										href="/user/usersettings">
 										<li>setting</li>
 									</Link>
 								</div>
@@ -45,12 +49,20 @@ const UserProfile = () => {
 								<li>Information</li>
 								<li>Interest</li>
 							</div>
-							<div className="flex gap-12  bg-green-300">
-								<li>posts</li>
-								<Link href="/user/following">
+							<div className="flex gap-12  bg-green-300 p-2 rounded-md">
+								<Link
+									className="hover:bg-blue-200 p-2 rounded-sm"
+									href="/user/profile">
+									<li>posts</li>
+								</Link>
+								<Link
+									className="hover:bg-blue-200 p-2 rounded-sm"
+									href="/user/following">
 									<li>following</li>
 								</Link>
-								<Link href="/user/followers">
+								<Link
+									className="hover:bg-blue-200 p-2 rounded-sm"
+									href="/user/followers">
 									<li>followers</li>
 								</Link>
 							</div>

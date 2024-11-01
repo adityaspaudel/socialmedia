@@ -262,14 +262,14 @@ const followers = () => {
 	];
 
 	return (
-		<div className="flex">
+		<div className="flex gap-4 bg-blue-100">
 			<SocialMediaSidebarComponent />
-			<div className="bg-blue-100">
+			<div className="">
 				<h1 className="font-bold p-2">followers</h1>
 				<div>
 					{userFollowers.map((item) => {
 						return (
-							<div className="flex gap-2 p-2 hover:bg-blue-200 text-sm">
+							<div className="flex gap-4 p-2 hover:bg-blue-200 text-sm">
 								{/* <Image
 									src={item.avatar}
 									height={100}
