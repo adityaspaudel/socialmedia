@@ -6,7 +6,7 @@ import React from "react";
 
 const UserProfile = () => {
 	return (
-		<div className="flex gap-4">
+		<div className="flex gap-4 text-sm">
 			{/* left-sidebar -----------------------------------------*/}
 			<div>
 				{/* <Sidebar className="" /> */}
@@ -34,7 +34,7 @@ const UserProfile = () => {
 								</div>
 								<div className="flex gap-12">
 									<Link href="/user/editprofile">
-										<li>Edit profile</li>
+										<li className="hover:bg-blue-200 p-2">Edit profile</li>
 									</Link>
 									<Link href="/user/usersettings">
 										<li>setting</li>
