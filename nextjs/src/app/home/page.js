@@ -1,4 +1,5 @@
 "use client";
+import ReactionButton from "@/components/reaction-button/page";
 import Sidebar from "@/components/sidebar2/page";
 import { SocialMediaSidebarComponent } from "@/components/social-media-sidebar";
 import VideoPlayer from "@/components/videoplayer/page";
@@ -34,43 +35,71 @@ const Home = () => {
 				<div className="bg-blue-50 sm:w-[500px] md:w-[600px] lg:w-[700px]">
 					<div className="text-center p-4">
 						<div>Home</div>
-						{/* <div>
+						<div className="flex flex-col gap-12">
 							{Object.values(usersList).map((item) => {
 								return (
-									<div>
-										<h2>{item.id}</h2>
-										<div className="flex gap-4 justify-between">
-											<div className="flex gap-2">
-												<div className="italic  font-bold">{item.email}</div>
-												<div></div>
-												{item.name}
+									<div className="border-2 border-gray-400">
+										<div className="flex flex-col justify-center items-center gap-4 justify-between">
+											<div className="flex gap-2 w-full">
+												<div className="">
+													<img
+														className="object-cover rounded-3xl"
+														src={item.avatar}
+														height={50}
+														width={50}
+													/>
+												</div>
+												<div className="italic font-bold px-2">
+													{item.email}
+												</div>
+												<div className="flex w-full gap-2 px-2 justify-end">
+													{item.creationAt}
+
+													<Ellipsis />
+												</div>
 											</div>
-											 <div>
-											// 	<Image
-											// 		src={item.avatar}
-											// 		height={50}
-											// 		width={50}
-											// 	/>
-											// </div>
 											<div>
-												<Ellipsis />
+												<img
+													className="object-cover"
+													src={item.avatar}
+													height={500}
+													width={500}
+												/>
+											</div>
+											<div className="flex gap-2 justify-start w-full">
+												<ReactionButton />
+											</div>
+											<div className="flex w-full justify-start p-2">
+												<div className="">
+													<img
+														className="object-cover rounded-3xl"
+														src={item.avatar}
+														height={50}
+														width={50}
+													/>
+												</div>
+												<div className="italic font-bold px-2">
+													{item.email}
+												</div>
+												<div>{item.name}</div>
 											</div>
 										</div>
 									</div>
 								);
 							})}
-						</div> */}
+						</div>
 						{/* pictures rendered from  /public */}
-						<div className="flex flex-col gap-4">
+						<div className="flex flex-col gap-12 border-2 gap-12 rounded-xl">
 							{Object.values(picsLink).map((item, id) => {
 								return (
 									<div
-										className="border-2 hover:border-2 flex justify-center hover:border-blue-400"
+										className=" flex flex-col justify-center m-auto p-2 border-2 h-[600px] w-[600px] hover:border-2 hover:border-gray-400"
 										key={id}>
 										<Image
+											className="flex flex-col h-[500px] [w-500px] justify-center object-cover"
 											src={item}
-											height={600}
-											width={600}
+											height={500}
+											width={500}
 										/>
 									</div>
 								);

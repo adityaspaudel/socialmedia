@@ -104,7 +104,7 @@ export function UserSettingsSidebar({ className }) {
 								variant="ghost"
 								className="w-full justify-start"
 								asChild>
-								<Link href="/user/blockedLists">
+								<Link href="/blockedLists">
 									<UserX className="mr-2 h-4 w-4" />
 									Blocked Accounts
 								</Link>

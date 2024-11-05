@@ -49,7 +49,7 @@ export function SocialMediaSidebarComponent() {
 							<span className="hidden md:block">Home</span>
 						</Button>
 					</Link>
-					<Link href="/user/search"></Link>
+					<Link href="/search"></Link>
 					<Button
 						// onClick={() => alert("Hello World!")}
 						variant="ghost"
@@ -65,7 +65,7 @@ export function SocialMediaSidebarComponent() {
 						{}
 					</Button>
 
-					<Link href="/user/notifications">
+					<Link href="/notifications">
 						<Button
 							variant="ghost"
 							className="w-full justify-start hover:bg-gray-200">
@@ -73,7 +73,7 @@ export function SocialMediaSidebarComponent() {
 							<span className="hidden md:block">Notifications</span>
 						</Button>
 					</Link>
-					<Link href="/user/messages">
+					<Link href="/messages">
 						<Button
 							variant="ghost"
 							className="w-full justify-start hover:bg-gray-200">
@@ -81,7 +81,7 @@ export function SocialMediaSidebarComponent() {
 							<span className=" hidden md:block">Messages</span>
 						</Button>
 					</Link>
-					<Link href="/user/profile">
+					<Link href="/profile">
 						<Button
 							variant="ghost"
 							className="w-full justify-start hover:bg-gray-200">
@@ -89,7 +89,7 @@ export function SocialMediaSidebarComponent() {
 							<span className="hidden md:block">Profile</span>
 						</Button>
 					</Link>
-					<Link href="/user/friends">
+					<Link href="/friends">
 						<Button
 							variant="ghost"
 							className="w-full justify-start hover:bg-gray-200">
@@ -102,7 +102,7 @@ export function SocialMediaSidebarComponent() {
 			<div className="space-y-1 p-2">
 				<div className="flex items-center space-x-2 rounded-md border  hover:bg-gray-200">
 					<Link
-						href="/user/profile"
+						href="/profile"
 						className="flex items-center">
 						<Avatar>
 							<AvatarImage
@@ -123,7 +123,7 @@ export function SocialMediaSidebarComponent() {
 				</div>
 				<div className="">
 					{/* <Link href="/user/usersettings"> </Link> */}
-					<Link href="/user/usersettings">
+					<Link href="/usersettings">
 						<Button
 							variant="ghost"
 							className="w-full justify-start hover:bg-gray-200">
