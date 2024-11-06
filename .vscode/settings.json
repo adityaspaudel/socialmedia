@@ -3,5 +3,7 @@
 	"workbench.tree.enableStickyScroll": false,
 	"editor.fontWeight": "400",
 	"editor.fontFamily": "consolas",
-	"files.autoSave": "afterDelay"
+	"files.autoSave": "afterDelay",
+	"reactSnippets.settings.prettierEnabled": true,
+	"window.density.editorTabHeight": "compact"
 }

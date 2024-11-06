@@ -9,16 +9,34 @@ import {
 	Settings,
 	LogOut,
 } from "lucide-react";
+import { FaConnectdevelop } from "react-icons/fa";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export function SocialMediaSidebarComponent() {
+	useEffect(() => {
+		let input1 = document.getElementsByClassName("myInput")[0];
+		input1.addEventListener("keypress", function (event) {
+			if (event.key === "Enter") {
+				// event.preventDefault();
+				// document.getElementsByClassName("myInput")[0].click();
+				window.location.href = "/user/search";
+			}
+		});
+	}, []);
 	return (
-		<div className="flex h-screen w-[25%] flex-col bg-blue-50 justify-between border-r bg-background p-4 fixed left-0">
+		<div
+			className="flex flex-col h-screen w-[80px] sm:w-[100px] md:w-[200px] xl:w-[250px]  
+		  bg-blue-50 justify-between border-r bg-background p-2">
 			<div className="space-y-4">
-				<Link href="/home">
-					<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+				<Link
+					href="/home"
+					className="flex gap-2 px-4">
+					<FaConnectdevelop className="text-2xl" />
+					<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight hover:underline hidden md:block">
 						MySocialApp
 					</h2>
 				</Link>
@@ -26,82 +44,100 @@ export function SocialMediaSidebarComponent() {
 					<Link href="/home">
 						<Button
 							variant="ghost"
-							className="w-full justify-start">
-							<Home className="mr-2 h-4 w-4" />
-							Home
+							className="w-full justify-start hover:bg-gray-200">
+							<Home className="mr-2 h-6 w-6" />
+							<span className="hidden md:block">Home</span>
 						</Button>
 					</Link>
-					<Link href="/user/search">
-						<Button
-							variant="ghost"
-							className="w-full justify-start">
-							<Search className="mr-2 h-4 w-4" />
-							Explore
-						</Button>
-					</Link>
-					<Link href="/user/notifications">
-						<Button
-							variant="ghost"
-							className="w-full justify-start">
-							<Bell className="mr-2 h-4 w-4" />
-							Notifications
-						</Button>
-					</Link>
-					<Link href="/user/messages">
-						<Button
-							variant="ghost"
-							className="w-full justify-start">
-							<Mail className="mr-2 h-4 w-4" />
-							Messages
-						</Button>
-					</Link>
-					<Link href="/user/profile">
-						<Button
-							variant="ghost"
-							className="w-full justify-start">
-							<User className="mr-2 h-4 w-4" />
-							Profile
-						</Button>
-					</Link>
+					<Link href="/search"></Link>
 					<Button
+						// onClick={() => alert("Hello World!")}
 						variant="ghost"
-						className="w-full justify-start">
-						<Users className="mr-2 h-4 w-4" />
-						Friends
+						className="flex gap-2 w-full justify-start myInput hover:bg-gray-200">
+						<Search className="mr-2 h-6 w-6 " />
+						<input
+							className="w-full bg-transparent focus:outline-none hidden md:block"
+							type="text"
+							placeholder="Search"
+						/>
+
+						{/* added code---------------------------- */}
+						{}
 					</Button>
+
+					<Link href="/notifications">
+						<Button
+							variant="ghost"
+							className="w-full justify-start hover:bg-gray-200">
+							<Bell className="mr-2 h-6 w-6" />
+							<span className="hidden md:block">Notifications</span>
+						</Button>
+					</Link>
+					<Link href="/messages">
+						<Button
+							variant="ghost"
+							className="w-full justify-start hover:bg-gray-200">
+							<Mail className="mr-2 h-6 w-6" />
+							<span className=" hidden md:block">Messages</span>
+						</Button>
+					</Link>
+					<Link href="/profile">
+						<Button
+							variant="ghost"
+							className="w-full justify-start hover:bg-gray-200">
+							<User className="mr-2 h-6 w-6" />
+							<span className="hidden md:block">Profile</span>
+						</Button>
+					</Link>
+					<Link href="/friends">
+						<Button
+							variant="ghost"
+							className="w-full justify-start hover:bg-gray-200">
+							<Users className="mr-2 h-6 w-6" />
+							<span className=" hidden md:block">Friends</span>
+						</Button>
+					</Link>
 				</div>
 			</div>
-			<div className="space-y-4">
-				<div className="flex items-center space-x-4 rounded-md border p-4">
-					<Avatar>
-						<AvatarImage
-							src="/cartoon-cute.jpg"
-							alt="User"
-						/>
-						{/* <AvatarFallback>UN</AvatarFallback> */}
-					</Avatar>
-					<div>
-						<p className="text-sm font-medium leading-none">John Cena</p>
-						<p className="text-sm text-muted-foreground">@johncena</p>
-					</div>
+			<div className="space-y-1 p-2">
+				<div className="flex items-center space-x-2 rounded-md border  hover:bg-gray-200">
+					<Link
+						href="/profile"
+						className="flex items-center">
+						<Avatar>
+							<AvatarImage
+								src="/cartoon-cute.jpg"
+								alt="User"
+							/>
+							{/* <AvatarFallback>UN</AvatarFallback> */}
+						</Avatar>
+						<div className="flex flex-col ">
+							<p className="text-sm font-medium leading-none hidden md:block">
+								User Name
+							</p>
+							<p className="text-sm text-muted-foreground hidden md:block">
+								@username
+							</p>
+						</div>
+					</Link>
 				</div>
-				<div className="space-y-1">
+				<div className="">
 					{/* <Link href="/user/usersettings"> </Link> */}
-					<Link href="/user/usersettings">
+					<Link href="/usersettings">
 						<Button
 							variant="ghost"
-							className="w-full justify-start">
-							<Settings className="mr-2 h-4 w-4" />
-							Setting
+							className="w-full justify-start hover:bg-gray-200">
+							<Settings className="mr-2 h-6 w-6" />
+							<span className="logout hidden md:block">Setting</span>
 						</Button>
 					</Link>
 
 					<Link href="/login">
 						<Button
 							variant="ghost"
-							className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-100">
-							<LogOut className="mr-2 h-4 w-4" />
-							Log out
+							className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-gray-200">
+							<LogOut className="mr-2 h-6 w-6 " />
+							<span className="logout hidden md:block">Log out</span>
 						</Button>
 					</Link>
 				</div>
