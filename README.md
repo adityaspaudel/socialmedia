@@ -1,6 +1,6 @@
 # socialmedia
 
-## hello ==This is a social media website where we can add friend and connect with people around the world== hello
+## hello <mark>This is a social media website where we can add friend and connect with people around the world</mark>
 
 _Text_
 

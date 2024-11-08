@@ -5,5 +5,8 @@
 	"editor.fontFamily": "consolas",
 	"files.autoSave": "afterDelay",
 	"reactSnippets.settings.prettierEnabled": true,
-	"window.density.editorTabHeight": "compact"
+	"window.density.editorTabHeight": "compact",
+	"editor.guides.bracketPairs": "active",
+	"editor.guides.bracketPairsHorizontal": "active",
+	"editor.guides.highlightActiveIndentation": "always"
 }
