@@ -10,9 +10,11 @@ import React, { useEffect, useState } from "react";
 
 const Home = () => {
 	const [usersList, setUsersList] = useState([]);
+
 	useEffect(() => {
 		fetchUsersList();
 	}, []);
+
 	const picsLink = {
 		img1: "/cartoon-cute.jpg",
 		img2: "/cartoon-1.jpg",
@@ -35,10 +37,10 @@ const Home = () => {
 				<div className="bg-blue-50 sm:w-[500px] md:w-[600px] lg:w-[700px]">
 					<div className="text-center p-4">
 						<div>Home</div>
-						<div className="flex flex-col gap-12">
+						<div className="flex flex-col gap-12 ">
 							{Object.values(usersList).map((item) => {
 								return (
-									<div className="border-2 border-gray-400">
+									<div className="border-2 p-2 hover:border-gray-400 rounded-sm">
 										<div className="flex flex-col justify-center items-center gap-4 justify-between">
 											<div className="flex gap-2 w-full">
 												<div className="">
@@ -89,7 +91,7 @@ const Home = () => {
 							})}
 						</div>
 						{/* pictures rendered from  /public */}
-						<div className="flex flex-col gap-12 border-2 gap-12 rounded-xl">
+						{/* <div className="flex flex-col gap-12 border-2 gap-12 rounded-xl">
 							{Object.values(picsLink).map((item, id) => {
 								return (
 									<div
@@ -104,7 +106,7 @@ const Home = () => {
 									</div>
 								);
 							})}
-						</div>
+						</div> */}
 					</div>
 					{/* <div>Home</div> */}
 				</div>
