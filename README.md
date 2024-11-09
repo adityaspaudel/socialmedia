@@ -2,19 +2,18 @@
 
 ## hello <mark>This is a social media website where we can add friend and connect with people around the world</mark>
 
-_Text_
-
 ### Project has following modules installed & Used
 
 1. Nextjs installed
 2. Tailwind Css installed
-3. NextUI installed
-4. Chartjs installed
+3. Expressjs installed
+4. NextUI installed
+5. Chartjs installed
 
-5. Shadcn installed
-6. React Icons installed
-7. Lucide-react installed
-8. formik & yup validation installed
-<!-- 9. Vite -->
-9. V0
-10. util
+6. Shadcn installed
+7. React Icons installed
+8. Lucide-react installed
+9. formik & yup validation installed
+<!-- 9. Vite ??-->
+10. V0.dev
+11. util
