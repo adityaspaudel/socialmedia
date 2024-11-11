@@ -10,9 +10,11 @@ import React, { useEffect, useState } from "react";
 
 const Home = () => {
 	const [usersList, setUsersList] = useState([]);
+	const [isClient, setIsClient] = useState(false);
 
 	useEffect(() => {
 		fetchUsersList();
+		setIsClient(true);
 	}, []);
 
 	const picsLink = {
@@ -30,17 +32,22 @@ const Home = () => {
 		let usersList11 = await data.json();
 		setUsersList(usersList11);
 	};
+
 	return (
-		<div className="flex gap-2 justify-center ">
+		<div className="flex gap-2 justify-end ">
 			<SocialMediaSidebarComponent />
-			<div className=" flex  gap-2 ">
+			<div className="flex justify-center gap-24 ">
 				<div className="bg-blue-50 sm:w-[500px] md:w-[600px] lg:w-[700px]">
 					<div className="text-center p-4">
 						<div>Home</div>
+						{/* new added for hydration error */}
+						{/* <h1>{isClient ? "This is never prerendered" : "Prerendered"}</h1> */}
 						<div className="flex flex-col gap-12 ">
-							{Object.values(usersList).map((item) => {
+							{Object.values(usersList).map((item, id) => {
 								return (
-									<div className="border-2 p-2 hover:border-gray-400 rounded-sm">
+									<div
+										className="border-2 p-2 hover:border-gray-400 rounded-sm"
+										key={id}>
 										<div className="flex flex-col justify-center items-center gap-4 justify-between">
 											<div className="flex gap-2 w-full">
 												<div className="">

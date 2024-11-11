@@ -1,4 +1,5 @@
 "use client";
+
 import {
 	Bell,
 	Home,
@@ -29,7 +30,7 @@ export function SocialMediaSidebarComponent() {
 	}, []);
 	return (
 		<div
-			className="flex flex-col h-screen w-[80px] sm:w-[100px] md:w-[200px] xl:w-[250px]  
+			className="flex flex-col left-0 fixed h-screen w-[80px] sm:w-[100px] md:w-[200px] xl:w-[250px]  
 		  bg-blue-50 justify-between border-r bg-background p-2">
 			<div className="space-y-4">
 				<Link
