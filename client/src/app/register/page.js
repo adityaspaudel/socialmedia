@@ -1,13 +1,12 @@
-import {  ValidationSchemaSignup } from '@/components/formikYupSignup/page'
-import React from 'react'
+import { RegistrationFormJsx } from "@/components/registration-form";
+import React from "react";
 
-const SignUpForm = () => {
-  return (
-    <div className='m-auto'>
-      
-      <ValidationSchemaSignup />
-    </div>
-  )
-}
+const SignupFormik = () => {
+	return (
+		<div className="bg-gradient-to-tl from-blue-400 to-blue-500">
+			<RegistrationFormJsx />
+		</div>
+	);
+};
 
-export default SignUpForm
+export default SignupFormik;

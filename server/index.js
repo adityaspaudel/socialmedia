@@ -4,22 +4,19 @@ const port = 8000;
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-mongoose.connect("mongodb://127.0.0.1:27017/sikshyalayaDb");
+mongoose.connect("mongodb://127.0.0.1:27017/socialmedia");
 
 const { Schema } = mongoose;
 // email, phoneNumber, password, role, fullName, fatherName, motherName)
 const userSchema = new Schema({
+	fullName: String,
 	email: String,
-	phoneNumber: Number,
 	password: String,
 	role: {
 		type: String,
-		enum: ["student", "teacher", "admin"],
-		default: "student",
+		enum: ["user", "admin"],
+		default: "user",
 	},
-	fullName: String,
-	fatherName: String,
-	motherName: String,
 });
 const User = mongoose.model("User", userSchema);
 app.use(express.json());
@@ -27,7 +24,7 @@ app.use(cors());
 
 app.post("/register", (req, res) => {
 	User.create(req.body);
-	res.send("/register user succeessfylly createrd");
+	res.send("/register User succeessfylly posted ");
 	console.log(req.body);
 });
 
