@@ -30,7 +30,7 @@ import Image from "next/image";
 
 export function UserSettingsSidebar({ className }) {
 	return (
-		<div>
+		<div className="">
 			<Link
 				className="font-bold text-2xl  hover:underline"
 				href="/home">
@@ -68,7 +68,7 @@ export function UserSettingsSidebar({ className }) {
 								variant="ghost"
 								className="w-full justify-start"
 								asChild>
-								<Link href="/settings/profile">
+								<Link href="/profile">
 									<UserCircle className="mr-2 h-4 w-4" />
 									Edit Profile
 								</Link>
@@ -77,7 +77,7 @@ export function UserSettingsSidebar({ className }) {
 								variant="ghost"
 								className="w-full justify-start"
 								asChild>
-								<Link href="/settings/notifications">
+								<Link href="/notifications">
 									<Bell className="mr-2 h-4 w-4" />
 									Notifications
 								</Link>
@@ -86,7 +86,7 @@ export function UserSettingsSidebar({ className }) {
 								variant="ghost"
 								className="w-full justify-start"
 								asChild>
-								<Link href="/settings/privacy">
+								<Link href="/privacy">
 									<Lock className="mr-2 h-4 w-4" />
 									Account Privacy
 								</Link>
@@ -95,7 +95,7 @@ export function UserSettingsSidebar({ className }) {
 								variant="ghost"
 								className="w-full justify-start"
 								asChild>
-								<Link href="/settings/close-friends">
+								<Link href="/close-friends">
 									<Users className="mr-2 h-4 w-4" />
 									Close Friends
 								</Link>
@@ -113,7 +113,7 @@ export function UserSettingsSidebar({ className }) {
 								variant="ghost"
 								className="w-full justify-start"
 								asChild>
-								<Link href="/settings/comments">
+								<Link href="/comments">
 									<MessageCircle className="mr-2 h-4 w-4" />
 									Comments
 								</Link>
@@ -122,7 +122,7 @@ export function UserSettingsSidebar({ className }) {
 								variant="ghost"
 								className="w-full justify-start"
 								asChild>
-								<Link href="/settings/likes">
+								<Link href="/likes">
 									<Heart className="mr-2 h-4 w-4" />
 									Likes
 								</Link>

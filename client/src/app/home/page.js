@@ -34,10 +34,10 @@ const Home = () => {
 	};
 
 	return (
-		<div className="flex gap-2 justify-end ">
+		<div className="flex gap-2 justify-between ">
 			<SocialMediaSidebarComponent />
-			<div className="flex justify-center gap-24 ">
-				<div className="bg-blue-50 sm:w-[500px] md:w-[600px] lg:w-[700px]">
+			<div className="flex justify-center gap-20 ">
+				<div className="bg-blue-50 sm:w-[400px] md:w-[500px] lg:w-[600px]">
 					<div className="text-center p-4">
 						<div>Home</div>
 						{/* new added for hydration error */}
@@ -71,8 +71,8 @@ const Home = () => {
 												<img
 													className="object-cover"
 													src={item.avatar}
-													height={500}
-													width={500}
+													height={400}
+													width={400}
 												/>
 											</div>
 											<div className="flex gap-2 justify-start w-full">
