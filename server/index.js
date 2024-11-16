@@ -28,8 +28,8 @@ const userSchema = new Schema({
 	password: String,
 	role: {
 		type: String,
-		enum: ["student", "teacher", "admin"],
-		default: "student",
+		enum: ["user", "admin"],
+		default: "user",
 	},
 	isVerified: Boolean,
 	fullName: String,
@@ -41,7 +41,6 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/register", async (req, res) => {
-	
 	//1. email exists or not?
 	const emailExist = await User.exists({ email: req.body.email });
 	if (emailExist) return res.status(409).send({ msg: "Email already exist!" });
@@ -69,6 +68,9 @@ app.post("/login", async (req, res) => {
 		return res.status(401).send({ msg: "Invalid Password!!" });
 
 	//STEP 3: Generate unique token for the user to mark that he is logged in
+	console.log("JWT Secret Key:", process.env.SECRET_KEY);
+	// Ensure it's not undefined
+
 	const token = jwt.sign({ email }, process.env.SECRET_KEY);
 
 	res.send({
