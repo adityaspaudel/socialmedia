@@ -1,97 +1,134 @@
+require("dotenv").config();
 const express = require("express");
-const app = express();
-const port = 8000;
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
 
+const app = express();
+const port = process.env.PORT || 8000;
+const saltRounds = parseInt(process.env.SALT_ROUNDS, 10) || 10;
+
+// Database connection
 const dbConnect = async () => {
 	try {
 		const isConnected = await mongoose.connect(
 			"mongodb://127.0.0.1:27017/socialmedia"
 		);
-		if (isConnected) console.log("connected to mongodb");
+		if (isConnected) console.log("Connected to MongoDB");
 	} catch (err) {
-		console.log(err);
+		console.error("Error connecting to MongoDB:", err);
 	}
 };
 dbConnect();
 
+// Models
 const { Schema } = mongoose;
-// email, phoneNumber, password, role, fullName, fatherName, motherName)
-const userSchema = new Schema({
-	email: { type: String, unique: true },
-	phoneNumber: Number,
-	password: String,
-	role: {
-		type: String,
-		enum: ["user", "admin"],
-		default: "user",
+const userSchema = new Schema(
+	{
+		email: { type: String, unique: true, required: true },
+		phoneNumber: { type: Number },
+		password: { type: String, required: true },
+		role: { type: String, enum: ["user", "admin"], default: "user" },
+		isVerified: { type: Boolean, default: false },
+		fullName: { type: String, required: true },
 	},
-	isVerified: Boolean,
-	fullName: String,
-	fatherName: String,
-	motherName: String,
-});
+	{ timestamps: true }
+);
 const User = mongoose.model("User", userSchema);
+
+// Email transporter
+const transporter = nodemailer.createTransport({
+	service: "gmail",
+	auth: {
+		user: process.env.EMAIL_USER,
+		pass: process.env.EMAIL_PASS,
+	},
+});
+
+// Middleware
 app.use(express.json());
 app.use(cors());
 
+// Helper function to hash passwords
+const hashPassword = async (password) => {
+	return await bcrypt.hash(password, saltRounds);
+};
+
+// Routes
+// Register
 app.post("/register", async (req, res) => {
-	//1. email exists or not?
-	const emailExist = await User.exists({ email: req.body.email });
-	if (emailExist) return res.status(409).send({ msg: "Email already exist!" });
-	// yes exists:
-	//-------> return msg email taken
-	// no exists:
-	//2. password hash
-	req.body.password = await bcrypt.hash(req.body.password, saltRounds);
-	//3. save to db
-	User.create(req.body);
-	res.send({ msg: req.body.role + " created successfully" });
+	try {
+		const { fullName, email, password } = req.body;
+
+		// Check if email exists
+		const emailExist = await User.exists({ email });
+		if (emailExist)
+			return res.status(409).send({ msg: "Email already exists!" });
+
+		// Hash password
+		const hashedPassword = await hashPassword(password);
+
+		// Save user to database
+		const newUser = await User.create({
+			fullName,
+			email,
+			password: hashedPassword,
+		});
+
+		// Send welcome email
+		const mailOptions = {
+			from: process.env.EMAIL_USER,
+			to: email,
+			subject: "Welcome to Our Service",
+			text: `Hello ${fullName},\n\nThank you for registering! We're excited to have you on board.\n\nBest regards,\nNepConnect`,
+		};
+
+		await transporter.sendMail(mailOptions);
+
+		// Respond to frontend
+		res.status(201).send({ msg: "Registration successful, email sent!" });
+	} catch (error) {
+		console.error("Error during registration:", error);
+		res.status(500).send({ msg: "An error occurred. Please try again later." });
+	}
 });
 
+// Login
 app.post("/login", async (req, res) => {
-	const { email, password } = req.body;
-	//STEP 1: check if email exists
-	const user = await User.findOne({ email });
+	try {
+		const { email, password } = req.body;
 
-	if (!user) return res.status(401).send({ msg: "Invalid Email!!" });
+		// Check if email exists
+		const user = await User.findOne({ email });
+		if (!user)
+			return res.status(401).send({ msg: "Invalid email or password!" });
 
-	//STEP 2: Compare the password
-	const isPasswordMatched = await bcrypt.compare(password, user.password);
+		// Compare passwords
+		const isPasswordMatched = await bcrypt.compare(password, user.password);
+		if (!isPasswordMatched)
+			return res.status(401).send({ msg: "Invalid email or password!" });
 
-	if (!isPasswordMatched)
-		return res.status(401).send({ msg: "Invalid Password!!" });
+		// Generate JWT token
+		const token = jwt.sign({ email }, process.env.SECRET_KEY, {
+			expiresIn: "1h",
+		});
 
-	//STEP 3: Generate unique token for the user to mark that he is logged in
-	console.log("JWT Secret Key:", process.env.SECRET_KEY);
-	// Ensure it's not undefined
-
-	const token = jwt.sign({ email }, process.env.SECRET_KEY);
-
-	res.send({
-		token,
-		user,
-		isLoggednIn: true,
-		msg: "Authorized!!",
-	});
+		// Respond with token and user info
+		res.send({
+			token,
+			user,
+			isLoggedIn: true,
+			msg: "Login successful!",
+		});
+	} catch (error) {
+		console.error("Error during login:", error);
+		res.status(500).send({ msg: "An error occurred. Please try again later." });
+	}
 });
 
+// Start server
 app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`);
+	console.log(`Server running on port ${port}`);
 });
-
-// MONGODB
-
-// -> database: space to store/manage data
-//         -> SQL                         vs                 noSQL
-//           table                                      collection
-//           database                                   database
-//           rows and columns                           document (key:value)
-//           tabular form                               object based
-//           User.findAll()--->ORM(sequalize)           User.find()  ---> ODM(Object Data Modeling) (mongoose)
-//           relational DB                              schemaless/non-relationaldb
