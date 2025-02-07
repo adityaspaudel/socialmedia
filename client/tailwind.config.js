@@ -57,9 +57,11 @@ module.exports = {
 			},
 			//customized screen for extra small device like smartphone
 			screens: {
+				//---------------------------------------
 				"2xs": "400px", //Extra Extra small screens
 
 				xs: "500px", // Extra small screens
+				//--------------------------------------------
 
 				sm: "640px", // Small screens
 

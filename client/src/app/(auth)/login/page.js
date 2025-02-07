@@ -4,8 +4,11 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
+	const router = useRouter();
+
 	const validationSchema = Yup.object({
 		email: Yup.string()
 			.email("Invalid email address")
@@ -17,10 +20,8 @@ const LoginForm = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			fullName: "",
 			email: "",
 			password: "",
-			confirmPassword: "",
 		},
 		validationSchema,
 		onSubmit: async (values, { resetForm }) => {
@@ -32,6 +33,7 @@ const LoginForm = () => {
 				console.log("Response Data:", response.data);
 				alert("Login successful!");
 				resetForm();
+				router.push("/home"); // Redirect to the dashboard or desired page
 			} catch (error) {
 				console.error(
 					"Error during Logging in:",
@@ -102,10 +104,29 @@ const LoginForm = () => {
 				{/* Submit Button */}
 				<button
 					type="submit"
-					className="w-full py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+					className="w-full py-2 text-white bg-green-400 rounded hover:bg-green-600"
 					disabled={formik.isSubmitting}>
 					{formik.isSubmitting ? "Logging in..." : "Login"}
 				</button>
+
+				{/* Additional Links */}
+				<div className="mt-4 text-center">
+					<p className="text-sm">
+						<a
+							href="/recovery"
+							className="text-blue-500 hover:underline">
+							Recover Account
+						</a>
+					</p>
+					<p className="mt-2 text-sm">
+						Dont have an account?{" "}
+						<a
+							href="/register"
+							className="text-blue-500 hover:underline">
+							Sign Up
+						</a>
+					</p>
+				</div>
 			</form>
 		</div>
 	);

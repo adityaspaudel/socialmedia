@@ -1,4 +1,6 @@
 "use client";
+
+import PhotoUpload from "@/components/photo-uploader";
 import ReactionButton from "@/components/reaction-button/page";
 import Sidebar from "@/components/sidebar2/page";
 import { SocialMediaSidebarComponent } from "@/components/social-media-sidebar";
@@ -40,6 +42,9 @@ const Home = () => {
 				<div className="bg-blue-50 sm:w-[400px] md:w-[500px] lg:w-[600px]">
 					<div className="text-center p-4">
 						<div>Home</div>
+						{/* image upload */}
+						<PhotoUpload />
+
 						{/* new added for hydration error */}
 						{/* <h1>{isClient ? "This is never prerendered" : "Prerendered"}</h1> */}
 						<div className="flex flex-col gap-12 ">
@@ -48,7 +53,7 @@ const Home = () => {
 									<div
 										className="border-2 p-2 hover:border-gray-400 rounded-sm"
 										key={id}>
-										<div className="flex flex-col justify-center items-center gap-4 justify-between">
+										<div className="flex flex-col items-center gap-4 justify-between">
 											<div className="flex gap-2 w-full">
 												<div className="">
 													<img
