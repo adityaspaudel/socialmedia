@@ -133,7 +133,7 @@ export function SocialMediaSidebarComponent() {
 						</Button>
 					</Link>
 
-					<Link href="/login">
+					<Link href="/">
 						<Button
 							variant="ghost"
 							className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-gray-200">

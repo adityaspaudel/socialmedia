@@ -3,14 +3,20 @@ const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const path = require("path");
+const fs = require("fs"); // Import the 'fs' module for directory creation
 
 const app = express();
 const port = process.env.PORT || 8000;
-const saltRounds = parseInt(process.env.SALT_ROUNDS, 10) || 10;
+app.use(cors());
 
-// Database connection
+const saltRounds = parseInt(process.env.SALT_ROUNDS, 10) || 10;
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Database connection-----------------------------
 const dbConnect = async () => {
 	try {
 		const isConnected = await mongoose.connect(
@@ -23,7 +29,7 @@ const dbConnect = async () => {
 };
 dbConnect();
 
-// Models
+// Models-----------------------------------------------------
 const { Schema } = mongoose;
 const userSchema = new Schema(
 	{
@@ -33,19 +39,38 @@ const userSchema = new Schema(
 		role: { type: String, enum: ["user", "admin"], default: "user" },
 		isVerified: { type: Boolean, default: false },
 		fullName: { type: String, required: true },
+		friendRequests: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User", // For incoming friend requests
+			},
+		],
 	},
 	{ timestamps: true }
 );
 const User = mongoose.model("User", userSchema);
 
-// Email transporter
-const transporter = nodemailer.createTransport({
-	service: "gmail",
-	auth: {
-		user: process.env.EMAIL_USER,
-		pass: process.env.EMAIL_PASS,
+// photo upload schema---------
+
+const imageSchema = new Schema(
+	{
+		description: String,
+		imageUrl: String,
 	},
-});
+	{ timestamps: true }
+);
+const Image = mongoose.model("Image", imageSchema);
+
+module.exports = Image;
+
+// Email transporter
+// const transporter = nodemailer.createTransport({
+// 	service: "gmail",
+// 	auth: {
+// 		user: process.env.EMAIL_USER,
+// 		pass: process.env.EMAIL_PASS,
+// 	},
+// });
 
 // Middleware
 app.use(express.json());
@@ -56,8 +81,8 @@ const hashPassword = async (password) => {
 	return await bcrypt.hash(password, saltRounds);
 };
 
-// Routes
-// Register
+// Controllers & Routes -------------------------------------------------------------
+// Register  routes-----------------------
 app.post("/register", async (req, res) => {
 	try {
 		const { fullName, email, password } = req.body;
@@ -77,16 +102,6 @@ app.post("/register", async (req, res) => {
 			password: hashedPassword,
 		});
 
-		// Send welcome email
-		const mailOptions = {
-			from: process.env.EMAIL_USER,
-			to: email,
-			subject: "Welcome to Our Service",
-			text: `Hello ${fullName},\n\nThank you for registering! We're excited to have you on board.\n\nBest regards,\nNepConnect`,
-		};
-
-		await transporter.sendMail(mailOptions);
-
 		// Respond to frontend
 		res.status(201).send({ msg: "Registration successful, email sent!" });
 	} catch (error) {
@@ -95,7 +110,44 @@ app.post("/register", async (req, res) => {
 	}
 });
 
-// Login
+//multer
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+	fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use("/uploads", express.static(uploadsDir));
+
+// Multer setup
+// Multer configuration for file uploads
+const storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, uploadsDir); // Use the dynamically created directory
+	},
+	filename: (req, file, cb) => {
+		cb(null, Date.now() + "-" + file.originalname);
+	},
+});
+
+const upload = multer({ storage });
+
+// Routes and Controllers
+// Upload a new photo
+app.post("/upload", upload.single("image"), async (req, res) => {
+	try {
+		const { description } = req.body;
+		const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
+
+		const newImage = new Image({ description, imageUrl });
+		await newImage.save();
+
+		res.status(200).json({ message: "File uploaded successfully", imageUrl });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error uploading file" });
+	}
+});
+
+// Login routes-------------------------
 app.post("/login", async (req, res) => {
 	try {
 		const { email, password } = req.body;
@@ -128,7 +180,7 @@ app.post("/login", async (req, res) => {
 	}
 });
 
-// Start server
+// Start server-------------------------------------
 app.listen(port, () => {
 	console.log(`Server running on port ${port}`);
 });
