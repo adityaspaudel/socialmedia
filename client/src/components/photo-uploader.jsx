@@ -40,6 +40,10 @@ export default function ImageUploader() {
 				}
 			);
 			setMessage(response.data.message);
+			// Clear the message after 3 seconds (3000ms)
+			setTimeout(() => {
+				setMessage("");
+			}, 3000);
 		} catch (error) {
 			setMessage("Error uploading file.");
 			console.error(error);
@@ -67,12 +71,12 @@ export default function ImageUploader() {
 					/>
 				</div>
 				<button
-					className="bg-red-400"
+					className="bg-red-400 p-2 text-white rounded-2xl"
 					type="submit">
-					Upload
+					Add
 				</button>
 			</form>
-			{message && <p>{message}</p>}
+			<div className="text-green-400">{message && <p>{message}</p>}</div>
 		</div>
 	);
 }

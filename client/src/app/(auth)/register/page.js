@@ -4,8 +4,11 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const RegistrationForm = () => {
+	const router = useRouter();
+
 	const validationSchema = Yup.object({
 		fullName: Yup.string().required("Full Name is required"),
 		email: Yup.string()
@@ -35,7 +38,10 @@ const RegistrationForm = () => {
 				);
 				console.log("Response Data:", response.data);
 				alert("Registration Successful!");
-				resetForm();
+				router.push("./login");
+				// router.replace("/login");
+
+				// resetForm();
 			} catch (error) {
 				console.error(
 					"Error during registration:",
@@ -160,7 +166,7 @@ const RegistrationForm = () => {
 				{/* Submit Button */}
 				<button
 					type="submit"
-					className="w-full py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+					className="w-full py-2 text-white bg-green-500 rounded hover:bg-blue-600"
 					disabled={formik.isSubmitting}>
 					{formik.isSubmitting ? "Submitting..." : "Register"}
 				</button>
