@@ -4,13 +4,12 @@ import React from "react";
 
 const UserSearch = () => {
 	return (
-		<div>
+		<div className="flex gap-2">
 			<SocialMediaSidebarComponent />
 
 			{/*  */}
-			<div className="ml-[200px]">
-				<SearchComponent2 />
-			</div>
+
+			<SearchComponent2 />
 		</div>
 	);
 };
