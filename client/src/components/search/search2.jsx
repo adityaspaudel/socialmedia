@@ -16,7 +16,7 @@ const SearchComponent2 = () => {
 			});
 			setResults(data.users); // Set the result array from the response
 		} catch (error) {
-			console.error("Error searching user:", error);
+			console.log("Error searching user:", error);
 			setResults([]); // Clear results on error
 		}
 	};
@@ -38,8 +38,8 @@ const SearchComponent2 = () => {
 			</button>
 			<ul className="mt-4">
 				{results.length > 0 ? (
-					results.map((user, idx) => (
-						<li key={idx}>{user.fullName}</li> // Display the user's fullName
+					results.map((user, key) => (
+						<li key={key}>{user.fullName}</li> // Display the user's fullName
 					))
 				) : (
 					<li>No users found</li>

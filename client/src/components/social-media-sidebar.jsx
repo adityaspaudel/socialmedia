@@ -19,16 +19,8 @@ import { useEffect } from "react";
 // import SearchComponent from "./search/search-component";
 import axios from "axios";
 export function SocialMediaSidebarComponent() {
-	useEffect(() => {
-		let input1 = document.getElementsByClassName("myInput")[0];
-		input1.addEventListener("keypress", function (event) {
-			if (event.key === "Enter") {
-				// event.preventDefault();
-				// document.getElementsByClassName("myInput")[0].click();
-				window.location.href = "/user/search";
-			}
-		});
-	}, []);
+	
+
 	return (
 		<div
 			className="flex flex-col left-0 top-0 sticky h-screen w-[80px] sm:w-[100px] md:w-[200px] xl:w-[250px]  
@@ -53,7 +45,7 @@ export function SocialMediaSidebarComponent() {
 					</Link>
 					<Link href="/search">
 						<Button
-							// onClick={() => alert("Hello World!")}
+							// onClick={() => router.push("/search")}
 							variant="ghost"
 							className="flex gap-2 w-full justify-start myInput hover:bg-gray-200">
 							<Search className="mr-2 h-6 w-6 " />
@@ -65,7 +57,6 @@ export function SocialMediaSidebarComponent() {
 						</Button>
 						{/* <SearchComponent /> */}
 					</Link>
-
 					<Link href="/notifications">
 						<Button
 							variant="ghost"
