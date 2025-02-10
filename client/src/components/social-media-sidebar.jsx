@@ -16,7 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect } from "react";
-
+// import SearchComponent from "./search/search-component";
+import axios from "axios";
 export function SocialMediaSidebarComponent() {
 	useEffect(() => {
 		let input1 = document.getElementsByClassName("myInput")[0];
@@ -50,21 +51,20 @@ export function SocialMediaSidebarComponent() {
 							<span className="hidden md:block">Home</span>
 						</Button>
 					</Link>
-					<Link href="/search"></Link>
-					<Button
-						// onClick={() => alert("Hello World!")}
-						variant="ghost"
-						className="flex gap-2 w-full justify-start myInput hover:bg-gray-200">
-						<Search className="mr-2 h-6 w-6 " />
-						<input
-							className="w-full bg-transparent focus:outline-none hidden md:block"
-							type="text"
-							placeholder="Search"
-						/>
-
-						{/* added code---------------------------- */}
-						{}
-					</Button>
+					<Link href="/search">
+						<Button
+							// onClick={() => alert("Hello World!")}
+							variant="ghost"
+							className="flex gap-2 w-full justify-start myInput hover:bg-gray-200">
+							<Search className="mr-2 h-6 w-6 " />
+							<input
+								className="w-full bg-transparent focus:outline-none hidden md:block"
+								type="text"
+								placeholder="Search"
+							/>
+						</Button>
+						{/* <SearchComponent /> */}
+					</Link>
 
 					<Link href="/notifications">
 						<Button

@@ -22,9 +22,9 @@ const dbConnect = async () => {
 		const isConnected = await mongoose.connect(
 			"mongodb://127.0.0.1:27017/socialmedia"
 		);
-		if (isConnected) console.log("Connected to MongoDB");
+		if (isConnected) console.log("Connected to MongoDB/socialmedia");
 	} catch (err) {
-		console.error("Error connecting to MongoDB:", err);
+		console.error("Error connecting to MongoDB", err);
 	}
 };
 dbConnect();
@@ -110,7 +110,31 @@ app.post("/register", async (req, res) => {
 	}
 });
 
-//multer
+// Controller and Route combined: Search users by name----------------
+app.get("/search", async (req, res) => {
+	const { query } = req.query; // Now correctly using req.query for GET requests
+
+	if (!query) {
+		return res.status(400).json({ message: "Query parameter is required" });
+	}
+
+	try {
+		const users = await User.find({
+			fullName: new RegExp(query, "i"), // case-insensitive search
+		});
+
+		if (users.length > 0) {
+			res.status(200).json({ message: "Users found", users: users });
+		} else {
+			res.status(404).json({ message: "User not found" });
+		}
+	} catch (err) {
+		console.error("Error searching user:", err);
+		res.status(500).json({ message: "Error searching user" });
+	}
+});
+
+//multer--------------------------
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) {
 	fs.mkdirSync(uploadsDir, { recursive: true });

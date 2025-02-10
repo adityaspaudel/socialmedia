@@ -1,3 +1,4 @@
+import SearchComponent2 from "@/components/search/search2";
 import { SocialMediaSidebarComponent } from "@/components/social-media-sidebar";
 import React from "react";
 
@@ -5,7 +6,11 @@ const UserSearch = () => {
 	return (
 		<div>
 			<SocialMediaSidebarComponent />
-			<div className="ml-[20%]">UserSearch</div>
+
+			{/*  */}
+			<div className="ml-[200px]">
+				<SearchComponent2 />
+			</div>
 		</div>
 	);
 };
