@@ -45,7 +45,10 @@ export default function ImageUploader() {
 				setMessage("");
 			}, 3000);
 		} catch (error) {
-			setMessage("Error uploading file.");
+			setMessage("Error uploading file."); // Clear the message after 3 seconds (3000ms)
+			setTimeout(() => {
+				setMessage("");
+			}, 3000);
 			console.error(error);
 		}
 	};
