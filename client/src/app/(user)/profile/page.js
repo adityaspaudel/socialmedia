@@ -1,3 +1,5 @@
+"use client";
+import ProfileImagesPage from "@/components/get-profile";
 import PhotosPage from "@/components/profile-all-photo";
 import Sidebar from "@/components/sidebar/page";
 import { SocialMediaSidebarComponent } from "@/components/social-media-sidebar";
@@ -10,9 +12,8 @@ const UserProfile = () => {
 		<div className="flex gap-4 text-sm bg-blue-100">
 			{/* left-sidebar -----------------------------------------*/}
 			<div>
-				{/* <Sidebar className="" /> */}
-				{/* <SocialMediaSidebarComponent /> */}
-				<PhotosPage />
+			
+				<ProfileImagesPage />
 			</div>
 		</div>
 	);

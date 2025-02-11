@@ -177,6 +177,17 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 		res.status(500).json({ message: "Error uploading file" });
 	}
 });
+// get profile images controller & route----
+// Fetch all images
+app.get("/images", async (req, res) => {
+	try {
+		const images = await Image.find();
+		res.status(200).json(images);
+	} catch (error) {
+		console.error("Error fetching images:", error);
+		res.status(500).json({ message: "Error fetching images" });
+	}
+});
 
 // Login routes-------------------------
 app.post("/login", async (req, res) => {
