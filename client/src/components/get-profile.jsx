@@ -28,17 +28,26 @@ export default function ProfileImagesPage() {
 					<p>No images uploaded yet!</p>
 				) : (
 					images.map((image, index) => (
-						<div key={index}>
+						<div className="border rounded-2xl shadow-lg overflow-hidden hover:border-black border-2">
 							<img
 								src={image.imageUrl}
-								alt={`Uploaded ${index}`}
-								className="w-full h-40 object-cover rounded shadow"
+								alt={image.description}
+								className="w-full h-48 object-cover"
 							/>
+							<div className="p-4">
+								<h3 className="text-lg font-semibold mb-2">
+									{image.description}
+								</h3>
+								<p className="text-sm text-gray-500">
+									Uploaded: {new Date(image.createdAt).toLocaleDateString()}{" "}
+									{new Date(image.createdAt).toLocaleTimeString()}
+								</p>
+							</div>
 						</div>
 					))
 				)}
 			</div>
-			{/* {JSON.stringify(images[0].imageUrl)} */}
+			{/* {JSON.stringify(images)} */}
 		</div>
 	);
 }
