@@ -8,7 +8,7 @@ export default function ProfileImagesPage() {
 	const fetchImages = async () => {
 		try {
 			const response = await axios.get("http://localhost:8000/images"); // Fetch from Express backend
-			alert(JSON.stringify(response.data));
+			// alert(JSON.stringify(response.data));
 			setImages(response.data); // Update state with image URLs
 		} catch (error) {
 			console.log("Error fetching images:", error);
@@ -38,7 +38,7 @@ export default function ProfileImagesPage() {
 					))
 				)}
 			</div>
-			{JSON.stringify(images[0].imageUrl)}
+			{/* {JSON.stringify(images[0].imageUrl)} */}
 		</div>
 	);
 }
