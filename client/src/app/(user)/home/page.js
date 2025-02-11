@@ -37,7 +37,7 @@ const Home = () => {
 
 	return (
 		<div className="flex gap-2 justify-between ">
-			<SocialMediaSidebarComponent />
+			{/* <SocialMediaSidebarComponent /> */}
 			<div className="flex justify-center gap-20 ">
 				<div className="bg-blue-50 sm:w-[400px] md:w-[500px] lg:w-[600px]">
 					<div className="text-center p-4">
@@ -160,6 +160,7 @@ const Home = () => {
 					</AvatarGroup>
 				</div>
 			</div>
+		
 		</div>
 	);
 };

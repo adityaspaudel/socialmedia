@@ -81,14 +81,7 @@ export function SocialMediaSidebarComponent() {
 							<span className="hidden md:block">Profile</span>
 						</Button>
 					</Link>
-					<Link href="/friends">
-						<Button
-							variant="ghost"
-							className="w-full justify-start hover:bg-gray-200">
-							<Users className="mr-2 h-6 w-6" />
-							<span className=" hidden md:block">Friends</span>
-						</Button>
-					</Link>
+					
 				</div>
 			</div>
 			<div className="space-y-1 p-2">

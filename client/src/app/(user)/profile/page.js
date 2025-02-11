@@ -11,7 +11,7 @@ const UserProfile = () => {
 			{/* left-sidebar -----------------------------------------*/}
 			<div>
 				{/* <Sidebar className="" /> */}
-				<SocialMediaSidebarComponent />
+				{/* <SocialMediaSidebarComponent /> */}
 				<PhotosPage />
 			</div>
 		</div>

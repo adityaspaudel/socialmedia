@@ -18,7 +18,7 @@ const BlockedLists = () => {
 	};
 	return (
 		<div className="flex gap-4">
-			<UserSettingsSidebar />
+			{/* <UserSettingsSidebar /> */}
 			<div className="">
 				<h1 className="text-2xl font-bold">BlockedLists</h1>
 				<div>

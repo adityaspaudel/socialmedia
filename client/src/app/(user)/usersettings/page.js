@@ -7,10 +7,11 @@ import React from "react";
 import useSWR from "swr";
 
 const Usersettings = () => {
-	return <div>
-		
-		<UserSettingsSidebar/>
-	</div>;
+	return (
+		<div>
+			<UserSettingsSidebar />
+		</div>
+	);
 };
 
 export default Usersettings;

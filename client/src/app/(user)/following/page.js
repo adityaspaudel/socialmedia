@@ -106,7 +106,7 @@ const Following = () => {
 	];
 	return (
 		<div className="flex gap-2 bg-blue-100">
-			<SocialMediaSidebarComponent />
+			{/* <SocialMediaSidebarComponent /> */}
 			<div>
 				<h1 className="font-bold">following</h1>
 				<div className="text-sm">

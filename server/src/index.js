@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const mongoose = require("mongoose");
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 const path = require("path");
 const fs = require("fs"); // Import the 'fs' module for directory creation
 
@@ -39,10 +39,17 @@ const userSchema = new Schema(
 		role: { type: String, enum: ["user", "admin"], default: "user" },
 		isVerified: { type: Boolean, default: false },
 		fullName: { type: String, required: true },
-		friendRequests: [
+
+		followers: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
-				ref: "User", // For incoming friend requests
+				ref: "User", // Users who follow this user
+			},
+		],
+		following: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User", // Users this user is following
 			},
 		],
 	},
