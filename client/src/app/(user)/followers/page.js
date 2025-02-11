@@ -263,7 +263,7 @@ const followers = () => {
 
 	return (
 		<div className="flex gap-4 bg-blue-100">
-			<SocialMediaSidebarComponent />
+			{/* <SocialMediaSidebarComponent /> */}
 			<div className="">
 				<h1 className="font-bold p-2">followers</h1>
 				<div>

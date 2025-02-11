@@ -5,7 +5,7 @@ import React from "react";
 const UserSearch = () => {
 	return (
 		<div className="flex gap-2">
-			<SocialMediaSidebarComponent />
+			{/* <SocialMediaSidebarComponent /> */}
 
 			{/*  */}
 

@@ -1,8 +1,10 @@
 import React from 'react'
 
-const AdminHome = () => {
+const AdminHome = ({children}) => {
   return (
-    <div>AdminHome</div>
+    <div>AdminHome
+      {children}
+    </div>
   )
 }
 
