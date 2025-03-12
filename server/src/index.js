@@ -192,6 +192,7 @@ app.get("/images", async (req, res) => {
 });
 
 // Login routes-------------------------
+const secretKey = process.env.SECRET_KEY;
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -207,20 +208,12 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ msg: "Invalid email or password!" });
 
     // Generate JWT token (Include user ID for better identification)
-    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user._id }, secretKey, {
       expiresIn: "7d",
     });
 
-    // // Store token in an httpOnly cookie for security (prevents XSS attacks)
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use secure flag in production
-      sameSite: "Strict",
-      maxAge: 60 * 60 * 1000, // 1 hour
-    });
-
     // Respond with minimal user data
-    console.log("JWT Secret Key:", process.env.SECRET_KEY);
+    // console.log("JWT Secret Key:", secretKey);
 
     res.json({
       msg: "Login successful!",

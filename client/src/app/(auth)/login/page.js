@@ -40,20 +40,26 @@ const LoginForm = () => {
 
         console.log("Response Data:", data);
 
-        // Store token and userId (as id) in localStorage if available
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-        }
-        if (data.user && data.user.id) {
-          localStorage.setItem("id", data.user.id); // Store userId as 'id' in localStorage
-        }
+        // Check for success status before proceeding
+        if (response.ok) {
+          // Store token and userId (as id) in localStorage if available
+          if (data.token) {
+            localStorage.setItem("token", data.token);
+          }
+          if (data.user && data.user.id) {
+            localStorage.setItem("id", data.user.id); // Store userId as 'id' in localStorage
+          }
 
-        alert("Login successful!");
-        resetForm();
-        router.push("/home"); // Redirect to home page
+          alert("Login successful!");
+          resetForm();
+          router.push(`${data.user.id}/home`); // Redirect to home page
+        } else {
+          // Show error message from the response
+          alert(data.message || "Login failed. Please try again.");
+        }
       } catch (error) {
         console.error("Error during login:", error);
-        alert(error.message);
+        alert("An error occurred. Please try again.");
       }
     },
   });
