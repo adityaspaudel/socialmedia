@@ -1,53 +1,58 @@
+"use client";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useParams } from "next/navigation"; // Import useRouter to get dynamic URL params
+import Link from "next/link";
 
-export default function ProfileImagesPage() {
-  const [images, setImages] = useState([]);
+export default function PhotosPage() {
+  const [photos, setPhotos] = useState([]);
 
-  // Fetch images from the backend
-  const fetchImages = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/images"); // Fetch from Express backend
-      // alert(JSON.stringify(response.data));
-      setImages(response.data); // Update state with image URLs
-    } catch (error) {
-      console.log("Error fetching images:", error);
-    }
-  };
+  const params = useParams(); // Get dynamic userid from the URL
+  const { userid } = params;
+  console.log("parameter", JSON.stringify(params));
 
-  // Fetch images when the component is mounted
   useEffect(() => {
-    fetchImages();
-  }, []);
+    if (userid) {
+      // Ensure the userid is available before making the API request
+      const fetchPhotos = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:8000/api/${userid}/getProfilePhotos`
+          ); // Use the dynamic userid in the API URL
+          const data = await response.json();
+          setPhotos(data);
+        } catch (error) {
+          console.error("Error fetching photos:", error);
+        }
+      };
+
+      fetchPhotos();
+    }
+  }, [userid]); // Run the effect when the userid changes
+
+  if (!userid) {
+    // Return a loading state or fallback until the `userid` is available
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Uploaded Images</h1>
-      <div className="grid grid-cols-3 gap-4">
-        {images.length === 0 ? (
-          <p>No images uploaded yet!</p>
-        ) : (
-          images.map((image, index) => (
-            <div className=" rounded-2xl shadow-lg overflow-hidden hover:border-black border-2">
+      <h1 className="text-2xl font-bold mb-4">All Photos</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {photos.map((photo) => (
+          <Link href={`/photos/${userid}/${photo._id}`} key={photo._id}>
+            {/* Pass userid in the link */}
+            <div className="border rounded-lg p-4 hover:shadow-lg transition cursor-pointer">
               <img
-                src={image.imageUrl}
-                alt={image.description}
-                className="w-full h-48 object-cover"
+                src={photo.imageUrl}
+                alt={photo.description} // Use description as alt text
+                className="w-full h-48 object-cover rounded"
               />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2">
-                  {image.description}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Uploaded: {new Date(image.createdAt).toLocaleDateString()}{" "}
-                  {new Date(image.createdAt).toLocaleTimeString()}
-                </p>
-              </div>
+              <h2 className="text-lg font-medium mt-2">{photo.description}</h2>
+              <p className="text-sm text-gray-600">{photo.description}</p>
             </div>
-          ))
-        )}
+          </Link>
+        ))}
       </div>
-      {/* {JSON.stringify(images)} */}
     </div>
   );
 }

@@ -1,13 +1,14 @@
-// worked perfectly with /multer/multer1 in backend
-
 "use client";
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import axios from "axios";
 
 export default function ImageUploader() {
   const [file, setFile] = useState(null);
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
+
+  const { userid } = useParams(); // Get userid from URL params
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -20,14 +21,17 @@ export default function ImageUploader() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!file || !description) {
-      setMessage("Please select a file and enter a description.");
+    if (!file || !description || !userid) {
+      setMessage(
+        "Please select a file, enter a description, and ensure user ID is present."
+      );
       return;
     }
 
     const formData = new FormData();
     formData.append("image", file);
     formData.append("description", description);
+    formData.append("userid", userid); // Include userid from useParams
 
     try {
       const response = await axios.post(
@@ -40,12 +44,15 @@ export default function ImageUploader() {
         }
       );
       setMessage(response.data.message);
-      // Clear the message after 3 seconds (3000ms)
+
+      // Clear message after 3 seconds
       setTimeout(() => {
         setMessage("");
       }, 3000);
     } catch (error) {
-      setMessage("Error uploading file."); // Clear the message after 3 seconds (3000ms)
+      setMessage("Error uploading file.");
+
+      // Clear message after 3 seconds
       setTimeout(() => {
         setMessage("");
       }, 3000);
@@ -70,7 +77,7 @@ export default function ImageUploader() {
           />
         </div>
         <button className="bg-red-400 p-2 text-white rounded-2xl" type="submit">
-          upload
+          Upload
         </button>
       </form>
       <div className="text-green-400">{message && <p>{message}</p>}</div>
