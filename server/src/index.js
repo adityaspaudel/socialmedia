@@ -63,8 +63,9 @@ const User = mongoose.model("User", userSchema);
 
 const imageSchema = new Schema(
   {
-    description: String,
-    imageUrl: String,
+    description: { type: String, required: true }, // You have description
+    imageUrl: { type: String, required: true }, // You have imageUrl
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Reference to User model
   },
   { timestamps: true }
 );
@@ -167,10 +168,20 @@ const upload = multer({ storage });
 // Upload a new photo
 app.post("/upload", upload.single("image"), async (req, res) => {
   try {
-    const { description } = req.body;
+    const { description, userid } = req.body; // Extract userid from request body
+
+    if (!req.file || !description || !userid) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
     const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
 
-    const newImage = new Image({ description, imageUrl });
+    const newImage = new Image({
+      description,
+      imageUrl,
+      user: userid, // Associate image with user
+    });
+
     await newImage.save();
 
     res.status(200).json({ message: "File uploaded successfully", imageUrl });
@@ -179,12 +190,15 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     res.status(500).json({ message: "Error uploading file" });
   }
 });
+
 // get profile images controller & route----
 // Fetch all images
-app.get("/images", async (req, res) => {
+
+app.get("/api/:userid/getProfilePhotos", async (req, res) => {
   try {
-    const images = await Image.find();
-    res.status(200).json(images);
+    const { userid } = req.params; // Get the dynamic user ID from the URL
+    const images = await Image.find({ user: userid }); // Fetch images from the database where user matches the provided user ID
+    res.status(200).json(images); // Return the images
   } catch (error) {
     console.error("Error fetching images:", error);
     res.status(500).json({ message: "Error fetching images" });
