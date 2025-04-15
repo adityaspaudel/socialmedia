@@ -39,7 +39,7 @@ export default function PhotosPage() {
       <h1 className="text-2xl font-bold mb-4">All Photos</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {photos.map((photo) => (
-          <Link href={`/photos/${userid}/${photo._id}`} key={photo._id}>
+          <Link href={`/${userid}/profile/${photo._id}`} key={photo._id}>
             {/* Pass userid in the link */}
             <div className="border rounded-lg p-4 hover:shadow-lg transition cursor-pointer">
               <img

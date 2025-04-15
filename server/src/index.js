@@ -205,6 +205,19 @@ app.get("/api/:userid/getProfilePhotos", async (req, res) => {
   }
 });
 
+// get individual images from imageid
+
+app.get("/api/images/:imageid", async (req, res) => {
+  try {
+    const image = await Image.findById(req.params.imageid);
+    if (!image) return res.status(404).json({ message: "Image not found" });
+
+    res.status(200).json(image); // Serve it directly all image information
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // Login routes-------------------------
 const secretKey = process.env.SECRET_KEY;
 app.post("/login", async (req, res) => {
