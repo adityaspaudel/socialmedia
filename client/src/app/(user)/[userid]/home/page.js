@@ -8,12 +8,14 @@ import VideoPlayer from "@/components/videoplayer/page";
 import { Avatar, AvatarGroup } from "@nextui-org/avatar";
 import { Ellipsis } from "lucide-react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const Home = () => {
 	const [usersList, setUsersList] = useState([]);
 	const [isClient, setIsClient] = useState(false);
-
+	const { userid } = useParams();
+	// alert(JSON.stringify(userid));
 	useEffect(() => {
 		fetchUsersList();
 		setIsClient(true);
@@ -30,9 +32,14 @@ const Home = () => {
 	};
 
 	const fetchUsersList = async () => {
-		const data = await fetch("https://api.escuelajs.co/api/v1/users");
+		// const data = await fetch("https://api.escuelajs.co/api/v1/users");
+		const data = await fetch(
+			`http://localhost:8000/api/${userid}/getProfilePhotos`
+		);
+
 		let usersList11 = await data.json();
 		setUsersList(usersList11);
+		console.log(usersList11);
 	};
 
 	return (
@@ -48,59 +55,31 @@ const Home = () => {
 						{/* new added for hydration error */}
 						{/* <h1>{isClient ? "This is never prerendered" : "Prerendered"}</h1> */}
 						<div className="flex flex-col gap-12 ">
-							{Object.values(usersList).map((item, id) => {
-								return (
-									<div
-										className="border-2 p-2 hover:border-gray-400 rounded-sm"
-										key={id}>
-										<div className="flex flex-col items-center gap-4 justify-between">
-											<div className="flex gap-2 w-full">
-												<div className="">
-													<img
-														className="object-cover rounded-3xl"
-														src={item.avatar}
-														height={50}
-														width={50}
-													/>
-												</div>
-												<div className="italic font-bold px-2">
-													{item.email}
-												</div>
-												<div className="flex w-full gap-2 px-2 justify-end">
-													{item.creationAt}
-
-													<Ellipsis />
-												</div>
-											</div>
-											<div>
-												<img
-													className="object-cover"
-													src={item.avatar}
-													height={400}
-													width={400}
-												/>
-											</div>
-											<div className="flex gap-2 justify-start w-full">
-												<ReactionButton />
-											</div>
-											<div className="flex w-full justify-start p-2">
-												<div className="">
-													<img
-														className="object-cover rounded-3xl"
-														src={item.avatar}
-														height={50}
-														width={50}
-													/>
-												</div>
-												<div className="italic font-bold px-2">
-													{item.email}
-												</div>
-												<div>{item.name}</div>
-											</div>
-										</div>
+							{JSON.stringify(usersList)}
+							{usersList.map((user) => (
+								<div
+									key={user._id}
+									className="bg-white rounded-2xl shadow-md overflow-hidden border hover:shadow-xl transition-shadow duration-300"
+								>
+									<div className="relative w-full h-64">
+										<img
+											src={user.imageUrl}
+											alt={user.description || "User image"}
+											layout="fill"
+											objectFit="cover"
+											className="transition-transform duration-300 hover:scale-105"
+										/>
 									</div>
-								);
-							})}
+									<div className="p-4">
+										<p className="text-sm text-gray-500 mb-1">
+											{new Date(user.createdAt).toLocaleString()}
+										</p>
+										<h2 className="text-lg font-semibold text-gray-800">
+											{user.description || "No description"}
+										</h2>
+									</div>
+								</div>
+							))}
 						</div>
 						{/* pictures rendered from  /public */}
 						{/* <div className="flex flex-col gap-12 border-2 gap-12 rounded-xl">
@@ -125,11 +104,7 @@ const Home = () => {
 				{/* <VideoPlayer /> */}
 				<div className="flex flex-col bg-blue-50  w-[100px] sm:w-[200px] gap-2  p-4">
 					<div className="text-center">Users you may know</div>
-					<AvatarGroup
-						className="flex flex-col"
-						isBordered
-						isGrid
-						max={9}>
+					<AvatarGroup className="flex flex-col" isBordered isGrid max={9}>
 						<div className="bg-blue-200">
 							<Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
 						</div>
@@ -160,7 +135,6 @@ const Home = () => {
 					</AvatarGroup>
 				</div>
 			</div>
-		
 		</div>
 	);
 };
