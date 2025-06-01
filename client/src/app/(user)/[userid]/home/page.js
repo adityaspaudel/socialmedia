@@ -15,6 +15,7 @@ const Home = () => {
 	const [usersList, setUsersList] = useState([]);
 	const [isClient, setIsClient] = useState(false);
 	const { userid } = useParams();
+	
 	// alert(JSON.stringify(userid));
 	useEffect(() => {
 		fetchUsersList();

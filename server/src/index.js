@@ -258,9 +258,61 @@ app.post("/login", async (req, res) => {
 		res.status(500).json({ msg: "An error occurred. Please try again later." });
 	}
 });
-// follow unfollow controller
 
+// 🔁 Toggle follow/unfollow
+app.put("/:currentUserId/toggleFollowUnfollow", async (req, res) => {
+	const { currentUserId } = req.params;
+	const { followingTo } = req.body;
 
+	// 🛑 Prevent following yourself
+	if (currentUserId === followingTo) {
+		return res.status(400).json({ message: "You can't follow yourself." });
+	}
+
+	try {
+		const currentUser = await User.findById(currentUserId);
+		const targetUser = await User.findById(followingTo);
+
+		// 🛑 Check if both users exist
+		if (!currentUser || !targetUser) {
+			return res.status(404).json({ message: "User not found." });
+		}
+
+		// ✅ Check if already following
+		const isFollowing = currentUser.following.some(
+			(id) => id.toString() === followingTo
+		);
+
+		if (isFollowing) {
+			// 🔁 Unfollow
+			currentUser.following = currentUser.following.filter(
+				(id) => id.toString() !== followingTo
+			);
+			targetUser.followers = targetUser.followers.filter(
+				(id) => id.toString() !== currentUserId
+			);
+		} else {
+			// ➕ Follow
+			currentUser.following.push(followingTo);
+			targetUser.followers.push(currentUserId);
+		}
+
+		// 💾 Save both users
+		await currentUser.save();
+		await targetUser.save();
+
+		// ✅ Send response
+		res.status(200).json({
+			message: isFollowing
+				? "Unfollowed successfully."
+				: "Followed successfully.",
+			following: !isFollowing,
+		});
+	} catch (error) {
+		console.error("Error in follow/unfollow:", error);
+		res.status(500).json({ message: "Something went wrong." });
+	}
+});
 // Start server-------------------------------------
 app.listen(port, () => {
 	console.log(`Server running on port ${port}`);

@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import axios from "axios";
+import { useParams } from "next/navigation";
 
 const SearchComponent2 = () => {
 	const [fullName, setFullName] = useState("");
 	const [results, setResults] = useState([]);
 	const [followState, setFollowState] = useState({}); // follow state per user
-
+	const { userid } = useParams();
+	console.log("current user from useparams", userid);
 	const handleSearch = async () => {
 		if (!fullName.trim()) return;
 		try {
@@ -31,10 +33,10 @@ const SearchComponent2 = () => {
 	const toggleFollowUnfollow = async (uid) => {
 		try {
 			// Call backend to toggle follow/unfollow
-			await fetch(`http://localhost:8000/${uid}/toggleFollowUnfollow`, {
+			await fetch(`http://localhost:8000/${userid}/toggleFollowUnfollow`, {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({}), // send any needed data
+				body: JSON.stringify({ followingTo: uid }), // send any needed data
 			});
 
 			// Toggle local state
