@@ -1,4 +1,3 @@
-// Frontend - page.js (Next.js)
 "use client";
 
 import { useState } from "react";
@@ -7,6 +6,7 @@ import axios from "axios";
 const SearchComponent2 = () => {
 	const [fullName, setFullName] = useState("");
 	const [results, setResults] = useState([]);
+	const [followState, setFollowState] = useState({}); // follow state per user
 
 	const handleSearch = async () => {
 		if (!fullName.trim()) return;
@@ -14,10 +14,36 @@ const SearchComponent2 = () => {
 			const { data } = await axios.get(`http://localhost:8000/search`, {
 				params: { query: fullName },
 			});
-			setResults(data.users); // Set the result array from the response
+			setResults(data.users);
+
+			// Initialize followState with false (not following)
+			const initialFollowState = {};
+			data.users.forEach((user) => {
+				initialFollowState[user._id] = false;
+			});
+			setFollowState(initialFollowState);
 		} catch (error) {
-			console.log("Error searching user:", error);
-			setResults([]); // Clear results on error
+			console.error("Error searching user:", error);
+			setResults([]);
+		}
+	};
+
+	const toggleFollowUnfollow = async (uid) => {
+		try {
+			// Call backend to toggle follow/unfollow
+			await fetch(`http://localhost:8000/${uid}/toggleFollowUnfollow`, {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({}), // send any needed data
+			});
+
+			// Toggle local state
+			setFollowState((prev) => ({
+				...prev,
+				[uid]: !prev[uid],
+			}));
+		} catch (error) {
+			console.error("Error toggling follow/unfollow:", error);
 		}
 	};
 
@@ -33,13 +59,25 @@ const SearchComponent2 = () => {
 			/>
 			<button
 				onClick={handleSearch}
-				className="ml-2 p-2 bg-blue-500 text-white rounded">
+				className="ml-2 p-2 bg-blue-500 text-white rounded"
+			>
 				Search
 			</button>
+
 			<ul className="mt-4">
 				{results.length > 0 ? (
-					results.map((user, key) => (
-						<li key={key}>{user.fullName}</li> // Display the user's fullName
+					results.map((user) => (
+						<div key={user._id} className="flex items-center gap-4 my-2">
+							<li>{user.fullName}</li>
+							<button
+								onClick={() => toggleFollowUnfollow(user._id)}
+								className={`px-3 py-1 rounded text-white ${
+									followState[user._id] ? "bg-green-600" : "bg-gray-600"
+								}`}
+							>
+								{followState[user._id] ? "Following" : "Follow"}
+							</button>
+						</div>
 					))
 				) : (
 					<li>No users found</li>

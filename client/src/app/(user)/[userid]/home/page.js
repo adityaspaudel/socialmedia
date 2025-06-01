@@ -21,15 +21,6 @@ const Home = () => {
 		setIsClient(true);
 	}, []);
 
-	const picsLink = {
-		img1: "/cartoon-cute.jpg",
-		img2: "/cartoon-1.jpg",
-		img3: "/cartoon-2.jpg",
-		img4: "/cartoon-cute.jpg",
-		img5: "/cartoon-3.jpg",
-		img6: "/cartoon-4.jpg",
-		img7: "/connect-kura.png",
-	};
 
 	const fetchUsersList = async () => {
 		// const data = await fetch("https://api.escuelajs.co/api/v1/users");
