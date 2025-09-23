@@ -1,6 +1,7 @@
 "use client";
 
 import PhotoUpload from "@/components/photo-uploader";
+import PostComponent from "@/components/postComponent";
 
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -36,7 +37,7 @@ const Home = () => {
             <div>Home</div>
             {/* image upload */}
             {/* <PhotoUpload /> */}
-
+            <PostComponent />
             {/* new added for hydration error */}
             {/* <h1>{isClient ? "This is never prerendered" : "Prerendered"}</h1> */}
             <div className="flex flex-col gap-12 ">
