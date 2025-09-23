@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const mongoose = require("mongoose");
+require("dotenv").config();
+
 // const nodemailer = require("nodemailer");
 const path = require("path");
 const fs = require("fs"); // Import the 'fs' module for directory creation
@@ -61,14 +63,21 @@ const User = mongoose.model("User", userSchema);
 
 const imageSchema = new Schema(
 	{
-		description: String,
-		imageUrl: String,
+		description: { type: String, required: true },
+		imageUrl: { type: String, required: true },
+		user: { type: Schema.Types.ObjectId, ref: "User", required: true }, // owner of post
+
+		// ✅ New: Comments array
+		comments: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
+
+		// ✅ New: Likes as array of user references
+		likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
 	},
 	{ timestamps: true }
 );
 const Image = mongoose.model("Image", imageSchema);
 
-module.exports = Image;
+// module.exports = Image;
 
 // Email transporter
 // const transporter = nodemailer.createTransport({
@@ -117,28 +126,42 @@ app.post("/register", async (req, res) => {
 	}
 });
 
-// Controller and Route combined: Search users by name----------------
+// Search users by name, with follow state
 app.get("/search", async (req, res) => {
-	const { query } = req.query; // Now correctly using req.query for GET requests
+  const { query, currentUserId } = req.query; // ✅ expecting both query + currentUserId
 
-	if (!query) {
-		return res.status(400).json({ message: "Query parameter is required" });
-	}
+  if (!query) {
+    return res.status(400).json({ message: "Query parameter is required" });
+  }
 
-	try {
-		const users = await User.find({
-			fullName: new RegExp(query, "i"), // case-insensitive search
-		});
+  try {
+    // Find matching users
+    const users = await User.find({
+      fullName: new RegExp(query, "i"), // case-insensitive
+    }).select("_id fullName");
 
-		if (users.length > 0) {
-			res.status(200).json({ message: "Users found", users: users });
-		} else {
-			res.status(404).json({ message: "User not found" });
-		}
-	} catch (err) {
-		console.error("Error searching user:", err);
-		res.status(500).json({ message: "Error searching user" });
-	}
+    if (!users.length) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Get current user to check following state
+    const currentUser = await User.findById(currentUserId).select("following");
+    const followingSet = new Set(
+      currentUser?.following.map((id) => id.toString()) || []
+    );
+
+    // Add `isFollowing` flag
+    const response = users.map((u) => ({
+      _id: u._id,
+      fullName: u.fullName,
+      isFollowing: followingSet.has(u._id.toString()),
+    }));
+
+    res.status(200).json({ message: "Users found", users: response });
+  } catch (err) {
+    console.error("Error searching user:", err);
+    res.status(500).json({ message: "Error searching user" });
+  }
 });
 
 //multer--------------------------
@@ -165,10 +188,20 @@ const upload = multer({ storage });
 // Upload a new photo
 app.post("/upload", upload.single("image"), async (req, res) => {
 	try {
-		const { description } = req.body;
+		const { description, userid } = req.body; // Extract userid from request body
+
+		if (!req.file || !description || !userid) {
+			return res.status(400).json({ message: "All fields are required." });
+		}
+
 		const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
 
-		const newImage = new Image({ description, imageUrl });
+		const newImage = new Image({
+			description,
+			imageUrl,
+			user: userid, // Associate image with user
+		});
+
 		await newImage.save();
 
 		res.status(200).json({ message: "File uploaded successfully", imageUrl });
@@ -177,51 +210,123 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 		res.status(500).json({ message: "Error uploading file" });
 	}
 });
+
 // get profile images controller & route----
 // Fetch all images
-app.get("/images", async (req, res) => {
+
+app.get("/api/:userid/getProfilePhotos", async (req, res) => {
 	try {
-		const images = await Image.find();
-		res.status(200).json(images);
+		const { userid } = req.params; // Get the dynamic user ID from the URL
+		const images = await Image.find({ user: userid }); // Fetch images from the database where user matches the provided user ID
+		res.status(200).json(images); // Return the images
 	} catch (error) {
 		console.error("Error fetching images:", error);
 		res.status(500).json({ message: "Error fetching images" });
 	}
 });
 
+// get individual images from imageid
+
+app.get("/api/images/:imageid", async (req, res) => {
+	try {
+		const image = await Image.findById(req.params.imageid);
+		if (!image) return res.status(404).json({ message: "Image not found" });
+
+		res.status(200).json(image); // Serve it directly all image information
+	} catch (err) {
+		res.status(500).json({ message: "Server error" });
+	}
+});
+
 // Login routes-------------------------
+const secretKey = process.env.SECRET_KEY;
 app.post("/login", async (req, res) => {
 	try {
 		const { email, password } = req.body;
 
 		// Check if email exists
-		const user = await User.findOne({ email });
+		const user = await User.findOne({ email }).select("+password");
 		if (!user)
-			return res.status(401).send({ msg: "Invalid email or password!" });
+			return res.status(401).json({ msg: "Invalid email or password!" });
 
 		// Compare passwords
 		const isPasswordMatched = await bcrypt.compare(password, user.password);
 		if (!isPasswordMatched)
-			return res.status(401).send({ msg: "Invalid email or password!" });
+			return res.status(401).json({ msg: "Invalid email or password!" });
 
-		// Generate JWT token
-		const token = jwt.sign({ email }, process.env.SECRET_KEY, {
-			expiresIn: "1h",
+		// Generate JWT token (Include user ID for better identification)
+		const token = jwt.sign({ id: user._id }, secretKey, {
+			expiresIn: "7d",
 		});
 
-		// Respond with token and user info
-		res.send({
-			token,
-			user,
-			isLoggedIn: true,
+		// Respond with minimal user data
+		// console.log("JWT Secret Key:", secretKey);
+
+		res.json({
 			msg: "Login successful!",
+			isLoggedIn: true,
+			user: { id: user._id, email: user.email },
 		});
 	} catch (error) {
 		console.error("Error during login:", error);
-		res.status(500).send({ msg: "An error occurred. Please try again later." });
+		res.status(500).json({ msg: "An error occurred. Please try again later." });
 	}
 });
 
+// 🔁 Toggle follow/unfollow
+app.put("/:currentUserId/toggleFollowUnfollow", async (req, res) => {
+	const { currentUserId } = req.params;
+	const { followingTo } = req.body;
+
+	// 🛑 Prevent following yourself
+	if (currentUserId === followingTo) {
+		return res.status(400).json({ message: "You can't follow yourself." });
+	}
+
+	try {
+		const currentUser = await User.findById(currentUserId);
+		const targetUser = await User.findById(followingTo);
+
+		// 🛑 Check if both users exist
+		if (!currentUser || !targetUser) {
+			return res.status(404).json({ message: "User not found." });
+		}
+
+		// ✅ Check if already following
+		const isFollowing = currentUser.following.some(
+			(id) => id.toString() === followingTo
+		);
+
+		if (isFollowing) {
+			// 🔁 Unfollow
+			currentUser.following = currentUser.following.filter(
+				(id) => id.toString() !== followingTo
+			);
+			targetUser.followers = targetUser.followers.filter(
+				(id) => id.toString() !== currentUserId
+			);
+		} else {
+			// ➕ Follow
+			currentUser.following.push(followingTo);
+			targetUser.followers.push(currentUserId);
+		}
+
+		// 💾 Save both users
+		await currentUser.save();
+		await targetUser.save();
+
+		// ✅ Send response
+		res.status(200).json({
+			message: isFollowing
+				? "Unfollowed successfully."
+				: "Followed successfully.",
+			following: !isFollowing,
+		});
+	} catch (error) {
+		console.error("Error in follow/unfollow:", error);
+		res.status(500).json({ message: "Something went wrong." });
+	}
+});
 // Start server-------------------------------------
 app.listen(port, () => {
 	console.log(`Server running on port ${port}`);
