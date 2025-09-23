@@ -9,7 +9,8 @@ const SearchComponent2 = () => {
 	const [results, setResults] = useState([]);
 	const [followState, setFollowState] = useState({}); // follow state per user
 	const { userid } = useParams();
-	console.log("current user from useparams", userid);
+
+	console.log("current user from useParams", userid);
 	const handleSearch = async () => {
 		if (!fullName.trim()) return;
 		try {

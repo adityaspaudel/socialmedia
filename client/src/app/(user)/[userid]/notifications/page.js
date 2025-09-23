@@ -459,12 +459,15 @@ const UserNotifications = () => {
     <div className="flex gap-2">
       <SocialMediaSidebarComponent />
 
-      <div className="absolute left-[20%] w-80% p-4 bg-blue-100">
+      <div className="absolute left-[20%] w-[80%] p-4 bg-blue-100">
         <div className="text-2xl font-bold">User Notifications</div>
         <div className="flex flex-col">
-          {Object.values(notifications).map((val) => {
+          {Object.values(notifications).map((val, key) => {
             return (
-              <div className="flex gap-4 justify-between hover:bg-blue-200 p-2 text-sm">
+              <div
+                key={key}
+                className="flex gap-4 justify-between hover:bg-blue-200 p-2 text-sm"
+              >
                 <div>{val.message}</div>
                 <div>{val.timestamp}</div>
               </div>
