@@ -26,24 +26,26 @@ const dbConnect = async () => {
 };
 dbConnect();
 
-// ------------------ Models ------------------
-const { Schema } = mongoose;
-
+// ------------------ Models ------------------// ---------------- User Schema ----------------
 const userSchema = new Schema(
   {
-    email: { type: String, unique: true, required: true },
-    phoneNumber: { type: Number },
+    fullName: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    phoneNumber: { type: String },
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     isVerified: { type: Boolean, default: false },
-    fullName: { type: String, required: true },
-    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+
+    // Relationships
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }], // users who follow this user
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }], // users this user follows
   },
   { timestamps: true }
 );
+
 const User = mongoose.model("User", userSchema);
 
+// ---------------- Comment Schema ----------------
 const commentSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -52,16 +54,24 @@ const commentSchema = new Schema(
   { timestamps: true }
 );
 
+const Comment = mongoose.model("Comment", commentSchema);
+
+// ---------------- Post Schema ----------------
 const postSchema = new Schema(
   {
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     title: { type: String, required: true, trim: true, maxlength: 100 },
     content: { type: String, required: true, trim: true },
+
+    // Comments
     comments: [commentSchema],
+
+    // Likes (users who liked this post)
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
+
 const Post = mongoose.model("Post", postSchema);
 
 const imageSchema = new Schema(
@@ -266,6 +276,41 @@ router.post("/posts/:postId/comments", async (req, res) => {
   }
 });
 
+// Toggle like/unlike for a post
+router.put("/posts/:postId/like", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { userId } = req.body;
+
+    if (!userId) return res.status(400).json({ message: "User ID required" });
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Check if user already liked
+    const isLiked = post.likes.some((id) => id.toString() === userId);
+
+    if (isLiked) {
+      // Unlike
+      post.likes = post.likes.filter((id) => id.toString() !== userId);
+    } else {
+      // Like
+      post.likes.push(userId);
+    }
+
+    await post.save();
+
+    res.status(200).json({
+      message: isLiked ? "Post unliked" : "Post liked",
+      likesCount: post.likes.length,
+      liked: !isLiked,
+    });
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // ------------------ Mount router ------------------
 app.use("/", router);
 
@@ -273,5 +318,3 @@ app.use("/", router);
 app.listen(port, () =>
   console.log(`🚀 Server running at http://localhost:${port}`)
 );
-
-
