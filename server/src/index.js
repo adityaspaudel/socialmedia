@@ -7,6 +7,7 @@ const multer = require("multer");
 const mongoose = require("mongoose");
 const path = require("path");
 const fs = require("fs");
+const { Schema } = mongoose;
 
 const app = express();
 const router = express.Router();
@@ -26,25 +27,27 @@ const dbConnect = async () => {
 };
 dbConnect();
 
-// ------------------ Models ------------------
-const { Schema } = mongoose;
-
-const userSchema = new Schema(
+// ------------------ Models ------------------// ---------------- User Schema ----------------
+const userSchema = new mongoose.Schema(
   {
-    email: { type: String, unique: true, required: true },
-    phoneNumber: { type: Number },
+    fullName: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    phoneNumber: { type: String },
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     isVerified: { type: Boolean, default: false },
-    fullName: { type: String, required: true },
-    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+
+    // Relationships
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }], // users who follow this user
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }], // users this user follows
   },
   { timestamps: true }
 );
+
 const User = mongoose.model("User", userSchema);
 
-const commentSchema = new Schema(
+// ---------------- Comment Schema ----------------
+const commentSchema = new mongoose.Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     text: { type: String, required: true, trim: true },
@@ -52,19 +55,26 @@ const commentSchema = new Schema(
   { timestamps: true }
 );
 
-const postSchema = new Schema(
+const Comment = mongoose.model("Comment", commentSchema);
+
+// ---------------- Post Schema ----------------
+const postSchema = new mongoose.Schema(
   {
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    title: { type: String, required: true, trim: true, maxlength: 100 },
     content: { type: String, required: true, trim: true },
+
+    // Comments
     comments: [commentSchema],
+
+    // Likes (users who liked this post)
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
+
 const Post = mongoose.model("Post", postSchema);
 
-const imageSchema = new Schema(
+const imageSchema = new mongoose.Schema(
   {
     description: { type: String, required: true },
     imageUrl: { type: String, required: true },
@@ -216,10 +226,10 @@ router.get("/:userid/photos", async (req, res) => {
 router.post("/posts", async (req, res) => {
   try {
     const { author, title, content } = req.body;
-    if (!author || !title || !content)
+    if (!author || !content)
       return res.status(400).json({ message: "All fields required" });
 
-    const post = await Post.create({ author, title, content });
+    const post = await Post.create({ author, content });
     res.status(201).json({ message: "Post created", post });
   } catch (err) {
     res.status(500).json({ message: "Error creating post" });
@@ -239,30 +249,88 @@ router.get("/posts", async (req, res) => {
 });
 
 // Add comment (only if follower)
-router.post("/posts/:postId/comments", async (req, res) => {
+// Add Comment Route
+router.post("/posts/:id/comments", async (req, res) => {
   try {
     const { userId, text } = req.body;
-    const post = await Post.findById(req.params.postId).populate(
-      "author",
-      "followers"
-    );
+    const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    const isFollower = post.author.followers.some(
-      (f) => f.toString() === userId
-    );
-    if (!isFollower)
-      return res.status(403).json({ message: "Only followers can comment" });
-
-    post.comments.push({ user: userId, text });
+    const comment = { user: userId, text };
+    post.comments.push(comment);
     await post.save();
 
-    const updated = await Post.findById(post._id)
-      .populate("author", "fullName")
-      .populate("comments.user", "fullName");
-    res.json({ message: "Comment added", post: updated });
+    // Populate user
+    const populatedComment = await Post.findById(req.params.id)
+      .populate("comments.user", "fullName")
+      .select("comments")
+      .then((p) => p.comments[p.comments.length - 1]);
+
+    res
+      .status(201)
+      .json({ message: "Comment added", comment: populatedComment });
   } catch (err) {
     res.status(500).json({ message: "Error adding comment" });
+  }
+});
+
+router.get("posts/:postId/comments", async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const post = await Post.findById(postId).populate(
+      "comments.user",
+      "fullName email"
+    ); // populate user info in comments
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      comments: post.comments,
+    });
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching comments",
+    });
+  }
+});
+// Toggle like/unlike for a post
+router.put("/posts/:postId/like", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { userId } = req.body;
+
+    if (!userId) return res.status(400).json({ message: "User ID required" });
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Check if user already liked
+    const isLiked = post.likes.some((id) => id.toString() === userId);
+
+    if (isLiked) {
+      // Unlike
+      post.likes = post.likes.filter((id) => id.toString() !== userId);
+    } else {
+      // Like
+      post.likes.push(userId);
+    }
+
+    await post.save();
+
+    res.status(200).json({
+      message: isLiked ? "Post unliked" : "Post liked",
+      likesCount: post.likes.length,
+      liked: !isLiked,
+    });
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
