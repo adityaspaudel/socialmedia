@@ -126,28 +126,42 @@ app.post("/register", async (req, res) => {
 	}
 });
 
-// Controller and Route combined: Search users by name----------------
+// Search users by name, with follow state
 app.get("/search", async (req, res) => {
-	const { query } = req.query; // Now correctly using req.query for GET requests
+  const { query, currentUserId } = req.query; // ✅ expecting both query + currentUserId
 
-	if (!query) {
-		return res.status(400).json({ message: "Query parameter is required" });
-	}
+  if (!query) {
+    return res.status(400).json({ message: "Query parameter is required" });
+  }
 
-	try {
-		const users = await User.find({
-			fullName: new RegExp(query, "i"), // case-insensitive search
-		});
+  try {
+    // Find matching users
+    const users = await User.find({
+      fullName: new RegExp(query, "i"), // case-insensitive
+    }).select("_id fullName");
 
-		if (users.length > 0) {
-			res.status(200).json({ message: "Users found", users: users });
-		} else {
-			res.status(404).json({ message: "User not found" });
-		}
-	} catch (err) {
-		console.error("Error searching user:", err);
-		res.status(500).json({ message: "Error searching user" });
-	}
+    if (!users.length) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Get current user to check following state
+    const currentUser = await User.findById(currentUserId).select("following");
+    const followingSet = new Set(
+      currentUser?.following.map((id) => id.toString()) || []
+    );
+
+    // Add `isFollowing` flag
+    const response = users.map((u) => ({
+      _id: u._id,
+      fullName: u.fullName,
+      isFollowing: followingSet.has(u._id.toString()),
+    }));
+
+    res.status(200).json({ message: "Users found", users: response });
+  } catch (err) {
+    console.error("Error searching user:", err);
+    res.status(500).json({ message: "Error searching user" });
+  }
 });
 
 //multer--------------------------

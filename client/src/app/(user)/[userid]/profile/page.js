@@ -12,6 +12,7 @@ const UserProfile = () => {
 		<div className="flex gap-4 text-sm bg-blue-100">
 			{/* left-sidebar -----------------------------------------*/}
 			<div>
+				<div>Profile</div>
 			
 				<ProfileImagesPage />
 			</div>
