@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/users");
+const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 
 // Login controller-------------------------
