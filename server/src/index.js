@@ -86,6 +86,8 @@ const imageSchema = new mongoose.Schema(
 );
 const Image = mongoose.model("Image", imageSchema);
 
+
+
 // ------------------ Multer ------------------
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -103,7 +105,10 @@ const hashPassword = async (password) =>
   await bcrypt.hash(password, saltRounds);
 const secretKey = process.env.SECRET_KEY;
 
-// ------------------ Routes ------------------
+
+
+
+// ------------------Controllers and Routes ------------------
 // Register
 router.post("/register", async (req, res) => {
   try {
