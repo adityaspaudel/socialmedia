@@ -6,6 +6,7 @@ const dbConnect = require("./db/connection");
 
 const dotenv = require("dotenv");
 dotenv.config();
+
 // middleware
 app.use(cors());
 app.use(express.json());
