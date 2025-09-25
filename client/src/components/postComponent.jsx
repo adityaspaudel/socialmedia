@@ -117,9 +117,9 @@ const PostComponent = () => {
                 </button>
               </div>
 
-              <div className="mt-4">
-                <h4 className="font-medium">Comments:</h4>
-                <ul className="pl-4 list-disc">
+              <div className="mt-4 flex flex-col content-start items-start">
+                <h4 className=" font-bold underline">Comments:</h4>
+                <ul className="pl-4 list-none flex flex-col content-start items-start">
                   {post.comments?.map((c) => (
                     <li key={c._id}>
                       <strong>{c.user?.fullName || "User"}:</strong> {c.text}
