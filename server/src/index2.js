@@ -1,23 +1,20 @@
-
 const express = require("express");
-const mongoose = require("mongoose")
+
 const app = express();
+const cors = require("cors");
+const dbConnect = require("./db/connection");
+
 const dotenv = require("dotenv");
 dotenv.config();
-const dbConnect = require("./db/connection")
-const userRoute = require("./routes/users")
-const imageRoute = require("./routes/imageRoute")
+// middleware
+app.use(cors());
+app.use(express.json());
+
 // database connection
-const cors = require("cors");
 dbConnect();
 
+const PORT = process.env.PORT || 8000;
 
-app.use(express.json());
-app.use(cors());
-app.use(userRoute)
-app.use(imageRoute)
-
-const PORT = process.env.PORT
 app.listen(PORT, () => {
-  console.log("app is listening on port: ", PORT)
-})
+  console.log(`app is running on http://localhost:${PORT}`);
+});
