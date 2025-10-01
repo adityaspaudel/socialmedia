@@ -1,10 +1,12 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+
 import PhotoUpload from "@/components/photo-uploader";
 import PostComponent from "@/components/postComponent";
+import Link from "next/link";
 
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
 
 const Home = () => {
   const [usersList, setUsersList] = useState([]);
@@ -41,7 +43,7 @@ const Home = () => {
             {/* new added for hydration error */}
             {/* <h1>{isClient ? "This is never prerendered" : "Prerendered"}</h1> */}
             <div className="flex flex-col gap-12 ">
-              {JSON.stringify(usersList)}
+              userList: {JSON.stringify(usersList)}
               {usersList.map((user) => (
                 <div
                   key={user._id}
