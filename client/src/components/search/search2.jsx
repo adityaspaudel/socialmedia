@@ -8,15 +8,15 @@ const SearchComponent2 = () => {
   const [fullName, setFullName] = useState("");
   const [results, setResults] = useState([]);
   const [followState, setFollowState] = useState({});
-  const { userid } = useParams();
+  const { userId } = useParams();
 
-  console.log("current user from useParams", userid);
+  console.log("current user from useParams", userId);
 
   const handleSearch = async () => {
     if (!fullName.trim()) return;
     try {
       const { data } = await axios.get("http://localhost:8000/search", {
-        params: { query: fullName, currentUserId: userid }, // ✅ send current user
+        params: { query: fullName, currentuserId: userId }, // ✅ send current user
       });
 
       setResults(data.users);
@@ -35,7 +35,7 @@ const SearchComponent2 = () => {
 
   const toggleFollowUnfollow = async (uid) => {
     try {
-      await fetch(`http://localhost:8000/${userid}/toggleFollowUnfollow`, {
+      await fetch(`http://localhost:8000/${userId}/toggleFollowUnfollow`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ followingTo: uid }),

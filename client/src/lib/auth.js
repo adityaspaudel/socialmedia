@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
-export function getUserIdFromToken() {
+export function getuserIdFromToken() {
   const cookieStore = cookies();
   const token = cookieStore.get("token")?.value;
 

@@ -1,7 +1,7 @@
-import { getUserIdFromToken } from "@/lib/auth";
+import { getuserIdFromToken } from "@/lib/auth";
 
 export default async function Dashboard() {
-  const userId = getUserIdFromToken();
+  const userId = getuserIdFromToken();
 
   if (!userId) return <p>Not authenticated</p>;
 

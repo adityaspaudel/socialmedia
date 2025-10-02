@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 
 const PostComponent = () => {
-  const { userid } = useParams(); // logged-in user
+  const { userId } = useParams(); // logged-in user
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
   const [commentText, setCommentText] = useState({});
@@ -24,7 +24,7 @@ const PostComponent = () => {
     if (!content.trim()) return;
     try {
       await axios.post("http://localhost:8000/posts", {
-        author: userid,
+        author: userId,
         content,
       });
       setContent("");
@@ -39,7 +39,7 @@ const PostComponent = () => {
 
     try {
       await axios.post(`http://localhost:8000/posts/${postId}/comments`, {
-        userId: userid,
+        userId: userId,
         text: commentText[postId],
       });
       setCommentText((prev) => ({ ...prev, [postId]: "" }));
@@ -54,7 +54,7 @@ const PostComponent = () => {
       const { data } = await axios.put(
         `http://localhost:8000/posts/${postId}/like`,
         {
-          userId: userid,
+          userId: userId,
         }
       );
 
@@ -65,8 +65,8 @@ const PostComponent = () => {
             ? {
                 ...p,
                 likes: data.liked
-                  ? [...p.likes, userid]
-                  : p.likes.filter((id) => id !== userid),
+                  ? [...p.likes, userId]
+                  : p.likes.filter((id) => id !== userId),
               }
             : p
         )
@@ -97,12 +97,12 @@ const PostComponent = () => {
         </button>
       </div>
 
-      <Link href={`/${userid}/home/individualPosts`}>
-        <div className="space-y-6">
-          {posts.map((post) => {
-            const liked = post.likes.includes(userid);
-            return (
-              <div key={post._id} className="border p-4 rounded shadow">
+      <div className="space-y-6">
+        {posts.map((post) => {
+          const liked = post.likes.includes(userId);
+          return (
+            <Link href={`/${userId}/home/${post._id}`} key={post._id}>
+              <div className="border p-4 rounded shadow">
                 <h3 className="font-semibold">
                   {post.author?.fullName || "Unknown"}
                 </h3>
@@ -148,10 +148,10 @@ const PostComponent = () => {
                   </button>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </Link>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 };

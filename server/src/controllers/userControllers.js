@@ -52,7 +52,7 @@ const userRegistration = async (req, res) => {
 };
 //user search
 const userSearch = async (req, res) => {
-  const { query, currentUserId } = req.query;
+  const { query, currentuserId } = req.query;
   if (!query) return res.status(400).json({ message: "Query is required" });
 
   try {
@@ -61,7 +61,7 @@ const userSearch = async (req, res) => {
     );
     if (!users.length) return res.status(404).json({ message: "Not found" });
 
-    const currentUser = await User.findById(currentUserId).select("following");
+    const currentUser = await User.findById(currentuserId).select("following");
     const followingSet = new Set(
       currentUser?.following.map((id) => id.toString()) || []
     );
@@ -78,13 +78,13 @@ const userSearch = async (req, res) => {
 };
 
 const toggleFollowUnfollow = async (req, res) => {
-  const { currentUserId } = req.params;
+  const { currentuserId } = req.params;
   const { followingTo } = req.body;
-  if (currentUserId === followingTo)
+  if (currentuserId === followingTo)
     return res.status(400).json({ message: "Can't follow yourself" });
 
   try {
-    const currentUser = await User.findById(currentUserId);
+    const currentUser = await User.findById(currentuserId);
     const targetUser = await User.findById(followingTo);
     if (!currentUser || !targetUser)
       return res.status(404).json({ message: "User not found" });
@@ -92,10 +92,10 @@ const toggleFollowUnfollow = async (req, res) => {
     const isFollowing = currentUser.following.includes(followingTo);
     if (isFollowing) {
       currentUser.following.pull(followingTo);
-      targetUser.followers.pull(currentUserId);
+      targetUser.followers.pull(currentuserId);
     } else {
       currentUser.following.push(followingTo);
-      targetUser.followers.push(currentUserId);
+      targetUser.followers.push(currentuserId);
     }
     await currentUser.save();
     await targetUser.save();

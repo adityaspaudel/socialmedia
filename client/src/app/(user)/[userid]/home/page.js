@@ -11,9 +11,9 @@ import { useParams } from "next/navigation";
 const Home = () => {
   const [usersList, setUsersList] = useState([]);
   const [isClient, setIsClient] = useState(false);
-  const { userid } = useParams();
+  const { userId } = useParams();
 
-  // alert(JSON.stringify(userid));
+  // alert(JSON.stringify(userId));
   useEffect(() => {
     fetchUsersList();
     setIsClient(true);
@@ -22,7 +22,7 @@ const Home = () => {
   const fetchUsersList = async () => {
     // const data = await fetch("https://api.escuelajs.co/api/v1/users");
     const data = await fetch(
-      `http://localhost:8000/api/${userid}/getProfilePhotos`
+      `http://localhost:8000/api/${userId}/getProfilePhotos`
     );
 
     let usersList11 = await data.json();

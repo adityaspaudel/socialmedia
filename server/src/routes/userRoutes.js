@@ -7,11 +7,9 @@ const {
   toggleFollowUnfollow,
 } = require("../controllers/userControllers");
 
-
 router.post("/login", userLogin);
 router.post("/register", userRegistration);
 router.post("/search", userSearch);
-router.post("/:currentUserId/toggleFollowUnfollow", toggleFollowUnfollow);
+router.post("/:currentuserId/toggleFollowUnfollow", toggleFollowUnfollow);
 
 module.exports = router;
- 

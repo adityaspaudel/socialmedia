@@ -28,14 +28,14 @@ export function SocialMediaSidebarComponent() {
 		  bg-blue-50 justify-between border-r bg-background p-2"
     >
       <div className="space-y-4">
-        <Link href={`/${params.userid}/home`} className="flex gap-2 px-4">
+        <Link href={`/${params.userId}/home`} className="flex gap-2 px-4">
           <FaConnectdevelop className="text-2xl" />
           <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight hover:underline hidden md:block">
             MySocialApp
           </h2>
         </Link>
         <div className="space-y-1">
-          <Link href={`/${params.userid}/home`}>
+          <Link href={`/${params.userId}/home`}>
             <Button
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
@@ -44,7 +44,7 @@ export function SocialMediaSidebarComponent() {
               <span className="hidden md:block">Home</span>
             </Button>
           </Link>
-          <Link href={`/${params.userid}/search`}>
+          <Link href={`/${params.userId}/search`}>
             <Button
               // onClick={() => router.push("/search")}
               variant="ghost"
@@ -59,7 +59,7 @@ export function SocialMediaSidebarComponent() {
             </Button>
             {/* <SearchComponent /> */}
           </Link>
-          <Link href={`/${params.userid}/notifications`}>
+          <Link href={`/${params.userId}/notifications`}>
             <Button
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
@@ -68,7 +68,7 @@ export function SocialMediaSidebarComponent() {
               <span className="hidden md:block">Notifications</span>
             </Button>
           </Link>
-          <Link href={`/${params.userid}/messages`}>
+          <Link href={`/${params.userId}/messages`}>
             <Button
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
@@ -77,7 +77,7 @@ export function SocialMediaSidebarComponent() {
               <span className=" hidden md:block">Messages</span>
             </Button>
           </Link>
-          <Link href={`/${params.userid}/profile`}>
+          <Link href={`/${params.userId}/profile`}>
             <Button
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
@@ -91,7 +91,7 @@ export function SocialMediaSidebarComponent() {
       <div className="space-y-1 p-2">
         <div className="flex items-center space-x-2 rounded-md border  hover:bg-gray-200">
           <Link
-            href={`/${params.userid}/profile`}
+            href={`/${params.userId}/profile`}
             className="flex items-center"
           >
             <Avatar>
@@ -110,7 +110,7 @@ export function SocialMediaSidebarComponent() {
         </div>
         <div className="">
           {/* <Link href="/user/usersettings"> </Link> */}
-          <Link href={`/${params.userid}/usersettings`}>
+          <Link href={`/${params.userId}/usersettings`}>
             <Button
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
