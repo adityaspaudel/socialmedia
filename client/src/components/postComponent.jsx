@@ -98,57 +98,61 @@ const PostComponent = () => {
       </div>
 
       <div className="space-y-6">
-        {posts.map((post) => {
+        {posts.map((post, key) => {
           const liked = post.likes.includes(userId);
           return (
-            <Link href={`/${userId}/home/${post._id}`} key={post._id}>
-              <div className="border p-4 rounded shadow">
+            <div className="border p-4 rounded shadow" key={key}>
+              <Link
+                href={`/${userId}/home/${post._id}`}
+                key={post._id}
+                title="open post"
+              >
                 <h3 className="font-semibold">
                   {post.author?.fullName || "Unknown"}
                 </h3>
                 <p className="mt-2">{post.content}</p>
-                <div className="mt-2 flex items-center gap-4">
-                  <button
-                    onClick={() => toggleLike(post._id)}
-                    className={`px-3 py-1 rounded text-white ${
-                      liked ? "bg-green-600" : "bg-gray-600"
-                    }`}
-                  >
-                    {liked ? "Liked" : "Like"} ({post.likes.length})
-                  </button>
-                </div>
-                <div className="mt-4 flex flex-col content-start items-start">
-                  <h4 className=" font-bold underline">Comments:</h4>
-                  <ul className="pl-4 list-none flex flex-col content-start items-start">
-                    {post.comments?.map((c) => (
-                      <li key={c._id}>
-                        <strong>{c.user?.fullName || "User"}:</strong> {c.text}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    placeholder="Write a comment..."
-                    value={commentText[post._id] || ""}
-                    onChange={(e) =>
-                      setCommentText((prev) => ({
-                        ...prev,
-                        [post._id]: e.target.value,
-                      }))
-                    }
-                    className="border p-2 rounded w-full mb-2"
-                  />
-                  <button
-                    onClick={() => addComment(post._id)}
-                    className="bg-green-600 text-white px-3 py-1 rounded"
-                  >
-                    Comment
-                  </button>
-                </div>
+              </Link>
+              <div className="mt-2 flex items-center gap-4">
+                <button
+                  onClick={() => toggleLike(post._id)}
+                  className={`px-3 py-1 rounded text-white ${
+                    liked ? "bg-green-600" : "bg-gray-600"
+                  }`}
+                >
+                  {liked ? "Liked" : "Like"} ({post.likes.length})
+                </button>
               </div>
-            </Link>
+              <div className="mt-4 flex flex-col content-start items-start">
+                <h4 className=" font-bold underline">Comments:</h4>
+                <ul className="pl-4 list-none flex flex-col content-start items-start">
+                  {post.comments?.map((c) => (
+                    <li key={c._id}>
+                      <strong>{c.user?.fullName || "User"}:</strong> {c.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  placeholder="Write a comment..."
+                  value={commentText[post._id] || ""}
+                  onChange={(e) =>
+                    setCommentText((prev) => ({
+                      ...prev,
+                      [post._id]: e.target.value,
+                    }))
+                  }
+                  className="border p-2 rounded w-full mb-2"
+                />
+                <button
+                  onClick={() => addComment(post._id)}
+                  className="bg-green-600 text-white px-3 py-1 rounded"
+                >
+                  Comment
+                </button>
+              </div>
+            </div>
           );
         })}
       </div>
