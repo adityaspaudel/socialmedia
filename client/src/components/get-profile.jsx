@@ -6,18 +6,18 @@ import Link from "next/link";
 export default function PhotosPage() {
   const [photos, setPhotos] = useState([]);
 
-  const params = useParams(); // Get dynamic userid from the URL
-  const { userid } = params;
+  const params = useParams(); // Get dynamic userId from the URL
+  const { userId } = params;
   console.log("parameter", JSON.stringify(params));
 
   useEffect(() => {
-    if (userid) {
-      // Ensure the userid is available before making the API request
+    if (userId) {
+      // Ensure the userId is available before making the API request
       const fetchPhotos = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8000/api/${userid}/getProfilePhotos`
-          ); // Use the dynamic userid in the API URL
+            `http://localhost:8000/api/${userId}/getProfilePhotos`
+          ); // Use the dynamic userId in the API URL
           const data = await response.json();
           setPhotos(data);
         } catch (error) {
@@ -27,10 +27,10 @@ export default function PhotosPage() {
 
       fetchPhotos();
     }
-  }, [userid]); // Run the effect when the userid changes
+  }, [userId]); // Run the effect when the userId changes
 
-  if (!userid) {
-    // Return a loading state or fallback until the `userid` is available
+  if (!userId) {
+    // Return a loading state or fallback until the `userId` is available
     return <div>Loading...</div>;
   }
 
@@ -39,8 +39,8 @@ export default function PhotosPage() {
       <h1 className="text-2xl font-bold mb-4">All Photos</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {photos.map((photo) => (
-          <Link href={`/${userid}/profile/${photo._id}`} key={photo._id}>
-            {/* Pass userid in the link */}
+          <Link href={`/${userId}/profile/${photo._id}`} key={photo._id}>
+            {/* Pass userId in the link */}
             <div className="border rounded-lg p-4 hover:shadow-lg transition cursor-pointer">
               <img
                 src={photo.imageUrl}

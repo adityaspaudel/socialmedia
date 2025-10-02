@@ -8,7 +8,7 @@ export default function ImageUploader() {
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
 
-  const { userid } = useParams(); // Get userid from URL params
+  const { userId } = useParams(); // Get userId from URL params
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -21,7 +21,7 @@ export default function ImageUploader() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!file || !description || !userid) {
+    if (!file || !description || !userId) {
       setMessage(
         "Please select a file, enter a description, and ensure user ID is present."
       );
@@ -31,7 +31,7 @@ export default function ImageUploader() {
     const formData = new FormData();
     formData.append("image", file);
     formData.append("description", description);
-    formData.append("userid", userid); // Include userid from useParams
+    formData.append("userId", userId); // Include userId from useParams
 
     try {
       const response = await axios.post(

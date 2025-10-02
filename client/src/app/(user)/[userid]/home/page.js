@@ -1,17 +1,19 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+
 import PhotoUpload from "@/components/photo-uploader";
 import PostComponent from "@/components/postComponent";
+import Link from "next/link";
 
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
 
 const Home = () => {
   const [usersList, setUsersList] = useState([]);
   const [isClient, setIsClient] = useState(false);
-  const { userid } = useParams();
+  const { userId } = useParams();
 
-  // alert(JSON.stringify(userid));
+  // alert(JSON.stringify(userId));
   useEffect(() => {
     fetchUsersList();
     setIsClient(true);
@@ -20,7 +22,7 @@ const Home = () => {
   const fetchUsersList = async () => {
     // const data = await fetch("https://api.escuelajs.co/api/v1/users");
     const data = await fetch(
-      `http://localhost:8000/api/${userid}/getProfilePhotos`
+      `http://localhost:8000/api/${userId}/getProfilePhotos`
     );
 
     let usersList11 = await data.json();
@@ -41,7 +43,7 @@ const Home = () => {
             {/* new added for hydration error */}
             {/* <h1>{isClient ? "This is never prerendered" : "Prerendered"}</h1> */}
             <div className="flex flex-col gap-12 ">
-              {JSON.stringify(usersList)}
+              userList: {JSON.stringify(usersList)}
               {usersList.map((user) => (
                 <div
                   key={user._id}

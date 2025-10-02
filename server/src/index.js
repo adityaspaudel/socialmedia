@@ -86,8 +86,6 @@ const imageSchema = new mongoose.Schema(
 );
 const Image = mongoose.model("Image", imageSchema);
 
-
-
 // ------------------ Multer ------------------
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -104,9 +102,6 @@ const saltRounds = parseInt(process.env.SALT_ROUNDS, 10) || 10;
 const hashPassword = async (password) =>
   await bcrypt.hash(password, saltRounds);
 const secretKey = process.env.SECRET_KEY;
-
-
-
 
 // ------------------Controllers and Routes ------------------
 // Register
@@ -143,7 +138,7 @@ router.post("/login", async (req, res) => {
 
 // Search users
 router.get("/search", async (req, res) => {
-  const { query, currentUserId } = req.query;
+  const { query, currentuserId } = req.query;
   if (!query) return res.status(400).json({ message: "Query is required" });
 
   try {
@@ -152,7 +147,7 @@ router.get("/search", async (req, res) => {
     );
     if (!users.length) return res.status(404).json({ message: "Not found" });
 
-    const currentUser = await User.findById(currentUserId).select("following");
+    const currentUser = await User.findById(currentuserId).select("following");
     const followingSet = new Set(
       currentUser?.following.map((id) => id.toString()) || []
     );
@@ -169,14 +164,14 @@ router.get("/search", async (req, res) => {
 });
 
 // Toggle follow/unfollow
-router.put("/:currentUserId/toggleFollowUnfollow", async (req, res) => {
-  const { currentUserId } = req.params;
+router.put("/:currentuserId/toggleFollowUnfollow", async (req, res) => {
+  const { currentuserId } = req.params;
   const { followingTo } = req.body;
-  if (currentUserId === followingTo)
+  if (currentuserId === followingTo)
     return res.status(400).json({ message: "Can't follow yourself" });
 
   try {
-    const currentUser = await User.findById(currentUserId);
+    const currentUser = await User.findById(currentuserId);
     const targetUser = await User.findById(followingTo);
     if (!currentUser || !targetUser)
       return res.status(404).json({ message: "User not found" });
@@ -184,10 +179,10 @@ router.put("/:currentUserId/toggleFollowUnfollow", async (req, res) => {
     const isFollowing = currentUser.following.includes(followingTo);
     if (isFollowing) {
       currentUser.following.pull(followingTo);
-      targetUser.followers.pull(currentUserId);
+      targetUser.followers.pull(currentuserId);
     } else {
       currentUser.following.push(followingTo);
-      targetUser.followers.push(currentUserId);
+      targetUser.followers.push(currentuserId);
     }
     await currentUser.save();
     await targetUser.save();
@@ -201,15 +196,15 @@ router.put("/:currentUserId/toggleFollowUnfollow", async (req, res) => {
 // Upload image
 router.post("/upload", upload.single("image"), async (req, res) => {
   try {
-    const { description, userid } = req.body;
-    if (!req.file || !description || !userid)
+    const { description, userId } = req.body;
+    if (!req.file || !description || !userId)
       return res.status(400).json({ message: "All fields required" });
 
     const imageUrl = `http://localhost:${port}/uploads/${req.file.filename}`;
     const newImage = await Image.create({
       description,
       imageUrl,
-      user: userid,
+      user: userId,
     });
     res.json({ message: "Uploaded", imageUrl: newImage.imageUrl });
   } catch (err) {
@@ -218,9 +213,9 @@ router.post("/upload", upload.single("image"), async (req, res) => {
 });
 
 // Get profile photos
-router.get("/:userid/photos", async (req, res) => {
+router.get("/:userId/photos", async (req, res) => {
   try {
-    const images = await Image.find({ user: req.params.userid });
+    const images = await Image.find({ user: req.params.userId });
     res.json(images);
   } catch (err) {
     res.status(500).json({ message: "Error fetching photos" });
@@ -336,6 +331,25 @@ router.put("/posts/:postId/like", async (req, res) => {
   } catch (error) {
     console.error("Error toggling like:", error);
     res.status(500).json({ message: "Server error" });
+  }
+});
+router.get("/:userId/posts/:postId/getPostById", async (req, res) => {
+  try {
+    console.log("Params:", req.params); // ✅ Debug
+    const { userId, postId } = req.params;
+
+    const post = await Post.findById(postId)
+      .populate("author", "fullName")
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "fullName" },
+      });
+
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

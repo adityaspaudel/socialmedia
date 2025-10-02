@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Post = require("../models/postModel");
+const Comment = require("../models/commentModel");
 
 const createPost = async (req, res) => {
   try {
@@ -23,6 +24,26 @@ const getPost = async (req, res) => {
     res.json({ posts });
   } catch (err) {
     res.status(500).json({ message: "Error fetching posts" });
+  }
+};
+
+const getPostById = async (req, res) => {
+  try {
+    console.log("Params:", req.params); // ✅ Debug
+    const { userId, postId } = req.params;
+
+    const post = await Post.findById(postId)
+      .populate("author", "fullName")
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "fullName" },
+      });
+
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -60,4 +81,4 @@ const toggleLikeUnlike = async (req, res) => {
   }
 };
 
-module.exports = { createPost, getPost, toggleLikeUnlike };
+module.exports = { createPost, getPost, toggleLikeUnlike, getPostById };

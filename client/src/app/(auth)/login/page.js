@@ -118,7 +118,7 @@ const LoginForm = () => {
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? "🙈" : "👁️"}
-            </button> 
+            </button>
           </div>
           {formik.touched.password && formik.errors.password && (
             <p className="mt-1 text-xs text-red-500">

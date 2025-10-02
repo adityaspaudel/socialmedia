@@ -14,65 +14,68 @@ app.use(cors());
 //multer--------------------------
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) {
-	fs.mkdirSync(uploadsDir, { recursive: true });
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 app.use("/uploads", express.static(uploadsDir));
 
 // Multer setup
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		cb(null, uploadsDir); // Use the dynamically created directory
-	},
-	filename: (req, file, cb) => {
-		cb(null, Date.now() + "-" + file.originalname);
-	},
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir); // Use the dynamically created directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
 });
 
 const upload = multer({ storage });
 
 // Routes and Controllers
 // Upload a new photo
-const uploadImage = (upload.single("image"), async (req, res) => {
-	try {
-		const { description, userid } = req.body; // Extract userid from request body
+const uploadImage =
+  (upload.single("image"),
+  async (req, res) => {
+    try {
+      const { description, userId } = req.body; // Extract userId from request body
 
-		if (!req.file || !description || !userid) {
-			return res.status(400).json({ message: "All fields are required." });
-		}
+      if (!req.file || !description || !userId) {
+        return res.status(400).json({ message: "All fields are required." });
+      }
 
-		const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
+      const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
 
-		const newImage = new Image({
-			description,
-			imageUrl,
-			user: userid, // Associate image with user
-		});
+      const newImage = new Image({
+        description,
+        imageUrl,
+        user: userId, // Associate image with user
+      });
 
-		await newImage.save();
+      await newImage.save();
 
-		res.status(200).json({ message: "File uploaded successfully", imageUrl });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "Error uploading file" });
-	}
-});
+      res.status(200).json({ message: "File uploaded successfully", imageUrl });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error uploading file" });
+    }
+  });
 
 // get profile images controller & route----
 // Fetch all images
-// /api/: userid / getProfilePhotos
+// /api/: userId / getProfilePhotos
 const getProfilePhotos = async (req, res) => {
-	try {
-		const { userid } = req.params; // Get the dynamic user ID from the URL
-		const images = await Image.find({ user: userid }); // Fetch images from the database where user matches the provided user ID
-		res.status(200).json(images); // Return the images
-	} catch (error) {
-		console.error("Error fetching images:", error);
-		res.status(500).json({ message: "Error fetching images" });
-	}
+  try {
+    const { userId } = req.params; // Get the dynamic user ID from the URL
+    const images = await Image.find({ user: userId }); // Fetch images from the database where user matches the provided user ID
+    res.status(200).json(images); // Return the images
+  } catch (error) {
+    console.error("Error fetching images:", error);
+    res.status(500).json({ message: "Error fetching images" });
+  }
 };
 
-
 module.exports = {
-	upload,uploadImage, getProfilePhotos
+  upload,
+  uploadImage,
+  getProfilePhotos,
 };
