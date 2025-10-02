@@ -58,7 +58,6 @@ export default function IndividualPost() {
         }
       );
 
-      // Optimistic update (add new comment without refetch)
       setCurrentPost((prev) => ({
         ...prev,
         comments: [...prev.comments, data.comment],
@@ -74,6 +73,8 @@ export default function IndividualPost() {
     return <p className="p-6">Loading...</p>;
   }
 
+  const liked = currentPost.likes.includes(userId);
+
   return (
     <div className="p-6 max-w-2xl mx-auto border rounded shadow">
       <div
@@ -86,73 +87,73 @@ export default function IndividualPost() {
       <br />
 
       {/* Post Details */}
-      {currentPost && (
-        <div className="max-w-md mx-auto mt-6 p-4 bg-white rounded-lg shadow border">
-          {/* Author & Date */}
-          <div className="mb-2">
-            <h2 className="text-lg font-bold text-gray-800">
-              {currentPost.author.fullName}
-            </h2>
-            <p className="text-sm text-gray-500">
-              {new Date(currentPost.createdAt).toLocaleString()}
-            </p>
-          </div>
+      <div className="max-w-md mx-auto mt-6 p-4 bg-white rounded-lg shadow border">
+        {/* Author & Date */}
+        <div className="mb-2">
+          <h2 className="text-lg font-bold text-gray-800">
+            {currentPost.author.fullName}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {new Date(currentPost.createdAt).toLocaleString()}
+          </p>
+        </div>
 
-          {/* Post Content */}
-          <p className="text-gray-700 mb-4">{currentPost.content}</p>
+        {/* Post Content */}
+        <p className="text-gray-700 mb-4">{currentPost.content}</p>
 
-          {/* Likes */}
-          <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
-            <span>
-              👍 {currentPost.likes.length}{" "}
-              {currentPost.likes.length !== 1 ? "Likes" : "Like"}
-            </span>
+        {/* Likes */}
+        <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
+          <button
+            onClick={() => toggleLike(currentPost._id)}
+            className={`px-3 py-1 rounded text-white ${
+              liked
+                ? "bg-green-600 hover:bg-green-700"
+                : "bg-red-600 hover:bg-red-700"
+            }`}
+          >
+            {liked ? "Unlike" : "Like"}
+          </button>
+          <span>
+            {currentPost.likes.length}{" "}
+            {currentPost.likes.length !== 1 ? "Likes" : "Like"}
+          </span>
+        </div>
+
+        {/* Comments */}
+        <div className="border-t pt-2">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">Comments</h3>
+          {currentPost.comments.length === 0 ? (
+            <p className="text-sm text-gray-500">No comments yet</p>
+          ) : (
+            currentPost.comments.map((c) => (
+              <div key={c._id} className="mb-2">
+                <p className="text-sm font-semibold">{c.user.fullName}</p>
+                <p className="text-sm text-gray-600">{c.text}</p>
+                <p className="text-xs text-gray-400">
+                  {new Date(c.createdAt).toLocaleString()}
+                </p>
+              </div>
+            ))
+          )}
+
+          {/* Input for new comment */}
+          <div className="mt-3 flex gap-2">
+            <input
+              type="text"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Write a comment..."
+              className="flex-1 border px-3 py-1 rounded"
+            />
             <button
-              onClick={() => toggleLike(currentPost._id)}
-              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+              onClick={addComment}
+              className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
             >
-              {currentPost.likes.includes(userId) ? "Unlike" : "Like"}
+              Comment
             </button>
           </div>
-
-          {/* Comments */}
-          <div className="border-t pt-2">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">
-              Comments
-            </h3>
-            {currentPost.comments.length === 0 ? (
-              <p className="text-sm text-gray-500">No comments yet</p>
-            ) : (
-              currentPost.comments.map((c) => (
-                <div key={c._id} className="mb-2">
-                  <p className="text-sm font-semibold">{c.user.fullName}</p>
-                  <p className="text-sm text-gray-600">{c.text}</p>
-                  <p className="text-xs text-gray-400">
-                    {new Date(c.createdAt).toLocaleString()}
-                  </p>
-                </div>
-              ))
-            )}
-
-            {/* Input for new comment */}
-            <div className="mt-3 flex gap-2">
-              <input
-                type="text"
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                placeholder="Write a comment..."
-                className="flex-1 border px-3 py-1 rounded"
-              />
-              <button
-                onClick={addComment}
-                className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                Comment
-              </button>
-            </div>
-          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

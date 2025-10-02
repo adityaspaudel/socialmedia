@@ -11,6 +11,10 @@ const PostComponent = () => {
   const [content, setContent] = useState("");
   const [commentText, setCommentText] = useState({});
 
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   const fetchPosts = async () => {
     try {
       const { data } = await axios.get("http://localhost:8000/posts");
@@ -34,31 +38,14 @@ const PostComponent = () => {
     }
   };
 
-  const addComment = async (postId) => {
-    if (!commentText[postId]?.trim()) return;
-
-    try {
-      await axios.post(`http://localhost:8000/posts/${postId}/comments`, {
-        userId: userId,
-        text: commentText[postId],
-      });
-      setCommentText((prev) => ({ ...prev, [postId]: "" }));
-      fetchPosts();
-    } catch (error) {
-      console.error("Error adding comment:", error);
-    }
-  };
-
+  // ✅ Like / Unlike
   const toggleLike = async (postId) => {
     try {
       const { data } = await axios.put(
         `http://localhost:8000/posts/${postId}/like`,
-        {
-          userId: userId,
-        }
+        { userId }
       );
 
-      // update local posts state
       setPosts((prev) =>
         prev.map((p) =>
           p._id === postId
@@ -72,16 +59,40 @@ const PostComponent = () => {
         )
       );
     } catch (error) {
-      console.error("Error liking/unliking post:", error);
+      console.error("Error toggling like:", error);
     }
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  // ✅ Add comment
+  const addComment = async (postId) => {
+    if (!commentText[postId]?.trim()) return;
+
+    try {
+      const { data } = await axios.post(
+        `http://localhost:8000/posts/${postId}/comments`,
+        {
+          userId,
+          text: commentText[postId],
+        }
+      );
+
+      setPosts((prev) =>
+        prev.map((p) =>
+          p._id === postId
+            ? { ...p, comments: [...p.comments, data.comment] }
+            : p
+        )
+      );
+
+      setCommentText((prev) => ({ ...prev, [postId]: "" }));
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
 
   return (
     <div className="p-6 w-full mx-auto">
+      {/* Create Post */}
       <div className="mb-6 w-full">
         <textarea
           value={content}
@@ -97,60 +108,76 @@ const PostComponent = () => {
         </button>
       </div>
 
+      {/* Posts List */}
       <div className="space-y-6">
-        {posts.map((post, key) => {
+        {posts.map((post) => {
           const liked = post.likes.includes(userId);
           return (
-            <div className="border p-4 rounded shadow" key={key}>
+            <div
+              key={post._id}
+              className="border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
+            >
               <Link
                 href={`/${userId}/home/${post._id}`}
-                key={post._id}
-                title="open post"
+                title="Open post"
+                className="block"
               >
-                <h3 className="font-semibold">
+                <h3 className="font-semibold text-gray-800">
                   {post.author?.fullName || "Unknown"}
                 </h3>
-                <p className="mt-2">{post.content}</p>
+                <p className="mt-2 text-gray-700">{post.content}</p>
               </Link>
-              <div className="mt-2 flex items-center gap-4">
+
+              {/* Likes */}
+              <div className="mt-3 flex items-center gap-4 text-sm text-gray-600">
                 <button
                   onClick={() => toggleLike(post._id)}
                   className={`px-3 py-1 rounded text-white ${
-                    liked ? "bg-green-600" : "bg-gray-600"
+                    liked
+                      ? "bg-green-600 hover:bg-green-700"
+                      : "bg-red-600 hover:bg-red-700"
                   }`}
                 >
-                  {liked ? "Liked" : "Like"} ({post.likes.length})
+                  {liked ? "Unlike" : "Like"}
                 </button>
+                <span>
+                  {post.likes.length}{" "}
+                  {post.likes.length === 1 ? "Like" : "Likes"}
+                </span>
               </div>
-              <div className="mt-4 flex flex-col content-start items-start">
-                <h4 className=" font-bold underline">Comments:</h4>
-                <ul className="pl-4 list-none flex flex-col content-start items-start">
+
+              {/* Comments */}
+              <div className="mt-4">
+                <h4 className="font-bold underline mb-2">Comments:</h4>
+                <ul className="pl-4 flex flex-col gap-2">
                   {post.comments?.map((c) => (
                     <li key={c._id}>
                       <strong>{c.user?.fullName || "User"}:</strong> {c.text}
                     </li>
                   ))}
                 </ul>
-              </div>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  placeholder="Write a comment..."
-                  value={commentText[post._id] || ""}
-                  onChange={(e) =>
-                    setCommentText((prev) => ({
-                      ...prev,
-                      [post._id]: e.target.value,
-                    }))
-                  }
-                  className="border p-2 rounded w-full mb-2"
-                />
-                <button
-                  onClick={() => addComment(post._id)}
-                  className="bg-green-600 text-white px-3 py-1 rounded"
-                >
-                  Comment
-                </button>
+
+                {/* Add Comment */}
+                <div className="mt-2 flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Write a comment..."
+                    value={commentText[post._id] || ""}
+                    onChange={(e) =>
+                      setCommentText((prev) => ({
+                        ...prev,
+                        [post._id]: e.target.value,
+                      }))
+                    }
+                    className="border p-2 rounded flex-1"
+                  />
+                  <button
+                    onClick={() => addComment(post._id)}
+                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                  >
+                    Comment
+                  </button>
+                </div>
               </div>
             </div>
           );
