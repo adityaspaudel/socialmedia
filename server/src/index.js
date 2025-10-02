@@ -352,7 +352,15 @@ router.get("/:userId/posts/:postId/getPostById", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
+router.get("/users/:userId", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching user" });
+  }
+});
 // ------------------ Mount router ------------------
 app.use("/", router);
 
