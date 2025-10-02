@@ -81,8 +81,8 @@ const PostComponent = () => {
   }, []);
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <div className="mb-6">
+    <div className="p-6 w-full mx-auto">
+      <div className="mb-6 w-full">
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}

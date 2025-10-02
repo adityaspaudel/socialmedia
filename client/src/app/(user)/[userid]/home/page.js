@@ -31,12 +31,12 @@ const Home = () => {
   };
 
   return (
-    <div className="flex gap-2 justify-between ">
+    <div className="flex gap-2 content-center items-center w-screen">
       {/* <SocialMediaSidebarComponent /> */}
-      <div className="flex justify-center gap-20 ">
-        <div className="bg-blue-50 sm:w-[400px] md:w-[500px] lg:w-[600px]">
+      <div className="flex justify-center w-screen">
+        <div className="bg-blue-50 ">
           <div className="text-center p-4">
-            <div>Home</div>
+            <div className="font-bold text-2xl">Home</div>
             {/* image upload */}
             {/* <PhotoUpload /> */}
             <PostComponent />
