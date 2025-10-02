@@ -31,9 +31,9 @@ const Home = () => {
   };
 
   return (
-    <div className="flex gap-2 justify-between w-full">
+    <div className="flex gap-2 content-center items-center w-screen">
       {/* <SocialMediaSidebarComponent /> */}
-      <div className="flex justify-center gap-20 w-full">
+      <div className="flex justify-center w-screen">
         <div className="bg-blue-50 ">
           <div className="text-center p-4">
             <div className="font-bold text-2xl">Home</div>

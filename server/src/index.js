@@ -352,6 +352,22 @@ router.get("/:userId/posts/:postId/getPostById", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const posts = await Post.find({ author: userId })
+      .populate("author", "fullName email")
+      .populate("comments")
+      .sort({ createdAt: -1 });
+
+    res.json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching user posts" });
+  }
+});
+
 router.get("/users/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select("-password");
