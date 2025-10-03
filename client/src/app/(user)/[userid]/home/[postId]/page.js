@@ -76,7 +76,7 @@ export default function IndividualPost() {
   const liked = currentPost.likes.includes(userId);
 
   return (
-    <div className="p-6 max-w-2xl mx-auto border rounded shadow">
+    <div className="p-6 max-w-2xl mx-auto border rounded shadow bg-green-100">
       <div
         className="text-2xl font-bold cursor-pointer hover:bg-slate-300 w-8"
         onClick={() => router.back()}
@@ -107,8 +107,8 @@ export default function IndividualPost() {
             onClick={() => toggleLike(currentPost._id)}
             className={`px-3 py-1 rounded text-white ${
               liked
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-red-600 hover:bg-red-700"
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-green-600 hover:bg-green-700"
             }`}
           >
             {liked ? "Unlike" : "Like"}

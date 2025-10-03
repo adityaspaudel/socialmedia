@@ -142,8 +142,8 @@ const PostComponent = () => {
                   onClick={() => toggleLike(post._id)}
                   className={`px-3 py-1 rounded text-white ${
                     liked
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-red-600 hover:bg-red-700"
+                      ? "bg-red-600 hover:bg-red-700"
+                      : "bg-green-600 hover:bg-green-700"
                   }`}
                 >
                   {liked ? "Unlike" : "Like"}
