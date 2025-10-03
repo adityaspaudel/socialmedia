@@ -65,7 +65,12 @@ export default function AllUsers() {
     }
   };
 
-  if (loading) return <p className="p-6 text-gray-600">Loading users...</p>;
+  if (loading)
+    return (
+      <p className="p-6 text-gray-600 h-screen w-80 bg-green-100">
+        Loading users...
+      </p>
+    );
   if (error) return <p className="p-6 text-red-600">{error}</p>;
 
   return (
