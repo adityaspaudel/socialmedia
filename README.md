@@ -2,105 +2,121 @@
 
 ## Tech Stack
 
-- Frontend: Next.js with App Router
-- Backend: Express.js
-- Styling: Tailwind CSS, NextUI, Shadcn
-- Charts: Chart.js
-- Icons: React Icons, Lucide React
-- Form Handling: Formik with Yup validation
-- AI-Assisted Development: V0.dev
-- Utilities: util
+- Frontend: Next.js with App Router  
+- Backend: Express.js  
+- Styling: Tailwind CSS, NextUI, Shadcn  
+- Charts: Chart.js  
+- Icons: React Icons, Lucide React  
+- Form Handling: Formik with Yup validation  
+- AI-Assisted Development: V0.dev  
+- Utilities: util  
 
-## Features
+---
 
-### User Authentication & Profiles
+# MERN Social Media App - Project Checklist
 
-- Email/password and social media login
-- Customizable user profiles
-- Profile picture and cover photo upload
-- Bio and personal details
+This is a structured checklist to guide the development of a MERN stack social media application. You can track progress by checking/unchecking items in your Markdown editor or on GitHub.
 
-### Posts & Content
+---
 
-- Create, edit, and delete posts
-- Support for text, images, and videos
-- Hashtag functionality
-- Like, comment, and share posts
+## **Phase 1: Essential Features (MVP)**
 
-### Social Interactions
+<details>
+<summary>Click to expand Phase 1</summary>
 
-- Follow/unfollow users
-- Real-time notifications
-- Direct messaging system
-- @mentions in posts and comments
+- [ ] **User Authentication & Authorization**
+  - [ ] Sign up / Log in / Log out
+  - [ ] JWT-based authentication
+  - [ ] Password hashing (bcrypt)
+  
+- [ ] **User Profiles**
+  - [ ] View profile
+  - [ ] Edit profile (name, bio, profile picture)
+  - [ ] Follow / Unfollow users
 
-### Feed & Discovery
+- [ ] **Posts**
+  - [ ] Create post (text + optional image)
+  - [ ] Read posts (feed)
+  - [ ] Update post
+  - [ ] Delete post
 
-- Personalized news feed
-- Explore page for trending content
-- Search functionality for users and posts
-- Suggested users to follow
+- [ ] **Likes / Reactions**
+  - [ ] Like / Unlike posts
+  - [ ] Display number of likes
 
-### Analytics & Insights
+- [ ] **Comments**
+  - [ ] Add comment
+  - [ ] View comments
+  - [ ] Delete comment (optional)
 
-- Personal post performance metrics
-- Account growth statistics
-- Interactive charts for engagement data
+- [ ] **Feed / Timeline**
+  - [ ] Display posts from followed users
+  - [ ] Display all public posts (optional)
 
-### Privacy & Security
+</details>
 
-- Private/public account settings
-- Two-factor authentication
-- Report and block functionalities
+---
 
-## Development Phases
+## **Phase 2: Intermediate Features**
 
-### Phase 1: Setup & Basic Functionality (Weeks 1-3)
+<details>
+<summary>Click to expand Phase 2</summary>
 
-- Set up Next.js project with App Router
-- Configure Express.js backend
-- Implement Tailwind CSS and NextUI for styling
-- Create basic page layouts and navigation
-- Set up user authentication system
+- [ ] **Search**
+  - [ ] Search users by name/email
+  - [ ] Search posts by content or hashtags
 
-### Phase 2: Core Features Development (Weeks 4-7)
+- [ ] **Notifications**
+  - [ ] Notify when someone likes a post
+  - [ ] Notify when someone comments
+  - [ ] Notify when someone follows
 
-- Develop user profile functionality
-- Implement post creation and display
-- Add like and comment features
-- Create follow/unfollow system
-- Set up basic news feed
+- [ ] **Post Media**
+  - [ ] Upload images with posts
+  - [ ] Upload videos (optional)
+  - [ ] Thumbnail preview in feed
 
-### Phase 3: Advanced Features & Interactions (Weeks 8-11)
+- [ ] **Profile Customization**
+  - [ ] Cover photo
+  - [ ] Bio, website, social links
 
-- Implement direct messaging system
-- Add notifications functionality
-- Develop hashtag system and search feature
-- Create explore page for content discovery
-- Implement @mentions in posts and comments
+</details>
 
-### Phase 4: Analytics & Insights (Weeks 12-14)
+---
 
-- Integrate Chart.js for data visualization
-- Implement personal analytics dashboard
-- Create account growth and engagement charts
-- Add post performance metrics
+## **Phase 3: Advanced / Optional Features**
 
-### Phase 5: Enhancement & Optimization (Weeks 15-17)
+<details>
+<summary>Click to expand Phase 3</summary>
 
-- Implement advanced privacy settings
-- Add two-factor authentication
-- Optimize performance and loading times
-- Enhance UI/UX with Shadcn components
-- Implement lazy loading and infinite scroll
+- [ ] **Direct Messaging (DMs)**
+  - [ ] Chat between users
+  - [ ] Real-time using Socket.io
 
-### Phase 6: Testing & Deployment (Weeks 18-20)
+- [ ] **Stories**
+  - [ ] Temporary posts (24-hour expiration)
+  - [ ] Image/video stories
 
-- Conduct thorough testing (unit, integration, e2e)
-- Perform security audits
-- Optimize for SEO
-- Prepare deployment pipeline
-- Launch beta version for user testing
+- [ ] **Hashtags & Trends**
+  - [ ] Tag posts with hashtags
+  - [ ] Show trending hashtags
+
+- [ ] **Post Sharing / Repost**
+  - [ ] Share other users’ posts
+  - [ ] Repost to your feed
+
+- [ ] **Reactions beyond Likes**
+  - [ ] Multiple reactions (love, laugh, wow, etc.)
+
+- [ ] **Real-time Feed Updates**
+  - [ ] Live updates for posts
+  - [ ] Live likes/comments count
+
+</details>
+
+> ✅ Use this checklist to track your project progress. You can mark items as complete directly in your Markdown editor or GitHub.
+
+---
 
 ## Getting Started
 
@@ -113,7 +129,7 @@
 2. Install dependencies for both the client and server
 
    ```
-   cd socialmedia/client
+   cd client
    npm install
 
    cd ../server
