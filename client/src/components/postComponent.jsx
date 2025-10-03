@@ -115,21 +115,25 @@ const PostComponent = () => {
           return (
             <div
               key={post._id}
-              className="border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
+              className="flex flex-col gap-8 border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
             >
               <Link
                 href={`/${userId}/home/${post._id}`}
                 title="Open post"
                 className="block"
               >
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-gray-800 text-4xl">
                   {post.author?.fullName || "Unknown"}
                 </h3>
-                <p className="mt-2 text-gray-700">{post.content}</p>
+                <p className="mt-2 text-gray-900 text-2xl">{post.content}</p>
+                <p className="flex flex-col  text-gray-500 content-end items-end text-sm">
+                  {" "}
+                  {new Date(post.createdAt).toLocaleString()}
+                </p>
               </Link>
 
               {/* Likes */}
-              <div className="mt-3 flex items-center gap-4 text-sm text-gray-600">
+              <div className="mt-3 flex flex-start items-start gap-4 text-sm text-gray-600">
                 <button
                   onClick={() => toggleLike(post._id)}
                   className={`px-3 py-1 rounded text-white ${
@@ -147,12 +151,21 @@ const PostComponent = () => {
               </div>
 
               {/* Comments */}
-              <div className="mt-4">
+              <div className="mt-4 flex flex-col content-start items-start">
                 <h4 className="font-bold underline mb-2">Comments:</h4>
-                <ul className="pl-4 flex flex-col gap-2">
+                <ul className="pl-4 flex flex-col content-start items-start gap-2">
                   {post.comments?.map((c) => (
-                    <li key={c._id}>
-                      <strong>{c.user?.fullName || "User"}:</strong> {c.text}
+                    <li
+                      key={c._id}
+                      className="flex gap-2 content-between items-center"
+                    >
+                      <div className="flex gap-2">
+                        <strong>{c.user?.fullName || "User"}:</strong> {c.text}
+                      </div>
+                      <span className="text-xs text-slate-500 flex flex-col content-end items-end">
+                        {" "}
+                        {new Date(c.createdAt).toLocaleString()}
+                      </span>
                     </li>
                   ))}
                 </ul>
