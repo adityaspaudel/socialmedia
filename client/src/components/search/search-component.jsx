@@ -76,10 +76,10 @@ const SearchComponent2 = () => {
               <button
                 onClick={() => toggleFollowUnfollow(user._id)}
                 className={`px-3 py-1 rounded text-white ${
-                  followState[user._id] ? "bg-green-600" : "bg-gray-600"
+                  followState[user._id] ? "bg-red-600" : "bg-green-600"
                 }`}
               >
-                {followState[user._id] ? "Following" : "Follow"}
+                {followState[user._id] ? "unfollow" : "Follow"}
               </button>
             </div>
           ))

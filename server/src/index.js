@@ -27,7 +27,8 @@ const dbConnect = async () => {
 };
 dbConnect();
 
-// ------------------ Models ------------------// ---------------- User Schema ----------------
+// ------------------ Models ------------------/
+//  ---------------- User Schema ----------------
 const userSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true, trim: true },
@@ -353,6 +354,8 @@ router.get("/:userId/posts/:postId/getPostById", async (req, res) => {
   }
 });
 
+// get user by userId
+
 router.get("/user/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -367,7 +370,8 @@ router.get("/user/:userId", async (req, res) => {
     res.status(500).json({ message: "Error fetching user posts" });
   }
 });
-//  get specific user post
+
+//  get all user's all posts
 router.get("/users/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select("-password");
@@ -378,6 +382,7 @@ router.get("/users/:userId", async (req, res) => {
   }
 });
 
+// get specific user's all post
 router.get("/users/post/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -397,6 +402,21 @@ router.get("/users/post/:userId", async (req, res) => {
   }
 });
 
+// get all registered users
+router.get("/getAllUsers", async (req, res) => {
+  try {
+    const users = await User.find({});
+    console.log("userFetched successfully", users);
+    res.status(200).json({ message: "userFetched successfully", users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+//testing server
+
+router.get("/test", (req, res) => res.send("Server works"));
 // ------------------ Mount router ------------------
 app.use("/", router);
 
