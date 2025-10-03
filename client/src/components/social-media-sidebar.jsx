@@ -32,7 +32,7 @@ export function SocialMediaSidebarComponent() {
   return (
     <div
       className="flex flex-col left-0 top-0 sticky h-screen w-[80px] sm:w-[100px] md:w-[100px] xl:w-[350px]  
-		  bg-green-200 justify-between border-r  p-2"
+		  bg-green-100 justify-between border-r p-2"
     >
       <div className="space-y-4 w-full ">
         <Link href={`/${userId}/home`} className="flex gap-2 px-4">
@@ -133,10 +133,10 @@ export function SocialMediaSidebarComponent() {
           <Link href="/">
             <Button
               variant="ghost"
-              className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-gray-200"
+              className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-gray-200 font-bold"
             >
               <LogOut className="mr-2 h-6 w-6" />
-              <span className="logout hidden md:block">Log out</span>
+              <span className="logout hidden md:block">Logout</span>
             </Button>
           </Link>
         </div>

@@ -31,10 +31,10 @@ const Home = () => {
   };
 
   return (
-    <div className="flex gap-2 content-center items-center">
+    <div className="flex gap-2 content-center items-center ">
       {/* <SocialMediaSidebarComponent /> */}
       <div className="flex justify-center">
-        <div className="bg-blue-50 ">
+        <div className="bg-green-100 ">
           <div className="text-center p-4">
             <div className="font-bold text-2xl">Home</div>
             {/* image upload */}

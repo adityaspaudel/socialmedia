@@ -89,7 +89,7 @@ const PostComponent = () => {
       console.error("Error adding comment:", error);
     }
   };
-
+ 
   return (
     <div className="p-6 w-full mx-auto">
       {/* Create Post */}

@@ -459,7 +459,7 @@ const UserNotifications = () => {
     <div className="flex gap-2">
       {/* <SocialMediaSidebarComponent /> */}
 
-      <div className=" p-4 bg-blue-100">
+      <div className=" p-4 bg-green-100">
         <div className="text-2xl font-bold">User Notifications</div>
         <div className="flex flex-col">
           {Object.values(notifications).map((val, key) => {
