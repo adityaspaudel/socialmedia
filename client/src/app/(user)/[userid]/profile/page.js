@@ -101,7 +101,7 @@ export default function UserProfile() {
                       {post.author?.fullName || "Unknown User"}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {new Date(post.createdAt).toLocaleDateString()}
+                      {new Date(post.createdAt).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -139,11 +139,13 @@ export default function UserProfile() {
                   <p className="text-sm text-gray-500">No comments yet</p>
                 ) : (
                   post.comments.map((c) => (
-                    <div key={c._id} className="mb-2">
-                      <p className="text-sm font-semibold">
-                        {c.user?.fullName || "Anonymous"}
-                      </p>
-                      <p className="text-sm text-gray-600">{c.text}</p>
+                    <div key={c._id} className="mb-2 flex gap-2">
+                      <div className="flex gap-2">
+                        <p className="text-sm font-semibold">
+                          {c.user?.fullName || "Anonymous"}
+                        </p>
+                        <p className="text-sm text-gray-600">{c.text}</p>
+                      </div>
                       <p className="text-xs text-gray-400">
                         {new Date(c.createdAt).toLocaleString()}
                       </p>

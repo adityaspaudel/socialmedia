@@ -3,7 +3,7 @@ import React from "react";
 
 const UserLayout = ({ children }) => {
   return (
-    <div className="flex gap-2 w-screen">
+    <div className="flex gap-2">
       <SocialMediaSidebarComponent />
       {children}
     </div>

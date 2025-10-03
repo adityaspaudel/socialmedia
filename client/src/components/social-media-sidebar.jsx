@@ -31,14 +31,14 @@ export function SocialMediaSidebarComponent() {
 
   return (
     <div
-      className="flex flex-col left-0 top-0 sticky h-screen w-[80px] sm:w-[100px] md:w-[200px] xl:w-[250px]  
-		  bg-blue-50 justify-between border-r bg-background p-2"
+      className="flex flex-col left-0 top-0 sticky h-screen w-[80px] sm:w-[100px] md:w-[100px] xl:w-[350px]  
+		  bg-green-200 justify-between border-r  p-2"
     >
-      <div className="space-y-4">
+      <div className="space-y-4 w-full ">
         <Link href={`/${userId}/home`} className="flex gap-2 px-4">
           <FaConnectdevelop className="text-2xl" />
           <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight hover:underline hidden md:block">
-            MySocialApp
+            Mero Sanjal
           </h2>
         </Link>
 

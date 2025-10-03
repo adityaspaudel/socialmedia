@@ -115,20 +115,24 @@ const PostComponent = () => {
           return (
             <div
               key={post._id}
-              className="flex flex-col gap-8 border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
+              className="flex flex-col gap-2 border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
             >
               <Link
                 href={`/${userId}/home/${post._id}`}
                 title="Open post"
-                className="block"
+                className="block  "
               >
-                <h3 className="font-semibold text-gray-800 text-4xl">
-                  {post.author?.fullName || "Unknown"}
-                </h3>
-                <p className="mt-2 text-gray-900 text-2xl">{post.content}</p>
-                <p className="flex flex-col  text-gray-500 content-end items-end text-sm">
-                  {" "}
-                  {new Date(post.createdAt).toLocaleString()}
+                <div className="flex flex-col content-start items-start">
+                  <h3 className="font-semibold text-gray-800 text-4xl">
+                    {post.author?.fullName || "Unknown"}
+                  </h3>
+                  <p className="flex flex-col  text-gray-500 ">
+                    {" "}
+                    {new Date(post.createdAt).toLocaleString()}
+                  </p>
+                </div>
+                <p className="mt-2 text-gray-900 text-2xl flex flex-col content-start items-start">
+                  {post.content}
                 </p>
               </Link>
 
@@ -149,10 +153,13 @@ const PostComponent = () => {
                   {post.likes.length === 1 ? "Like" : "Likes"}
                 </span>
               </div>
+              <hr className="border-gray-300 border-1"/>
 
               {/* Comments */}
               <div className="mt-4 flex flex-col content-start items-start">
-                <h4 className="font-bold underline mb-2">Comments:</h4>
+                <h4 className="font-bold underline mb-2 text-gray-600">
+                  Comments:
+                </h4>
                 <ul className="pl-4 flex flex-col content-start items-start gap-2">
                   {post.comments?.map((c) => (
                     <li
