@@ -367,7 +367,7 @@ router.get("/user/:userId", async (req, res) => {
     res.status(500).json({ message: "Error fetching user posts" });
   }
 });
-
+//  get specific user post
 router.get("/users/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select("-password");
@@ -377,6 +377,26 @@ router.get("/users/:userId", async (req, res) => {
     res.status(500).json({ message: "Error fetching user" });
   }
 });
+
+router.get("/users/post/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const posts = await Post.find({ author: userId })
+      .populate("author", "fullName email")
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "fullName email" },
+      })
+      .sort({ createdAt: -1 });
+
+    res.json(posts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // ------------------ Mount router ------------------
 app.use("/", router);
 

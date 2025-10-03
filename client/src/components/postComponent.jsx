@@ -89,7 +89,7 @@ const PostComponent = () => {
       console.error("Error adding comment:", error);
     }
   };
-
+ 
   return (
     <div className="p-6 w-full mx-auto">
       {/* Create Post */}
@@ -115,21 +115,29 @@ const PostComponent = () => {
           return (
             <div
               key={post._id}
-              className="border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
+              className="flex flex-col gap-2 border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
             >
               <Link
                 href={`/${userId}/home/${post._id}`}
                 title="Open post"
-                className="block"
+                className="block  "
               >
-                <h3 className="font-semibold text-gray-800">
-                  {post.author?.fullName || "Unknown"}
-                </h3>
-                <p className="mt-2 text-gray-700">{post.content}</p>
+                <div className="flex flex-col content-start items-start">
+                  <h3 className="font-semibold text-gray-800 text-4xl">
+                    {post.author?.fullName || "Unknown"}
+                  </h3>
+                  <p className="flex flex-col  text-gray-500 ">
+                    {" "}
+                    {new Date(post.createdAt).toLocaleString()}
+                  </p>
+                </div>
+                <p className="mt-2 text-gray-900 text-2xl flex flex-col content-start items-start">
+                  {post.content}
+                </p>
               </Link>
 
               {/* Likes */}
-              <div className="mt-3 flex items-center gap-4 text-sm text-gray-600">
+              <div className="mt-3 flex flex-start items-start gap-4 text-sm text-gray-600">
                 <button
                   onClick={() => toggleLike(post._id)}
                   className={`px-3 py-1 rounded text-white ${
@@ -145,14 +153,26 @@ const PostComponent = () => {
                   {post.likes.length === 1 ? "Like" : "Likes"}
                 </span>
               </div>
+              <hr className="border-gray-300 border-1"/>
 
               {/* Comments */}
-              <div className="mt-4">
-                <h4 className="font-bold underline mb-2">Comments:</h4>
-                <ul className="pl-4 flex flex-col gap-2">
+              <div className="mt-4 flex flex-col content-start items-start">
+                <h4 className="font-bold underline mb-2 text-gray-600">
+                  Comments:
+                </h4>
+                <ul className="pl-4 flex flex-col content-start items-start gap-2">
                   {post.comments?.map((c) => (
-                    <li key={c._id}>
-                      <strong>{c.user?.fullName || "User"}:</strong> {c.text}
+                    <li
+                      key={c._id}
+                      className="flex gap-2 content-between items-center"
+                    >
+                      <div className="flex gap-2">
+                        <strong>{c.user?.fullName || "User"}:</strong> {c.text}
+                      </div>
+                      <span className="text-xs text-slate-500 flex flex-col content-end items-end">
+                        {" "}
+                        {new Date(c.createdAt).toLocaleString()}
+                      </span>
                     </li>
                   ))}
                 </ul>

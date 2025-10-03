@@ -120,21 +120,28 @@ export default function IndividualPost() {
         </div>
 
         {/* Comments */}
-        <div className="border-t pt-2">
+        <div className="border-t pt-2 flex flex-col content-start items-start">
           <h3 className="text-sm font-semibold text-gray-700 mb-2">Comments</h3>
-          {currentPost.comments.length === 0 ? (
-            <p className="text-sm text-gray-500">No comments yet</p>
-          ) : (
-            currentPost.comments.map((c) => (
-              <div key={c._id} className="mb-2">
-                <p className="text-sm font-semibold">{c.user.fullName}</p>
-                <p className="text-sm text-gray-600">{c.text}</p>
-                <p className="text-xs text-gray-400">
-                  {new Date(c.createdAt).toLocaleString()}
-                </p>
-              </div>
-            ))
-          )}
+          <div className="flex content-start items-start flex-col">
+            {currentPost.comments.length === 0 ? (
+              <p className="text-sm text-gray-500">No comments yet</p>
+            ) : (
+              currentPost.comments.map((c) => (
+                <div
+                  key={c._id}
+                  className="mb-2 flex gap-2 content-between items-center"
+                >
+                  <div className="flex gap-2">
+                    <p className="text-sm font-semibold">{c.user.fullName}:</p>
+                    <p className="text-sm text-gray-600">{c.text}</p>
+                  </div>
+                  <p className="text-xs text-gray-400 flex content-end items-end">
+                    {new Date(c.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
 
           {/* Input for new comment */}
           <div className="mt-3 flex gap-2">

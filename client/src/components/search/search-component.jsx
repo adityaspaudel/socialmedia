@@ -1,81 +1,94 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import { useParams } from "next/navigation";
 
-const SearchComponent = () => {
-	const [searchTerm, setSearchTerm] = useState(""); // Input value
-	const [searchResults, setSearchResults] = useState([]); // API results
-	const [loading, setLoading] = useState(false); // Loading state
-	const [error, setError] = useState(null); // Error state
+const SearchComponent2 = () => {
+  const [fullName, setFullName] = useState("");
+  const [results, setResults] = useState([]);
+  const [followState, setFollowState] = useState({});
+  const { userId } = useParams();
 
-	// Function to handle search
-	const handleSearch = async (e) => {
-		e.preventDefault();
-		setLoading(true);
-		setError(null);
+  console.log("current user from useParams", userId);
 
-		try {
-			const response = await axios.get(
-				`http://localhost:8000/`, // Replace with your API endpoint
-				{ params: { q: searchTerm } } // Passing the search term as a query parameter
-			);
-			setSearchResults(response.data); // Set the results from API response
-		} catch (err) {
-			setError(
-				err.response?.data?.message || "An error occurred while searching."
-			);
-		} finally {
-			setLoading(false);
-		}
-	};
+  const handleSearch = async () => {
+    if (!fullName.trim()) return;
+    try {
+      const { data } = await axios.get("http://localhost:8000/search", {
+        params: { query: fullName, currentuserId: userId }, // ✅ send current user
+      });
 
-	return (
-		<div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-			<form
-				onSubmit={handleSearch}
-				className="w-full max-w-md p-4 bg-white rounded shadow-md">
-				<h1 className="text-2xl font-bold text-center mb-4">Search API</h1>
+      setResults(data.users);
 
-				{/* Input Element */}
-				<input
-					type="text"
-					placeholder="Search..."
-					className="w-full px-3 py-2 mb-4 border rounded border-gray-300"
-					value={searchTerm}
-					onChange={(e) => setSearchTerm(e.target.value)} // Update state on input change
-				/>
+      // ✅ Use real DB follow state
+      const initialFollowState = {};
+      data.users.forEach((user) => {
+        initialFollowState[user._id] = user.isFollowing;
+      });
+      setFollowState(initialFollowState);
+    } catch (error) {
+      console.log("Error searching user:", error);
+      setResults([]);
+    }
+  };
 
-				{/* Submit Button */}
-				<button
-					type="submit"
-					className="w-full px-3 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
-					disabled={loading}>
-					{loading ? "Searching..." : "Search"}
-				</button>
-			</form>
+  const toggleFollowUnfollow = async (uid) => {
+    try {
+      await fetch(`http://localhost:8000/${userId}/toggleFollowUnfollow`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ followingTo: uid }),
+      });
 
-			{/* Error Handling */}
-			{error && <p className="text-red-500 mt-4">{error}</p>}
+      // Toggle local state
+      setFollowState((prev) => ({
+        ...prev,
+        [uid]: !prev[uid],
+      }));
+    } catch (error) {
+      console.error("Error toggling follow/unfollow:", error);
+    }
+  };
 
-			{/* Search Results */}
-			<div className="w-full max-w-md mt-6">
-				{searchResults.length > 0 ? (
-					<ul className="list-disc pl-6">
-						{searchResults.map((result, index) => (
-							<li
-								key={index}
-								className="mb-2">
-								{result.name || result.title || "Unnamed Result"}
-							</li>
-						))}
-					</ul>
-				) : (
-					!loading && <p className="text-gray-600">No results found.</p>
-				)}
-			</div>
-		</div>
-	);
+  return (
+    <div className="p-4">
+      <input
+        type="text"
+        name="fullName"
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)}
+        placeholder="Search..."
+        className="border p-2 rounded"
+      />
+      <button
+        onClick={handleSearch}
+        className="ml-2 p-2 bg-blue-500 text-white rounded"
+      >
+        Search
+      </button>
+
+      <ul className="mt-4">
+        {results.length > 0 ? (
+          results.map((user) => (
+            <div key={user._id} className="flex items-center gap-4 my-2">
+              <li>{user.fullName}</li>
+              <button
+                onClick={() => toggleFollowUnfollow(user._id)}
+                className={`px-3 py-1 rounded text-white ${
+                  followState[user._id] ? "bg-green-600" : "bg-gray-600"
+                }`}
+              >
+                {followState[user._id] ? "Following" : "Follow"}
+              </button>
+            </div>
+          ))
+        ) : (
+          <li>No users found</li>
+        )}
+      </ul>
+    </div>
+  );
 };
 
-export default SearchComponent;
+export default SearchComponent2;

@@ -31,10 +31,10 @@ const Home = () => {
   };
 
   return (
-    <div className="flex gap-2 content-center items-center w-screen">
+    <div className="flex gap-2 content-center items-center ">
       {/* <SocialMediaSidebarComponent /> */}
-      <div className="flex justify-center w-screen">
-        <div className="bg-blue-50 ">
+      <div className="flex justify-center">
+        <div className="bg-green-100 ">
           <div className="text-center p-4">
             <div className="font-bold text-2xl">Home</div>
             {/* image upload */}
@@ -42,7 +42,7 @@ const Home = () => {
             <PostComponent />
             {/* new added for hydration error */}
             {/* <h1>{isClient ? "This is never prerendered" : "Prerendered"}</h1> */}
-            <div className="flex flex-col gap-12 ">
+            {/* <div className="flex flex-col gap-12 ">
               userList: {JSON.stringify(usersList)}
               {usersList.map((user) => (
                 <div
@@ -68,7 +68,7 @@ const Home = () => {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
             {/* pictures rendered from  /public */}
             {/* <div className="flex flex-col gap-12 border-2 gap-12 rounded-xl">
 							{Object.values(picsLink).map((item, id) => {

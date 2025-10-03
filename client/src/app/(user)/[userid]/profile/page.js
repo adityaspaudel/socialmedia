@@ -7,25 +7,27 @@ import axios from "axios";
 export default function UserProfile() {
   const { userId } = useParams();
   const [posts, setPosts] = useState([]);
-  const [commentText, setCommentText] = useState({}); // track input per-post
+  const [commentText, setCommentText] = useState({}); // track input per post
 
-  // Fetch all posts for user
+  // Fetch all posts for the user
   useEffect(() => {
     if (!userId) return;
+
     const fetchPosts = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:8000/user/${userId}`
+          `http://localhost:8000/users/post/${userId}`
         );
         setPosts(data);
       } catch (err) {
-        console.error("Error fetching posts", err);
+        console.error("Error fetching posts:", err);
       }
     };
+
     fetchPosts();
   }, [userId]);
 
-  // ✅ Toggle Like
+  // Toggle like
   const toggleLike = async (postId) => {
     try {
       const { data } = await axios.put(
@@ -40,8 +42,8 @@ export default function UserProfile() {
             ? {
                 ...p,
                 likes: data.liked
-                  ? [...p.likes, userId] // add like
-                  : p.likes.filter((id) => id !== userId), // remove like
+                  ? [...p.likes, userId]
+                  : p.likes.filter((id) => id !== userId),
               }
             : p
         )
@@ -51,7 +53,7 @@ export default function UserProfile() {
     }
   };
 
-  // ✅ Add Comment
+  // Add comment
   const addComment = async (postId) => {
     const text = commentText[postId];
     if (!text?.trim()) return;
@@ -71,7 +73,6 @@ export default function UserProfile() {
         )
       );
 
-      // clear input after posting
       setCommentText((prev) => ({ ...prev, [postId]: "" }));
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -79,12 +80,13 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gray-100">
+    <div className="p-6 min-h-screen bg-green-100">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">User Posts</h2>
 
       {posts.length > 0 ? (
         posts.map((post) => {
           const liked = post.likes?.includes(userId);
+
           return (
             <div
               key={post._id}
@@ -98,10 +100,10 @@ export default function UserProfile() {
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">
-                      {post.author?.fullName || "Unknown User"}
+                      {post.author?.fullName}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {new Date(post.createdAt).toLocaleDateString()}
+                      {new Date(post.createdAt).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -112,7 +114,7 @@ export default function UserProfile() {
                 {post.content}
               </p>
 
-              {/* Likes Section */}
+              {/* Likes */}
               <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
                 <button
                   onClick={() => toggleLike(post._id)}
@@ -135,15 +137,18 @@ export default function UserProfile() {
                 <h3 className="text-sm font-semibold text-gray-700 mb-2">
                   Comments
                 </h3>
+
                 {post.comments?.length === 0 ? (
                   <p className="text-sm text-gray-500">No comments yet</p>
                 ) : (
                   post.comments.map((c) => (
-                    <div key={c._id} className="mb-2">
-                      <p className="text-sm font-semibold">
-                        {c.user?.fullName || "Anonymous"}
-                      </p>
-                      <p className="text-sm text-gray-600">{c.text}</p>
+                    <div key={c._id} className="mb-2 flex gap-2">
+                      <div className="flex gap-2">
+                        <p className="text-sm font-semibold">
+                          {c.user.fullName}:
+                        </p>
+                        <p className="text-sm text-gray-600">{c.text}</p>
+                      </div>
                       <p className="text-xs text-gray-400">
                         {new Date(c.createdAt).toLocaleString()}
                       </p>

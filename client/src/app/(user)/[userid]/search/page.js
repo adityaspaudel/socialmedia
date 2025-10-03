@@ -1,17 +1,17 @@
-import SearchComponent2 from "@/components/search/search2";
+import SearchComponent2 from "@/components/search/search-component";
 import { SocialMediaSidebarComponent } from "@/components/social-media-sidebar";
 import React from "react";
 
 const UserSearch = () => {
-	return (
-		<div className="flex gap-2">
-			{/* <SocialMediaSidebarComponent /> */}
+  return (
+    <div className="flex gap-2">
+      {/* <SocialMediaSidebarComponent /> */}
 
-			{/*  */}
+      {/*  */}
 
-			<SearchComponent2 />
-		</div>
-	);
+      <SearchComponent2 />
+    </div>
+  );
 };
 
 export default UserSearch;
