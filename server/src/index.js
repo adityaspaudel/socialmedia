@@ -414,7 +414,99 @@ router.get("/getAllUsers", async (req, res) => {
   }
 });
 
-//testing server
+// update a post
+
+router.put("/posts/:postId", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { content } = req.body;
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    post.content = content || post.content;
+    await post.save();
+
+    res.status(200).json({ message: "Post updated", post });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// delete a post
+router.delete("/posts/:postId", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await Post.findByIdAndDelete(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    res.status(200).json({ message: "Post deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ---------------- Update Comment ----------------
+router.put("/posts/:postId/comments/:commentId", async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const { userId, text } = req.body;
+
+    if (!text?.trim())
+      return res.status(400).json({ message: "Comment cannot be empty" });
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const comment = post.comments.id(commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    if (comment.user.toString() !== userId)
+      return res
+        .status(403)
+        .json({ message: "You can only edit your own comment" });
+
+    comment.text = text;
+    await post.save();
+
+    res.status(200).json({ message: "Comment updated", comment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error editing comment" });
+  }
+});
+
+// ---------------- Delete Comment ----------------
+router.delete("/posts/:postId/comments/:commentId", async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const { userId } = req.body; // make sure body is used
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const comment = post.comments.id(commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    // Only author can delete
+    if (comment.user.toString() !== userId) {
+      return res
+        .status(403)
+        .json({ message: "You can only delete your own comment" });
+    }
+
+    // Remove comment safely
+    post.comments.pull(commentId);
+    await post.save();
+
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error("Delete comment error:", error);
+    res
+      .status(500)
+      .json({ message: "Server error deleting comment", error: error.message });
+  }
+});
 
 router.get("/test", (req, res) => res.send("Server works"));
 // ------------------ Mount router ------------------

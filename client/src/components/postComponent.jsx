@@ -10,20 +10,26 @@ const PostComponent = () => {
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
   const [commentText, setCommentText] = useState({});
+  const [editingPost, setEditingPost] = useState(null);
+  const [editContent, setEditContent] = useState("");
+  const [editingComment, setEditingComment] = useState(null);
+  const [editCommentText, setEditCommentText] = useState("");
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [userId]);
 
+  // Fetch All Posts
   const fetchPosts = async () => {
     try {
       const { data } = await axios.get("http://localhost:8000/posts");
-      setPosts(data.posts);
+      setPosts(data.posts || data);
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
 
+  // Create Post
   const createPost = async () => {
     if (!content.trim()) return;
     try {
@@ -38,14 +44,40 @@ const PostComponent = () => {
     }
   };
 
-  // ✅ Like / Unlike
+  // Update Post
+  const updatePost = async (postId) => {
+    if (!editContent.trim()) return;
+    try {
+      await axios.put(`http://localhost:8000/posts/${postId}`, {
+        content: editContent,
+      });
+      setPosts((prev) =>
+        prev.map((p) => (p._id === postId ? { ...p, content: editContent } : p))
+      );
+      setEditingPost(null);
+      setEditContent("");
+    } catch (error) {
+      console.error("Error updating post:", error);
+    }
+  };
+
+  // Delete Post
+  const deletePost = async (postId) => {
+    try {
+      await axios.delete(`http://localhost:8000/posts/${postId}`);
+      setPosts((prev) => prev.filter((p) => p._id !== postId));
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
+  // Like/Unlike
   const toggleLike = async (postId) => {
     try {
       const { data } = await axios.put(
         `http://localhost:8000/posts/${postId}/like`,
         { userId }
       );
-
       setPosts((prev) =>
         prev.map((p) =>
           p._id === postId
@@ -63,19 +95,20 @@ const PostComponent = () => {
     }
   };
 
-  // ✅ Add comment
+  // Add Comment
   const addComment = async (postId) => {
-    if (!commentText[postId]?.trim()) return;
+    const text = commentText[postId];
+    if (!text?.trim()) return;
 
     try {
       const { data } = await axios.post(
         `http://localhost:8000/posts/${postId}/comments`,
         {
           userId,
-          text: commentText[postId],
+          postId,
+          text,
         }
       );
-
       setPosts((prev) =>
         prev.map((p) =>
           p._id === postId
@@ -83,13 +116,68 @@ const PostComponent = () => {
             : p
         )
       );
-
       setCommentText((prev) => ({ ...prev, [postId]: "" }));
     } catch (error) {
       console.error("Error adding comment:", error);
     }
   };
- 
+
+  // Update Comment
+  const updateComment = async (postId, commentId) => {
+    if (!editCommentText.trim()) return;
+
+    try {
+      const { data } = await axios.put(
+        `http://localhost:8000/posts/${postId}/comments/${commentId}`,
+        { userId, text: editCommentText } // only userId and text
+      );
+
+      setPosts((prev) =>
+        prev.map((p) =>
+          p._id === postId
+            ? {
+                ...p,
+                comments: p.comments.map((c) =>
+                  c._id === commentId ? { ...c, text: editCommentText } : c
+                ),
+              }
+            : p
+        )
+      );
+
+      setEditingComment(null);
+      setEditCommentText("");
+    } catch (error) {
+      console.error(
+        "Error updating comment:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  // Delete Comment
+  const deleteComment = async (postId, commentId) => {
+    try {
+      await axios.delete(
+        `http://localhost:8000/posts/${postId}/comments/${commentId}`,
+        { data: { userId } } // only send userId
+      );
+
+      setPosts((prev) =>
+        prev.map((p) =>
+          p._id === postId
+            ? { ...p, comments: p.comments.filter((c) => c._id !== commentId) }
+            : p
+        )
+      );
+    } catch (error) {
+      console.error(
+        "Error deleting comment:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   return (
     <div className="p-6 w-full mx-auto">
       {/* Create Post */}
@@ -112,32 +200,52 @@ const PostComponent = () => {
       <div className="space-y-6">
         {posts.map((post) => {
           const liked = post.likes.includes(userId);
+          const isAuthor = post.author?._id === userId;
+
           return (
             <div
               key={post._id}
               className="flex flex-col gap-2 border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
             >
-              <Link
-                href={`/${userId}/home/${post._id}`}
-                title="Open post"
-                className="block  "
-              >
-                <div className="flex flex-col content-start items-start">
-                  <h3 className="font-semibold text-gray-800 text-4xl">
-                    {post.author?.fullName || "Unknown"}
-                  </h3>
-                  <p className="flex flex-col  text-gray-500 ">
-                    {" "}
-                    {new Date(post.createdAt).toLocaleString()}
-                  </p>
-                </div>
-                <p className="mt-2 text-gray-900 text-2xl flex flex-col content-start items-start">
-                  {post.content}
+              {/* Author Info */}
+              <Link href={`/${userId}/home/${post._id}`} className="block">
+                <h3 className="font-semibold text-gray-800 text-lg">
+                  {post.author?.fullName || "Unknown"}
+                </h3>
+                <p className="text-gray-500 text-sm">
+                  {new Date(post.createdAt).toLocaleString()}
                 </p>
               </Link>
 
-              {/* Likes */}
-              <div className="mt-3 flex flex-start items-start gap-4 text-sm text-gray-600">
+              {/* Post Content */}
+              {editingPost === post._id ? (
+                <div className="flex flex-col gap-2">
+                  <textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    className="border p-2 rounded"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => updatePost(post._id)}
+                      className="bg-yellow-600 text-white px-3 py-1 rounded"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setEditingPost(null)}
+                      className="bg-gray-400 text-white px-3 py-1 rounded"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-2 text-gray-900 text-lg">{post.content}</p>
+              )}
+
+              {/* Like + Edit/Delete Post */}
+              <div className="mt-3 flex gap-4 text-sm text-gray-600">
                 <button
                   onClick={() => toggleLike(post._id)}
                   className={`px-3 py-1 rounded text-white ${
@@ -152,29 +260,94 @@ const PostComponent = () => {
                   {post.likes.length}{" "}
                   {post.likes.length === 1 ? "Like" : "Likes"}
                 </span>
+
+                {isAuthor && (
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditingPost(post._id);
+                        setEditContent(post.content);
+                      }}
+                      className="bg-yellow-500 text-white px-3 py-1 rounded"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deletePost(post._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
               </div>
-              <hr className="border-gray-300 border-1"/>
 
               {/* Comments */}
-              <div className="mt-4 flex flex-col content-start items-start">
-                <h4 className="font-bold underline mb-2 text-gray-600">
-                  Comments:
-                </h4>
-                <ul className="pl-4 flex flex-col content-start items-start gap-2">
-                  {post.comments?.map((c) => (
-                    <li
-                      key={c._id}
-                      className="flex gap-2 content-between items-center"
-                    >
-                      <div className="flex gap-2">
-                        <strong>{c.user?.fullName || "User"}:</strong> {c.text}
-                      </div>
-                      <span className="text-xs text-slate-500 flex flex-col content-end items-end">
-                        {" "}
-                        {new Date(c.createdAt).toLocaleString()}
-                      </span>
-                    </li>
-                  ))}
+              <div className="mt-4">
+                <h4 className="font-bold text-gray-600">Comments:</h4>
+                <ul className="mt-2 flex flex-col gap-2">
+                  {post.comments?.map((c) => {
+                    const isCommentAuthor = c.user._id === userId;
+                    return (
+                      <li
+                        key={c._id}
+                        className="text-sm flex flex-col border-b pb-1"
+                      >
+                        {editingComment === c._id ? (
+                          <div className="flex gap-2">
+                            <input
+                              value={editCommentText}
+                              onChange={(e) =>
+                                setEditCommentText(e.target.value)
+                              }
+                              className="border px-2 py-1 rounded flex-1"
+                            />
+                            <button
+                              onClick={() => updateComment(post._id, c._id)}
+                              className="px-2 py-1 bg-yellow-500 text-white rounded"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => setEditingComment(null)}
+                              className="px-2 py-1 bg-gray-400 text-white rounded"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <span>
+                              <strong>{c.user.fullName || "User"}:</strong>{" "}
+                              {c.text}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {new Date(c.createdAt).toLocaleString()}
+                            </span>
+                            {isCommentAuthor && (
+                              <div className="flex gap-2 mt-1">
+                                <button
+                                  onClick={() => {
+                                    setEditingComment(c._id);
+                                    setEditCommentText(c.text);
+                                  }}
+                                  className="px-2 py-1 bg-yellow-500 text-white rounded"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => deleteComment(post._id, c._id)}
+                                  className="px-2 py-1 bg-red-500 text-white rounded"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
 
                 {/* Add Comment */}
