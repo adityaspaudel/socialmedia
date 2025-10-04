@@ -414,6 +414,37 @@ router.get("/getAllUsers", async (req, res) => {
   }
 });
 
+// update a post
+
+router.put("/posts/:postId", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { content } = req.body;
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    post.content = content || post.content;
+    await post.save();
+
+    res.status(200).json({ message: "Post updated", post });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// delete a post
+router.delete("/posts/:postId", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await Post.findByIdAndDelete(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    res.status(200).json({ message: "Post deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 //testing server
 
 router.get("/test", (req, res) => res.send("Server works"));

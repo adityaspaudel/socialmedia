@@ -10,11 +10,14 @@ const PostComponent = () => {
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
   const [commentText, setCommentText] = useState({});
+  const [editingPost, setEditingPost] = useState(null);
+  const [editContent, setEditContent] = useState("");
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
+  // ✅ Fetch All Posts
   const fetchPosts = async () => {
     try {
       const { data } = await axios.get("http://localhost:8000/posts");
@@ -24,6 +27,7 @@ const PostComponent = () => {
     }
   };
 
+  // ✅ Create Post
   const createPost = async () => {
     if (!content.trim()) return;
     try {
@@ -35,6 +39,30 @@ const PostComponent = () => {
       fetchPosts();
     } catch (error) {
       console.error("Error creating post:", error);
+    }
+  };
+
+  // ✅ Update Post
+  const updatePost = async (postId) => {
+    try {
+      await axios.put(`http://localhost:8000/posts/${postId}`, {
+        content: editContent,
+      });
+      setEditingPost(null);
+      setEditContent("");
+      fetchPosts();
+    } catch (error) {
+      console.error("Error updating post:", error);
+    }
+  };
+
+  // ✅ Delete Post
+  const deletePost = async (postId) => {
+    try {
+      await axios.delete(`http://localhost:8000/posts/${postId}`);
+      setPosts((prev) => prev.filter((p) => p._id !== postId));
+    } catch (error) {
+      console.error("Error deleting post:", error);
     }
   };
 
@@ -63,7 +91,7 @@ const PostComponent = () => {
     }
   };
 
-  // ✅ Add comment
+  // ✅ Add Comment
   const addComment = async (postId) => {
     if (!commentText[postId]?.trim()) return;
 
@@ -89,10 +117,10 @@ const PostComponent = () => {
       console.error("Error adding comment:", error);
     }
   };
- 
+
   return (
     <div className="p-6 w-full mx-auto">
-      {/* Create Post */}
+      {/* ✅ Create Post */}
       <div className="mb-6 w-full">
         <textarea
           value={content}
@@ -108,36 +136,56 @@ const PostComponent = () => {
         </button>
       </div>
 
-      {/* Posts List */}
+      {/* ✅ Posts List */}
       <div className="space-y-6">
         {posts.map((post) => {
           const liked = post.likes.includes(userId);
+          const isAuthor = post.author?._id === userId;
+
           return (
             <div
               key={post._id}
               className="flex flex-col gap-2 border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
             >
-              <Link
-                href={`/${userId}/home/${post._id}`}
-                title="Open post"
-                className="block  "
-              >
-                <div className="flex flex-col content-start items-start">
-                  <h3 className="font-semibold text-gray-800 text-4xl">
-                    {post.author?.fullName || "Unknown"}
-                  </h3>
-                  <p className="flex flex-col  text-gray-500 ">
-                    {" "}
-                    {new Date(post.createdAt).toLocaleString()}
-                  </p>
-                </div>
-                <p className="mt-2 text-gray-900 text-2xl flex flex-col content-start items-start">
-                  {post.content}
+              {/* Author Info */}
+              <Link href={`/${userId}/home/${post._id}`} className="block">
+                <h3 className="font-semibold text-gray-800 text-lg">
+                  {post.author?.fullName || "Unknown"}
+                </h3>
+                <p className="text-gray-500 text-sm">
+                  {new Date(post.createdAt).toLocaleString()}
                 </p>
               </Link>
 
-              {/* Likes */}
-              <div className="mt-3 flex flex-start items-start gap-4 text-sm text-gray-600">
+              {/* Post Content */}
+              {editingPost === post._id ? (
+                <div className="flex flex-col gap-2">
+                  <textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    className="border p-2 rounded"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => updatePost(post._id)}
+                      className="bg-yellow-600 text-white px-3 py-1 rounded"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setEditingPost(null)}
+                      className="bg-gray-400 text-white px-3 py-1 rounded"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-2 text-gray-900 text-lg">{post.content}</p>
+              )}
+
+              {/* ✅ Like + Edit/Delete */}
+              <div className="mt-3 flex gap-4 text-sm text-gray-600">
                 <button
                   onClick={() => toggleLike(post._id)}
                   className={`px-3 py-1 rounded text-white ${
@@ -152,25 +200,39 @@ const PostComponent = () => {
                   {post.likes.length}{" "}
                   {post.likes.length === 1 ? "Like" : "Likes"}
                 </span>
-              </div>
-              <hr className="border-gray-300 border-1"/>
 
-              {/* Comments */}
-              <div className="mt-4 flex flex-col content-start items-start">
-                <h4 className="font-bold underline mb-2 text-gray-600">
-                  Comments:
-                </h4>
-                <ul className="pl-4 flex flex-col content-start items-start gap-2">
-                  {post.comments?.map((c) => (
-                    <li
-                      key={c._id}
-                      className="flex gap-2 content-between items-center"
+                {/* Show Edit/Delete only if author */}
+                {isAuthor && (
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditingPost(post._id);
+                        setEditContent(post.content);
+                      }}
+                      className="bg-yellow-500 text-white px-3 py-1 rounded"
                     >
-                      <div className="flex gap-2">
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deletePost(post._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* ✅ Comments */}
+              <div className="mt-4">
+                <h4 className="font-bold text-gray-600">Comments:</h4>
+                <ul className="mt-2 flex flex-col gap-2">
+                  {post.comments?.map((c) => (
+                    <li key={c._id} className="text-sm flex flex-col">
+                      <span>
                         <strong>{c.user?.fullName || "User"}:</strong> {c.text}
-                      </div>
-                      <span className="text-xs text-slate-500 flex flex-col content-end items-end">
-                        {" "}
+                      </span>
+                      <span className="text-xs text-gray-500">
                         {new Date(c.createdAt).toLocaleString()}
                       </span>
                     </li>
