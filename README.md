@@ -24,34 +24,34 @@ This is a structured checklist to guide the development of a MERN stack social m
 <details>
 <summary>Click to expand Phase 1</summary>
 
-- [ ] **User Authentication & Authorization**
-  - [ ] Sign up / Log in / Log out
-  - [ ] JWT-based authentication
-  - [ ] Password hashing (bcrypt)
+- [x] **User Authentication & Authorization**
+  - [x] Sign up / Log in / Log out
+  - [x] JWT-based authentication
+  - [x] Password hashing (bcrypt)
   
 - [ ] **User Profiles**
-  - [ ] View profile
+  - [x] View profile
   - [ ] Edit profile (name, bio, profile picture)
   - [ ] Follow / Unfollow users
 
 - [ ] **Posts**
-  - [ ] Create post (text + optional image)
-  - [ ] Read posts (feed)
+  - [x] Create post (text)
+  - [x] Read posts (feed)
   - [ ] Update post
   - [ ] Delete post
 
-- [ ] **Likes / Reactions**
-  - [ ] Like / Unlike posts
-  - [ ] Display number of likes
+- [x] **Likes / Reactions**
+  - [x] Like / Unlike posts
+  - [x] Display number of likes
 
 - [ ] **Comments**
-  - [ ] Add comment
-  - [ ] View comments
+  - [x] Add comment
+  - [x] View comments
   - [ ] Delete comment (optional)
 
-- [ ] **Feed / Timeline**
-  - [ ] Display posts from followed users
-  - [ ] Display all public posts (optional)
+- [x] **Feed / Timeline**
+  - [x] Display posts from followed users
+  - [x] Display all public posts (optional)
 
 </details>
 
@@ -63,7 +63,7 @@ This is a structured checklist to guide the development of a MERN stack social m
 <summary>Click to expand Phase 2</summary>
 
 - [ ] **Search**
-  - [ ] Search users by name/email
+  - [x] Search users by name/email
   - [ ] Search posts by content or hashtags
 
 - [ ] **Notifications**
@@ -157,11 +157,11 @@ This is a structured checklist to guide the development of a MERN stack social m
 
 6. Backend server will run on [http://localhost:8000](http://localhost:8000) by default.
 
-## Contributing
+<!-- ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
+ -->
