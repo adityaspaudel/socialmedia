@@ -20,29 +20,42 @@ const RecoverAccount = () => {
 
   return (
     <div className="flex justify-center items-center bg-green-100 h-screen w-screen">
-      <div className="flex flex-col justify-center items-center w-full max-w-xl p-6 bg-white rounded-lg shadow-md border-gray-200 border-2">
-        
-          <Link href="/" className="text-start w-full text-2xl">🔙</Link>
-        <h2 className="text-2xl font-bold">Recover Account</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="email">Enter your recovery email</label>
-            <input
-              className="p-2"
-              type="email"
-              name="email"
-              placeholder="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <button
-            type="submit"
-            className="h-12 w-20 p-2 bg-red-600 rounded-md text-white"
+      <div className="flex flex-col content-start items-start w-full max-w-xl p-6 bg-white rounded-lg shadow-md border-gray-200 border-2">
+        <div className="flex gap-2 content-start  items-start w-full">
+          <Link
+            href="/"
+            className="text-start flex content-start items-start w-1/5 text-2xl "
           >
-            Submit
-          </button>
-        </form>
+            🔙
+          </Link>
+          <div className="flex flex-col gap-4">
+            <h2 className="text-2xl font-bold  inline-block">
+              Recover Account
+            </h2>
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-2 w-full"
+            >
+              <div className="flex flex-col gap-2">
+                <label htmlFor="email">Enter your recovery email</label>
+                <input
+                  className="p-2"
+                  type="email"
+                  name="email"
+                  placeholder="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <button
+                type="submit"
+                className="h-12 w-20 p-2 bg-red-600 rounded-md text-white"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );
