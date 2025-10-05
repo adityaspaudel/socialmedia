@@ -169,20 +169,42 @@ export default function UserProfile() {
     }));
   };
 
-  // Submit profile updates
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
+      // Use the current state of profileForm for sending data
+      const formData = {
+        fullName: profileForm.fullName || "",
+        username: profileForm.username || "",
+        bio: profileForm.bio || "",
+        profilePic: profileForm.profilePic || "",
+        address: profileForm.address || "",
+        phoneNumber: profileForm.phoneNumber || "",
+        hobbies: Array.isArray(profileForm.hobbies) ? profileForm.hobbies : [],
+        education: Array.isArray(profileForm.education)
+          ? profileForm.education
+          : [],
+        work: Array.isArray(profileForm.work) ? profileForm.work : [],
+      };
+
       const { data } = await axios.put(
         `http://localhost:8000/users/${userId}/profile`,
-        profileForm
+        formData
       );
+
       alert("Profile updated successfully!");
-      setUser(data.user);
-      setEditing(false);
+      setUser(data.user); // Update frontend user state
+      setProfileForm(data.user); // Also update the form with latest data
+      setEditing(false); // Close edit form
     } catch (err) {
       console.error("Error updating profile:", err);
-      alert("Failed to update profile");
+
+      if (err.response?.data?.message) {
+        alert(err.response.data.message);
+      } else {
+        alert("Failed to update profile");
+      }
     }
   };
 

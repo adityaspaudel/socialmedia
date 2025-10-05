@@ -216,23 +216,33 @@ router.put("/users/:userId/profile", async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Update fields if provided
+    // Only update fields that exist in the request
     if (fullName !== undefined) user.fullName = fullName;
     if (username !== undefined) user.username = username;
     if (bio !== undefined) user.bio = bio;
     if (profilePic !== undefined) user.profilePic = profilePic;
     if (address !== undefined) user.address = address;
     if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
-    if (hobbies !== undefined) user.hobbies = hobbies;
-    if (education !== undefined) user.education = education;
-    if (work !== undefined) user.work = work;
+
+    // Make sure these are arrays
+    if (hobbies !== undefined && Array.isArray(hobbies)) user.hobbies = hobbies;
+    if (education !== undefined && Array.isArray(education))
+      user.education = education;
+    if (work !== undefined && Array.isArray(work)) user.work = work;
 
     await user.save();
 
     res.json({ message: "Profile updated successfully", user });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+
+    // Check for duplicate key error (username/email)
+    if (err.code === 11000) {
+      const key = Object.keys(err.keyValue)[0];
+      return res.status(400).json({ message: `${key} already exists` });
+    }
+
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
