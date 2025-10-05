@@ -6,25 +6,31 @@ import axios from "axios";
 
 export default function UserProfile() {
   const { userId } = useParams();
+  const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [commentText, setCommentText] = useState({}); // track input per post
+  const [loading, setLoading] = useState(true);
 
-  // Fetch all posts for the user
+  // Fetch profile (user info + posts)
   useEffect(() => {
     if (!userId) return;
 
-    const fetchPosts = async () => {
+    const fetchProfile = async () => {
+      setLoading(true);
       try {
         const { data } = await axios.get(
-          `http://localhost:8000/users/post/${userId}`
+          `http://localhost:8000/users/${userId}/profile`
         );
-        setPosts(data);
+        setUser(data.user);
+        setPosts(data.posts);
       } catch (err) {
-        console.error("Error fetching posts:", err);
+        console.error("Error fetching profile:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchPosts();
+    fetchProfile();
   }, [userId]);
 
   // Toggle like
@@ -79,10 +85,23 @@ export default function UserProfile() {
     }
   };
 
+  if (loading) return <p className="text-gray-600">Loading profile...</p>;
+  if (!user) return <p className="text-red-500">User not found</p>;
+
   return (
     <div className="p-6 min-h-screen bg-green-100">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">User Posts</h2>
+      {/* User Info */}
+      <div className="mb-6 flex items-center gap-4">
+        <div className="w-16 h-16 rounded-full bg-blue-300 flex items-center justify-center text-blue-700 font-bold text-2xl">
+          {user.fullName?.[0]?.toUpperCase()}
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">{user.fullName}</h2>
+          <p className="text-sm text-gray-500">{user.email}</p>
+        </div>
+      </div>
 
+      {/* User Posts */}
       {posts.length > 0 ? (
         posts.map((post) => {
           const liked = post.likes?.includes(userId);

@@ -146,6 +146,33 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// get my profile
+
+// ---------------- GET /users/:userId/profile ----------------
+router.get("/users/:userId/profile", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Fetch user info (exclude password)
+    const user = await User.findById(userId).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Fetch user's posts
+    const posts = await Post.find({ author: userId })
+      .populate("author", "fullName email") // populate author info
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "fullName email" }, // populate comment users
+      })
+      .sort({ createdAt: -1 });
+
+    res.json({ user, posts });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // Search  users
 router.get("/search", async (req, res) => {
   const { query, currentuserId } = req.query;
