@@ -2,20 +2,17 @@
 
 ## Tech Stack
 
-- Frontend: Next.js with App Router  
-- Backend: Express.js  
+- Frontend: Next js App Router with Javascript & Tailwind CSS
+- Backend: Express.js with Mongodb
 - Styling: Tailwind CSS, NextUI, Shadcn  
-- Charts: Chart.js  
 - Icons: React Icons, Lucide React  
 - Form Handling: Formik with Yup validation  
-- AI-Assisted Development: V0.dev  
+- AI-Assisted Development: V0.dev, ChatGPT, Gemini 
 - Utilities: util  
 
 ---
 
 # MERN Social Media App - Project Checklist
-
-This is a structured checklist to guide the development of a MERN stack social media application. You can track progress by checking/unchecking items in your Markdown editor or on GitHub.
 
 ---
 
@@ -29,25 +26,25 @@ This is a structured checklist to guide the development of a MERN stack social m
   - [x] JWT-based authentication
   - [x] Password hashing (bcrypt)
   
-- [ ] **User Profiles**
+- [x] **User Profiles**
   - [x] View profile
-  - [ ] Edit profile (name, bio, profile picture)
-  - [ ] Follow / Unfollow users
+  - [x] Edit profile (name, bio, address, education, work etc)
+  - [x] Follow / Unfollow users
 
-- [ ] **Posts**
+- [x] **Posts**
   - [x] Create post (text)
   - [x] Read posts (feed)
-  - [ ] Update post
-  - [ ] Delete post
+  - [x] Update post
+  - [x] Delete post
 
 - [x] **Likes / Reactions**
   - [x] Like / Unlike posts
   - [x] Display number of likes
 
-- [ ] **Comments**
+- [x] **Comments**
   - [x] Add comment
-  - [x] View comments
-  - [ ] Delete comment (optional)
+  - [x] Edit comment
+  - [x] Delete comment 
 
 - [x] **Feed / Timeline**
   - [x] Display posts from followed users
@@ -62,23 +59,19 @@ This is a structured checklist to guide the development of a MERN stack social m
 <details>
 <summary>Click to expand Phase 2</summary>
 
-- [ ] **Search**
+- [x] **Search**
   - [x] Search users by name/email
-  - [ ] Search posts by content or hashtags
 
-- [ ] **Notifications**
-  - [ ] Notify when someone likes a post
-  - [ ] Notify when someone comments
-  - [ ] Notify when someone follows
+- [x] **Notifications**
+  - [x] Notify when someone likes a post
+  - [x] Notify when someone comments
+  - [x] Notify when someone follows
 
 - [ ] **Post Media**
   - [ ] Upload images with posts
-  - [ ] Upload videos (optional)
-  - [ ] Thumbnail preview in feed
 
-- [ ] **Profile Customization**
-  - [ ] Cover photo
-  - [ ] Bio, website, social links
+- [x] **Profile Customization**
+  - [x] Edit name, bio, address, education, work etc
 
 </details>
 
@@ -93,28 +86,11 @@ This is a structured checklist to guide the development of a MERN stack social m
   - [ ] Chat between users
   - [ ] Real-time using Socket.io
 
-- [ ] **Stories**
-  - [ ] Temporary posts (24-hour expiration)
-  - [ ] Image/video stories
-
-- [ ] **Hashtags & Trends**
-  - [ ] Tag posts with hashtags
-  - [ ] Show trending hashtags
-
-- [ ] **Post Sharing / Repost**
-  - [ ] Share other users’ posts
-  - [ ] Repost to your feed
-
-- [ ] **Reactions beyond Likes**
-  - [ ] Multiple reactions (love, laugh, wow, etc.)
-
-- [ ] **Real-time Feed Updates**
-  - [ ] Live updates for posts
-  - [ ] Live likes/comments count
+- [x] **Real-time Feed Updates**
+  - [x] Live updates for posts
+  - [x] Live likes/comments count
 
 </details>
-
-> ✅ Use this checklist to track your project progress. You can mark items as complete directly in your Markdown editor or GitHub.
 
 ---
 
