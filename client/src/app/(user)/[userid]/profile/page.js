@@ -8,8 +8,21 @@ export default function UserProfile() {
   const { userId } = useParams();
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [commentText, setCommentText] = useState({}); // track input per post
+  const [commentText, setCommentText] = useState({});
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    fullName: "",
+    username: "",
+    bio: "",
+    profilePic: "",
+    address: "",
+    phoneNumber: "",
+    hobbies: [],
+    education: [],
+    work: [],
+  });
+  const [newHobby, setNewHobby] = useState("");
 
   // Fetch profile (user info + posts)
   useEffect(() => {
@@ -23,6 +36,19 @@ export default function UserProfile() {
         );
         setUser(data.user);
         setPosts(data.posts);
+
+        // Initialize form fields
+        setProfileForm({
+          fullName: data.user.fullName || "",
+          username: data.user.username || "",
+          bio: data.user.bio || "",
+          profilePic: data.user.profilePic || "",
+          address: data.user.address || "",
+          phoneNumber: data.user.phoneNumber || "",
+          hobbies: data.user.hobbies || [],
+          education: data.user.education || [],
+          work: data.user.work || [],
+        });
       } catch (err) {
         console.error("Error fetching profile:", err);
       } finally {
@@ -41,7 +67,6 @@ export default function UserProfile() {
         { userId }
       );
 
-      // Optimistic UI update
       setPosts((prev) =>
         prev.map((p) =>
           p._id === postId
@@ -70,7 +95,6 @@ export default function UserProfile() {
         { userId, text }
       );
 
-      // Optimistic UI update
       setPosts((prev) =>
         prev.map((p) =>
           p._id === postId
@@ -82,6 +106,83 @@ export default function UserProfile() {
       setCommentText((prev) => ({ ...prev, [postId]: "" }));
     } catch (error) {
       console.error("Error adding comment:", error);
+    }
+  };
+
+  // Handle profile form changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfileForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Hobbies
+  const addHobby = () => {
+    if (!newHobby.trim()) return;
+    setProfileForm((prev) => ({
+      ...prev,
+      hobbies: [...prev.hobbies, newHobby],
+    }));
+    setNewHobby("");
+  };
+  const removeHobby = (index) => {
+    setProfileForm((prev) => ({
+      ...prev,
+      hobbies: prev.hobbies.filter((_, i) => i !== index),
+    }));
+  };
+
+  // Education
+  const handleEducationChange = (index, field, value) => {
+    const updated = [...profileForm.education];
+    updated[index][field] = value;
+    setProfileForm((prev) => ({ ...prev, education: updated }));
+  };
+  const addEducation = () => {
+    setProfileForm((prev) => ({
+      ...prev,
+      education: [...prev.education, { school: "", degree: "", year: "" }],
+    }));
+  };
+  const removeEducation = (index) => {
+    setProfileForm((prev) => ({
+      ...prev,
+      education: prev.education.filter((_, i) => i !== index),
+    }));
+  };
+
+  // Work
+  const handleWorkChange = (index, field, value) => {
+    const updated = [...profileForm.work];
+    updated[index][field] = value;
+    setProfileForm((prev) => ({ ...prev, work: updated }));
+  };
+  const addWork = () => {
+    setProfileForm((prev) => ({
+      ...prev,
+      work: [...prev.work, { company: "", position: "", from: "", to: "" }],
+    }));
+  };
+  const removeWork = (index) => {
+    setProfileForm((prev) => ({
+      ...prev,
+      work: prev.work.filter((_, i) => i !== index),
+    }));
+  };
+
+  // Submit profile updates
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.put(
+        `http://localhost:8000/users/${userId}/profile`,
+        profileForm
+      );
+      alert("Profile updated successfully!");
+      setUser(data.user);
+      setEditing(false);
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      alert("Failed to update profile");
     }
   };
 
@@ -98,8 +199,221 @@ export default function UserProfile() {
         <div>
           <h2 className="text-2xl font-bold text-gray-800">{user.fullName}</h2>
           <p className="text-sm text-gray-500">{user.email}</p>
+          <p className="text-sm text-gray-600">{user.bio}</p>
+          <p className="text-sm text-gray-600">{user.address}</p>
+          <p className="text-sm text-gray-600">{user.phoneNumber}</p>
+          {user.hobbies?.length > 0 && (
+            <p className="text-sm text-gray-600">
+              Hobbies: {user.hobbies.join(", ")}
+            </p>
+          )}
         </div>
+        {/* Edit Button */}
+        <button
+          onClick={() => setEditing((prev) => !prev)}
+          className="ml-auto px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          {editing ? "Cancel" : "Edit Profile"}
+        </button>
       </div>
+
+      {/* Edit Profile Form */}
+      {editing && (
+        <form
+          onSubmit={handleSubmit}
+          className="mb-6 bg-white p-4 rounded shadow space-y-4"
+        >
+          <input
+            type="text"
+            name="fullName"
+            value={profileForm.fullName}
+            onChange={handleChange}
+            placeholder="Full Name"
+            className="w-full border px-3 py-2 rounded"
+          />
+          <input
+            type="text"
+            name="username"
+            value={profileForm.username}
+            onChange={handleChange}
+            placeholder="Username"
+            className="w-full border px-3 py-2 rounded"
+          />
+          <textarea
+            name="bio"
+            value={profileForm.bio}
+            onChange={handleChange}
+            placeholder="Bio"
+            className="w-full border px-3 py-2 rounded"
+          />
+          <input
+            type="text"
+            name="address"
+            value={profileForm.address}
+            onChange={handleChange}
+            placeholder="Address"
+            className="w-full border px-3 py-2 rounded"
+          />
+          <input
+            type="text"
+            name="phoneNumber"
+            value={profileForm.phoneNumber}
+            onChange={handleChange}
+            placeholder="Phone Number"
+            className="w-full border px-3 py-2 rounded"
+          />
+
+          {/* Hobbies */}
+          <div>
+            <h4 className="font-semibold mb-2">Hobbies</h4>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={newHobby}
+                onChange={(e) => setNewHobby(e.target.value)}
+                placeholder="Add hobby"
+                className="flex-1 border px-3 py-2 rounded"
+              />
+              <button
+                type="button"
+                onClick={addHobby}
+                className="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {profileForm.hobbies.map((h, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-1 bg-gray-200 px-2 py-1 rounded"
+                >
+                  <span>{h}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeHobby(i)}
+                    className="text-red-500 font-bold"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Education */}
+          <div>
+            <h4 className="font-semibold mb-2">Education</h4>
+            {profileForm.education.map((edu, i) => (
+              <div key={i} className="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  placeholder="School"
+                  value={edu.school}
+                  onChange={(e) =>
+                    handleEducationChange(i, "school", e.target.value)
+                  }
+                  className="border px-2 py-1 rounded flex-1"
+                />
+                <input
+                  type="text"
+                  placeholder="Degree"
+                  value={edu.degree}
+                  onChange={(e) =>
+                    handleEducationChange(i, "degree", e.target.value)
+                  }
+                  className="border px-2 py-1 rounded flex-1"
+                />
+                <input
+                  type="text"
+                  placeholder="Year"
+                  value={edu.year}
+                  onChange={(e) =>
+                    handleEducationChange(i, "year", e.target.value)
+                  }
+                  className="border px-2 py-1 rounded w-24"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeEducation(i)}
+                  className="text-red-500 font-bold"
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addEducation}
+              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Add Education
+            </button>
+          </div>
+
+          {/* Work */}
+          <div>
+            <h4 className="font-semibold mb-2">Work</h4>
+            {profileForm.work.map((w, i) => (
+              <div key={i} className="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  placeholder="Company"
+                  value={w.company}
+                  onChange={(e) =>
+                    handleWorkChange(i, "company", e.target.value)
+                  }
+                  className="border px-2 py-1 rounded flex-1"
+                />
+                <input
+                  type="text"
+                  placeholder="Position"
+                  value={w.position}
+                  onChange={(e) =>
+                    handleWorkChange(i, "position", e.target.value)
+                  }
+                  className="border px-2 py-1 rounded flex-1"
+                />
+                <input
+                  type="text"
+                  placeholder="From"
+                  value={w.from}
+                  onChange={(e) => handleWorkChange(i, "from", e.target.value)}
+                  className="border px-2 py-1 rounded w-20"
+                />
+                <input
+                  type="text"
+                  placeholder="To"
+                  value={w.to}
+                  onChange={(e) => handleWorkChange(i, "to", e.target.value)}
+                  className="border px-2 py-1 rounded w-20"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeWork(i)}
+                  className="text-red-500 font-bold"
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addWork}
+              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Add Work
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Save Changes
+          </button>
+        </form>
+      )}
 
       {/* User Posts */}
       {posts.length > 0 ? (
@@ -111,7 +425,6 @@ export default function UserProfile() {
               key={post._id}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 p-6 mb-6 border border-gray-200"
             >
-              {/* Author + Date */}
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">
@@ -128,12 +441,10 @@ export default function UserProfile() {
                 </div>
               </div>
 
-              {/* Post Content */}
               <p className="text-gray-700 leading-relaxed mb-4">
                 {post.content}
               </p>
 
-              {/* Likes */}
               <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
                 <button
                   onClick={() => toggleLike(post._id)}
@@ -151,7 +462,6 @@ export default function UserProfile() {
                 </span>
               </div>
 
-              {/* Comments */}
               <div className="border-t pt-2">
                 <h3 className="text-sm font-semibold text-gray-700 mb-2">
                   Comments
@@ -175,7 +485,6 @@ export default function UserProfile() {
                   ))
                 )}
 
-                {/* Add Comment */}
                 <div className="mt-3 flex gap-2">
                   <input
                     type="text"

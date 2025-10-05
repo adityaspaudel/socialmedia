@@ -32,12 +32,31 @@ dbConnect();
 const userSchema = new Schema(
   {
     fullName: { type: String, required: true, trim: true },
+    username: { type: String, unique: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     phoneNumber: { type: String },
+    bio: { type: String, default: "" },
+    profilePic: { type: String, default: "" },
+    address: { type: String, default: "" },
+    hobbies: [{ type: String }],
+    education: [
+      {
+        school: String,
+        degree: String,
+        year: String,
+      },
+    ],
+    work: [
+      {
+        company: String,
+        position: String,
+        from: String,
+        to: String,
+      },
+    ],
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     isVerified: { type: Boolean, default: false },
-
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
@@ -149,26 +168,70 @@ router.post("/login", async (req, res) => {
 // get my profile
 
 // ---------------- GET /users/:userId/profile ----------------
+
+// Get user profile along with their posts
+
 router.get("/users/:userId/profile", async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Fetch user info (exclude password)
-    const user = await User.findById(userId).select("-password");
+    // Fetch user and select all needed fields
+    const user = await User.findById(userId).select(
+      "fullName username email phoneNumber bio profilePic address hobbies education work followers following"
+    );
+
     if (!user) return res.status(404).json({ message: "User not found" });
 
     // Fetch user's posts
     const posts = await Post.find({ author: userId })
-      .populate("author", "fullName email") // populate author info
-      .populate({
-        path: "comments",
-        populate: { path: "user", select: "fullName email" }, // populate comment users
-      })
+      .populate("author", "fullName")
+      .populate("comments.user", "fullName")
       .sort({ createdAt: -1 });
 
     res.json({ user, posts });
-  } catch (error) {
-    console.error("Error fetching user profile:", error);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+// Update user profile
+router.put("/users/:userId/profile", async (req, res) => {
+  const { userId } = req.params;
+  const {
+    fullName,
+    username,
+    bio,
+    profilePic,
+    address,
+    phoneNumber,
+    hobbies,
+    education,
+    work,
+  } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(userId))
+    return res.status(400).json({ message: "Invalid user ID" });
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update fields if provided
+    if (fullName !== undefined) user.fullName = fullName;
+    if (username !== undefined) user.username = username;
+    if (bio !== undefined) user.bio = bio;
+    if (profilePic !== undefined) user.profilePic = profilePic;
+    if (address !== undefined) user.address = address;
+    if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
+    if (hobbies !== undefined) user.hobbies = hobbies;
+    if (education !== undefined) user.education = education;
+    if (work !== undefined) user.work = work;
+
+    await user.save();
+
+    res.json({ message: "Profile updated successfully", user });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
