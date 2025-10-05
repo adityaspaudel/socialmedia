@@ -29,7 +29,7 @@ dbConnect();
 
 // ------------------ Models ------------------/
 //  ---------------- User Schema ----------------
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     fullName: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
@@ -38,9 +38,8 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ["user", "admin"], default: "user" },
     isVerified: { type: Boolean, default: false },
 
-    // Relationships
-    followers: [{ type: Schema.Types.ObjectId, ref: "User" }], // users who follow this user
-    following: [{ type: Schema.Types.ObjectId, ref: "User" }], // users this user follows
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
@@ -48,7 +47,7 @@ const userSchema = new mongoose.Schema(
 const User = mongoose.model("User", userSchema);
 
 // ---------------- Comment Schema ----------------
-const commentSchema = new mongoose.Schema(
+const commentSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     text: { type: String, required: true, trim: true },
@@ -59,22 +58,32 @@ const commentSchema = new mongoose.Schema(
 const Comment = mongoose.model("Comment", commentSchema);
 
 // ---------------- Post Schema ----------------
-const postSchema = new mongoose.Schema(
+const postSchema = new Schema(
   {
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     content: { type: String, required: true, trim: true },
-
-    // Comments
     comments: [commentSchema],
-
-    // Likes (users who liked this post)
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
-
 const Post = mongoose.model("Post", postSchema);
 
+// Notification Schema
+const notificationSchema = new Schema(
+  {
+    recipient: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    type: { type: String, enum: ["follow", "like", "comment"], required: true },
+    post: { type: Schema.Types.ObjectId, ref: "Post", default: null },
+    message: { type: String, required: true, trim: true },
+    isRead: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+const Notification = mongoose.model("Notification", notificationSchema);
+
+// image Schema
 const imageSchema = new mongoose.Schema(
   {
     description: { type: String, required: true },
@@ -137,7 +146,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Search users
+// Search  users
 router.get("/search", async (req, res) => {
   const { query, currentuserId } = req.query;
   if (!query) return res.status(400).json({ message: "Query is required" });
@@ -164,7 +173,7 @@ router.get("/search", async (req, res) => {
   }
 });
 
-// Toggle follow/unfollow
+// ------------------ Toggle follow/unfollow with notification ------------------
 router.put("/:currentuserId/toggleFollowUnfollow", async (req, res) => {
   const { currentuserId } = req.params;
   const { followingTo } = req.body;
@@ -184,6 +193,14 @@ router.put("/:currentuserId/toggleFollowUnfollow", async (req, res) => {
     } else {
       currentUser.following.push(followingTo);
       targetUser.followers.push(currentuserId);
+
+      // ✅ Create notification for follow
+      await createNotification({
+        recipient: followingTo,
+        sender: currentuserId,
+        type: "follow",
+        message: "started following you",
+      });
     }
     await currentUser.save();
     await targetUser.save();
@@ -261,11 +278,22 @@ router.post("/posts/:id/comments", async (req, res) => {
     post.comments.push(comment);
     await post.save();
 
-    // Populate user
+    // ✅ Populate last comment
     const populatedComment = await Post.findById(req.params.id)
       .populate("comments.user", "fullName")
       .select("comments")
       .then((p) => p.comments[p.comments.length - 1]);
+
+    // ✅ Create notification for comment (skip if user comments own post)
+    if (post.author.toString() !== userId) {
+      await createNotification({
+        recipient: post.author,
+        sender: userId,
+        type: "comment",
+        postId: post._id,
+        message: "commented on your post",
+      });
+    }
 
     res
       .status(201)
@@ -275,6 +303,7 @@ router.post("/posts/:id/comments", async (req, res) => {
   }
 });
 
+// get specific post and populate comments
 router.get("posts/:postId/comments", async (req, res) => {
   try {
     const { postId } = req.params;
@@ -300,30 +329,36 @@ router.get("posts/:postId/comments", async (req, res) => {
     });
   }
 });
+
 // Toggle like/unlike for a post
 router.put("/posts/:postId/like", async (req, res) => {
   try {
     const { postId } = req.params;
     const { userId } = req.body;
-
     if (!userId) return res.status(400).json({ message: "User ID required" });
 
     const post = await Post.findById(postId);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    // Check if user already liked
     const isLiked = post.likes.some((id) => id.toString() === userId);
-
     if (isLiked) {
-      // Unlike
       post.likes = post.likes.filter((id) => id.toString() !== userId);
     } else {
-      // Like
       post.likes.push(userId);
+
+      // ✅ Create notification for like (skip if user likes own post)
+      if (post.author.toString() !== userId) {
+        await createNotification({
+          recipient: post.author,
+          sender: userId,
+          type: "like",
+          postId: post._id,
+          message: "liked your post",
+        });
+      }
     }
 
     await post.save();
-
     res.status(200).json({
       message: isLiked ? "Post unliked" : "Post liked",
       likesCount: post.likes.length,
@@ -334,6 +369,7 @@ router.put("/posts/:postId/like", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 router.get("/:userId/posts/:postId/getPostById", async (req, res) => {
   try {
     console.log("Params:", req.params); // ✅ Debug
@@ -355,7 +391,6 @@ router.get("/:userId/posts/:postId/getPostById", async (req, res) => {
 });
 
 // get user by userId
-
 router.get("/user/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -415,17 +450,27 @@ router.get("/getAllUsers", async (req, res) => {
 });
 
 // update a post
-
 router.put("/posts/:postId", async (req, res) => {
   try {
     const { postId } = req.params;
-    const { content } = req.body;
+    const { content, userId } = req.body;
 
     const post = await Post.findById(postId);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
     post.content = content || post.content;
     await post.save();
+
+    // ✅ Optional notification if updater is not author
+    if (userId && post.author.toString() !== userId) {
+      await createNotification({
+        recipient: post.author,
+        sender: userId,
+        type: "comment", // use existing enum to avoid schema issues
+        postId: post._id,
+        message: "updated your post",
+      });
+    }
 
     res.status(200).json({ message: "Post updated", post });
   } catch (error) {
@@ -508,6 +553,77 @@ router.delete("/posts/:postId/comments/:commentId", async (req, res) => {
   }
 });
 
+// Notification
+
+// ✅ Notifications
+
+// ✅ Create Notification Helper
+const createNotification = async ({
+  recipient,
+  sender,
+  type,
+  postId,
+  message,
+}) => {
+  try {
+    if (recipient.toString() === sender.toString()) return;
+    const newNotification = new Notification({
+      recipient,
+      sender,
+      type,
+      post: postId || null,
+      message,
+    });
+    await newNotification.save();
+  } catch (error) {
+    console.error("❌ Error creating notification:", error.message);
+  }
+};
+
+// get notifications
+// ---------------- GET /users/:userId/notifications ----------------
+router.get("/users/:userId/notifications", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const notifications = await Notification.find({ recipient: userId })
+      .populate("sender", "fullName email")
+      .populate("post", "content")
+      .sort({ createdAt: -1 });
+    res.status(200).json({ notifications });
+  } catch (error) {
+    console.error("Error fetching notifications:", error.message);
+    res.status(500).json({ message: "Error fetching notifications" });
+  }
+});
+// ---------------- PUT /users/:userId/notifications/:notificationId/read ----------------
+router.put(
+  "/users/:userId/notifications/:notificationId/read",
+  async (req, res) => {
+    try {
+      const { notificationId } = req.params;
+
+      const notification = await Notification.findByIdAndUpdate(
+        notificationId,
+        { isRead: true },
+        { new: true }
+      );
+
+      if (!notification)
+        return res.status(404).json({ message: "Notification not found" });
+
+      res.json({ message: "Marked as read", notification });
+    } catch (error) {
+      console.error("Error updating notification:", error.message);
+      res.status(500).json({ message: "Error updating notification" });
+    }
+  }
+);
+router.get("/test-notifications", async (req, res) => {
+  const all = await Notification.find()
+    .populate("sender", "fullName")
+    .populate("recipient", "fullName");
+  res.json(all);
+});
 router.get("/test", (req, res) => res.send("Server works"));
 // ------------------ Mount router ------------------
 app.use("/", router);
