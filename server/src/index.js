@@ -100,31 +100,8 @@ const notificationSchema = new Schema(
   },
   { timestamps: true }
 );
+
 const Notification = mongoose.model("Notification", notificationSchema);
-
-// image Schema
-const imageSchema = new mongoose.Schema(
-  {
-    description: { type: String, required: true },
-    imageUrl: { type: String, required: true },
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    comments: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
-    likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  },
-  { timestamps: true }
-);
-const Image = mongoose.model("Image", imageSchema);
-
-// ------------------ Multer ------------------
-const uploadsDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-app.use("/uploads", express.static(uploadsDir));
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
-});
-const upload = multer({ storage });
 
 // ------------------ Helpers ------------------
 const saltRounds = parseInt(process.env.SALT_ROUNDS, 10) || 10;
@@ -133,8 +110,9 @@ const hashPassword = async (password) =>
 const secretKey = process.env.SECRET_KEY;
 
 // ------------------Controllers and Routes ------------------
-// Register
-router.post("/register", async (req, res) => {
+// Register controller
+
+const register = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
     if (await User.exists({ email }))
@@ -147,10 +125,13 @@ router.post("/register", async (req, res) => {
     console.error("Error during registration:", error);
     res.status(500).json({ msg: "Server error" });
   }
-});
+};
+
+// register route
+router.post("/register", register);
 
 // Login
-router.post("/login", async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select("+password");
@@ -163,7 +144,9 @@ router.post("/login", async (req, res) => {
     console.error("Error during login:", error);
     res.status(500).json({ msg: "Server error" });
   }
-});
+};
+// login route
+router.post("/login", login);
 
 // get my profile
 
@@ -171,7 +154,7 @@ router.post("/login", async (req, res) => {
 
 // Get user profile along with their posts
 
-router.get("/users/:userId/profile", async (req, res) => {
+const getUserProfile = async (req, res) => {
   try {
     const { userId } = req.params;
 
@@ -193,9 +176,13 @@ router.get("/users/:userId/profile", async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
-});
-// Update user profile
-router.put("/users/:userId/profile", async (req, res) => {
+};
+
+// get user profile route
+router.get("/users/:userId/profile", getUserProfile);
+
+// Update user profile controller
+const updateUserProfile = async (req, res) => {
   const { userId } = req.params;
   const {
     fullName,
@@ -244,10 +231,13 @@ router.put("/users/:userId/profile", async (req, res) => {
 
     res.status(500).json({ message: "Server error", error: err.message });
   }
-});
+};
 
-// Search  users
-router.get("/search", async (req, res) => {
+// update user profile route
+router.put("/users/:userId/profile", updateUserProfile);
+
+// searchUser controller
+const searchUsers = async (req, res) => {
   const { query, currentuserId } = req.query;
   if (!query) return res.status(400).json({ message: "Query is required" });
 
@@ -271,10 +261,15 @@ router.get("/search", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error searching user" });
   }
-});
+};
+// Search  users route
+router.get("/search", searchUsers);
 
 // ------------------ Toggle follow/unfollow with notification ------------------
-router.put("/:currentuserId/toggleFollowUnfollow", async (req, res) => {
+
+// togglefollowUnfollow controller
+
+const toggleFollowUnfollow = async (req, res) => {
   const { currentuserId } = req.params;
   const { followingTo } = req.body;
   if (currentuserId === followingTo)
@@ -309,39 +304,14 @@ router.put("/:currentuserId/toggleFollowUnfollow", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error toggling follow" });
   }
-});
+};
 
-// Upload image
-router.post("/upload", upload.single("image"), async (req, res) => {
-  try {
-    const { description, userId } = req.body;
-    if (!req.file || !description || !userId)
-      return res.status(400).json({ message: "All fields required" });
-
-    const imageUrl = `http://localhost:${port}/uploads/${req.file.filename}`;
-    const newImage = await Image.create({
-      description,
-      imageUrl,
-      user: userId,
-    });
-    res.json({ message: "Uploaded", imageUrl: newImage.imageUrl });
-  } catch (err) {
-    res.status(500).json({ message: "Error uploading" });
-  }
-});
-
-// Get profile photos
-router.get("/:userId/photos", async (req, res) => {
-  try {
-    const images = await Image.find({ user: req.params.userId });
-    res.json(images);
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching photos" });
-  }
-});
+// toggleFollowUnfollow route
+router.put("/:currentuserId/toggleFollowUnfollow", toggleFollowUnfollow);
 
 // Posts
-router.post("/posts", async (req, res) => {
+// post controller
+const createPost = async (req, res) => {
   try {
     const { author, title, content } = req.body;
     if (!author || !content)
@@ -352,23 +322,45 @@ router.post("/posts", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error creating post" });
   }
-});
+};
 
-router.get("/posts", async (req, res) => {
+// createPost route
+router.post("/posts", createPost);
+
+// get post of followed User controller
+const getPostsOfFollowedUsers = async (req, res) => {
   try {
-    const posts = await Post.find()
-      .populate("author", "fullName email")
-      .populate("comments.user", "fullName email")
-      .sort({ createdAt: -1 });
-    res.json({ posts });
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching posts" });
-  }
-});
+    const { userId } = req.params; // logged-in user ID
 
-// Add comment (only if follower)
-// Add Comment Route
-router.post("/posts/:id/comments", async (req, res) => {
+    // Find the logged-in user and get their 'following' list
+    const user = await User.findById(userId).select("following");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Include user's own posts too (optional)
+    const followingIds = [...user.following, user._id];
+
+    // Fetch posts only from followed users + self
+    const posts = await Post.find({ author: { $in: followingIds } })
+      .populate("author", "fullName email username profilePic")
+      .populate("comments.user", "fullName email username profilePic")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ posts });
+  } catch (err) {
+    console.error("Error fetching followed posts:", err);
+    res.status(500).json({ message: "Error fetching followed posts" });
+  }
+};
+
+// getPosts route
+router.get("/posts/:userId/following", getPostsOfFollowedUsers);
+
+// Add comment controller (only if follower) c
+
+const addComment = async (req, res) => {
   try {
     const { userId, text } = req.body;
     const post = await Post.findById(req.params.id);
@@ -401,9 +393,12 @@ router.post("/posts/:id/comments", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error adding comment" });
   }
-});
+};
 
-// get specific post and populate comments
+// Add Comment Route
+router.post("/posts/:id/comments", addComment);
+
+// get specific post and populate comments controller
 router.get("posts/:postId/comments", async (req, res) => {
   try {
     const { postId } = req.params;
@@ -430,8 +425,9 @@ router.get("posts/:postId/comments", async (req, res) => {
   }
 });
 
-// Toggle like/unlike for a post
-router.put("/posts/:postId/like", async (req, res) => {
+// Toggle like/unlike for a post controller
+
+const toggleLikeUnlikePost = async (req, res) => {
   try {
     const { postId } = req.params;
     const { userId } = req.body;
@@ -468,9 +464,13 @@ router.put("/posts/:postId/like", async (req, res) => {
     console.error("Error toggling like:", error);
     res.status(500).json({ message: "Server error" });
   }
-});
+};
 
-router.get("/:userId/posts/:postId/getPostById", async (req, res) => {
+// toggleLikeUnlikePost
+router.put("/posts/:postId/like", toggleLikeUnlikePost);
+
+// getPostById controller
+const getPostById = async (req, res) => {
   try {
     console.log("Params:", req.params); // ✅ Debug
     const { userId, postId } = req.params;
@@ -488,10 +488,14 @@ router.get("/:userId/posts/:postId/getPostById", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
+};
 
-// get user by userId
-router.get("/user/:userId", async (req, res) => {
+// getPostById route
+router.get("/:userId/posts/:postId/getPostById", getPostById);
+
+// get user by userId controller
+
+const getUserById = async (req, res) => {
   try {
     const { userId } = req.params;
     const posts = await Post.find({ author: userId })
@@ -504,10 +508,14 @@ router.get("/user/:userId", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Error fetching user posts" });
   }
-});
+};
 
-//  get all user's all posts
-router.get("/users/:userId", async (req, res) => {
+// getUserById route
+router.get("/user/:userId", getUserById);
+
+//  get all user's all posts controller
+
+const getAllPosts = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select("-password");
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -515,10 +523,13 @@ router.get("/users/:userId", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error fetching user" });
   }
-});
+};
 
-// get specific user's all post
-router.get("/users/post/:userId", async (req, res) => {
+// getAllPosts routes
+router.get("/users/:userId", getAllPosts);
+
+// get specific user's all post controller
+const getSpecificUsersAllPost = async (req, res) => {
   try {
     const { userId } = req.params;
 
@@ -535,10 +546,11 @@ router.get("/users/post/:userId", async (req, res) => {
     console.error("Error fetching posts:", error);
     res.status(500).json({ message: "Server error" });
   }
-});
+};
+router.get("/users/post/:userId", getSpecificUsersAllPost);
 
-// get all registered users
-router.get("/getAllUsers", async (req, res) => {
+// get all registered users controller
+const getAllRegisteredUser = async (req, res) => {
   try {
     const users = await User.find({});
     console.log("userFetched successfully", users);
@@ -547,10 +559,13 @@ router.get("/getAllUsers", async (req, res) => {
     console.error("Error fetching users:", error);
     res.status(500).json({ message: "Server error" });
   }
-});
+};
+// getAllRegisteredUser route
+router.get("/getAllUsers", getAllRegisteredUser);
 
-// update a post
-router.put("/posts/:postId", async (req, res) => {
+// updatePost controller
+
+const updatePost = async (req, res) => {
   try {
     const { postId } = req.params;
     const { content, userId } = req.body;
@@ -576,10 +591,12 @@ router.put("/posts/:postId", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+};
+// update a post route
+router.put("/posts/:postId", updatePost);
 
-// delete a post
-router.delete("/posts/:postId", async (req, res) => {
+// delete a post controller
+const deleteAPost = async (req, res) => {
   try {
     const { postId } = req.params;
     const post = await Post.findByIdAndDelete(postId);
@@ -589,10 +606,15 @@ router.delete("/posts/:postId", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+};
+
+// deleteAPost route
+router.delete("/posts/:postId", deleteAPost);
 
 // ---------------- Update Comment ----------------
-router.put("/posts/:postId/comments/:commentId", async (req, res) => {
+
+// updateComment controller
+const updateAComment = async (req, res) => {
   try {
     const { postId, commentId } = req.params;
     const { userId, text } = req.body;
@@ -619,10 +641,12 @@ router.put("/posts/:postId/comments/:commentId", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server error editing comment" });
   }
-});
+};
+// updateAComment route
+router.put("/posts/:postId/comments/:commentId", updateAComment);
 
 // ---------------- Delete Comment ----------------
-router.delete("/posts/:postId/comments/:commentId", async (req, res) => {
+const deleteAComment = async (req, res) => {
   try {
     const { postId, commentId } = req.params;
     const { userId } = req.body; // make sure body is used
@@ -651,7 +675,10 @@ router.delete("/posts/:postId/comments/:commentId", async (req, res) => {
       .status(500)
       .json({ message: "Server error deleting comment", error: error.message });
   }
-});
+};
+
+// deleteAComment Route
+router.delete("/posts/:postId/comments/:commentId", deleteAComment);
 
 // Notification
 
@@ -682,7 +709,8 @@ const createNotification = async ({
 
 // get notifications
 // ---------------- GET /users/:userId/notifications ----------------
-router.get("/users/:userId/notifications", async (req, res) => {
+
+const getNotifications = async (req, res) => {
   try {
     const { userId } = req.params;
     const notifications = await Notification.find({ recipient: userId })
@@ -694,36 +722,46 @@ router.get("/users/:userId/notifications", async (req, res) => {
     console.error("Error fetching notifications:", error.message);
     res.status(500).json({ message: "Error fetching notifications" });
   }
-});
+};
+
+// getNotifications route
+router.get("/users/:userId/notifications", getNotifications);
+
 // ---------------- PUT /users/:userId/notifications/:notificationId/read ----------------
+
+const readUnreadNotifications = async (req, res) => {
+  try {
+    const { notificationId } = req.params;
+
+    const notification = await Notification.findByIdAndUpdate(
+      notificationId,
+      { isRead: true },
+      { new: true }
+    );
+
+    if (!notification)
+      return res.status(404).json({ message: "Notification not found" });
+
+    res.json({ message: "Marked as read", notification });
+  } catch (error) {
+    console.error("Error updating notification:", error.message);
+    res.status(500).json({ message: "Error updating notification" });
+  }
+};
+
+// readUnreadNotifications route
 router.put(
   "/users/:userId/notifications/:notificationId/read",
-  async (req, res) => {
-    try {
-      const { notificationId } = req.params;
-
-      const notification = await Notification.findByIdAndUpdate(
-        notificationId,
-        { isRead: true },
-        { new: true }
-      );
-
-      if (!notification)
-        return res.status(404).json({ message: "Notification not found" });
-
-      res.json({ message: "Marked as read", notification });
-    } catch (error) {
-      console.error("Error updating notification:", error.message);
-      res.status(500).json({ message: "Error updating notification" });
-    }
-  }
+  readUnreadNotifications
 );
-router.get("/test-notifications", async (req, res) => {
+
+const testNotifications = async (req, res) => {
   const all = await Notification.find()
     .populate("sender", "fullName")
     .populate("recipient", "fullName");
   res.json(all);
-});
+};
+router.get("/test-notifications", testNotifications);
 router.get("/test", (req, res) => res.send("Server works"));
 // ------------------ Mount router ------------------
 app.use("/", router);
