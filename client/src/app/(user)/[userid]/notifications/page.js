@@ -96,7 +96,7 @@ export default function NotificationsPage() {
             className={`p-4 rounded-lg shadow transition ${
               notification.isRead
                 ? "bg-gray-100 border border-gray-200"
-                : "bg-white border border-blue-100"
+                : "bg-green-200 border border-blue-100"
             }`}
           >
             {/* Notification message */}
