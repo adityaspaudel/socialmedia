@@ -19,16 +19,19 @@ const PostComponent = () => {
     fetchPosts();
   }, [userId]);
 
-  // Fetch All Posts
+  // Fetch All Posts of followed users
   const fetchPosts = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8000/posts");
-      setPosts(data.posts || data);
+      const { data } = await axios.get(
+        `http://localhost:8000/posts/${userId}/following`
+      );
+      setPosts(data.posts || []);
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
 
+  
   // Create Post
   const createPost = async () => {
     if (!content.trim()) return;
