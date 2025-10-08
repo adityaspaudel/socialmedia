@@ -22,16 +22,38 @@ const secretKey = process.env.SECRET_KEY;
 
 const userRegistration = async (req, res) => {
   try {
-    const { fullName, email, password } = req.body;
-    if (await User.exists({ email }))
-      return res.status(409).json({ msg: "Email already exists!" });
+    const { fullName, email, username, password } = req.body;
 
+    // ✅ Check if all required fields are provided
+    if (!fullName || !email || !username || !password) {
+      return res.status(400).json({ msg: "All fields are required!" });
+    }
+
+    // ✅ Check for existing email
+    if (await User.exists({ email })) {
+      return res.status(409).json({ msg: "Email already exists!" });
+    }
+
+    // ✅ Check for existing username
+    if (await User.exists({ username })) {
+      return res.status(409).json({ msg: "Username already taken!" });
+    }
+
+    // ✅ Hash password
     const hashedPassword = await hashPassword(password);
-    await User.create({ fullName, email, password: hashedPassword });
+
+    // ✅ Create new user
+    await User.create({
+      fullName,
+      email,
+      username,
+      password: hashedPassword,
+    });
+
     res.status(201).json({ msg: "Registration successful!" });
   } catch (error) {
     console.error("Error during registration:", error);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
 
