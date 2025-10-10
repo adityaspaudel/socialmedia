@@ -52,7 +52,7 @@ const SearchComponent = () => {
   };
 
   return (
-    <div className="p-4 bg-green-100 min-h-screen w-full">
+    <div className="p-4 bg-green-100 min-h-full min-w-full">
       <input
         type="text"
         name="fullName"
@@ -63,7 +63,7 @@ const SearchComponent = () => {
       />
       <button
         onClick={handleSearch}
-        className="ml-2 p-2 bg-blue-500 text-white rounded"
+        className="ml-2 p-2 bg-gray-600 text-white rounded"
       >
         Search
       </button>

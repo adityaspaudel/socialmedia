@@ -1,13 +1,23 @@
 "use client";
 
-import { Bell, Home, Search, Mail, User, Settings, LogOut } from "lucide-react";
-import { FaConnectdevelop } from "react-icons/fa";
+import { FaConnectdevelop, FaUserAlt } from "react-icons/fa";
+import {
+  IoHomeSharp,
+  IoLogOut,
+  IoSettings,
+  IoSettingsSharp,
+} from "react-icons/io5";
+import { RiSearchFill } from "react-icons/ri";
+import { FaBell } from "react-icons/fa";
+import { IoMail } from "react-icons/io5";
+
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 export function SocialMediaSidebarComponent() {
   const params = useParams();
@@ -32,7 +42,7 @@ export function SocialMediaSidebarComponent() {
   return (
     <div
       className="flex flex-col left-0 top-0 sticky h-screen w-[80px] sm:w-[100px] md:w-[100px] xl:w-[350px]  
-		  bg-green-100 justify-between border-r p-2"
+		  bg-green-100 justify-between border-r p-4"
     >
       <div className="space-y-4 w-full ">
         <Link href={`/${userId}/home`} className="flex gap-2 px-4">
@@ -47,18 +57,18 @@ export function SocialMediaSidebarComponent() {
           <Link href={`/${userId}/home`}>
             <Button
               variant="ghost"
-              className="w-full justify-start hover:bg-gray-200"
+              className="w-full justify-start hover:bg-gray-100"
             >
-              <Home className="mr-2 h-6 w-6" />
+              <IoHomeSharp />
               <span className="hidden md:block">Home</span>
             </Button>
           </Link>
           <Link href={`/${userId}/search`}>
             <Button
               variant="ghost"
-              className="flex gap-2 w-full justify-start hover:bg-gray-200"
+              className="flex gap-2 w-full justify-start hover:bg-gray-100"
             >
-              <Search className="mr-2 h-6 w-6" />
+              <RiSearchFill />
               <input
                 className="w-full bg-transparent focus:outline-none hidden md:block"
                 type="text"
@@ -69,27 +79,27 @@ export function SocialMediaSidebarComponent() {
           <Link href={`/${userId}/notifications`}>
             <Button
               variant="ghost"
-              className="w-full justify-start hover:bg-gray-200"
+              className="w-full justify-start hover:bg-gray-100"
             >
-              <Bell className="mr-2 h-6 w-6" />
+              <FaBell />
               <span className="hidden md:block">Notifications</span>
             </Button>
           </Link>
           <Link href={`/${userId}/messages`}>
             <Button
               variant="ghost"
-              className="w-full justify-start hover:bg-gray-200"
+              className="w-full justify-start hover:bg-gray-100"
             >
-              <Mail className="mr-2 h-6 w-6" />
+              <IoMail />
               <span className=" hidden md:block">Messages</span>
             </Button>
           </Link>
           <Link href={`/${userId}/profile`}>
             <Button
               variant="ghost"
-              className="w-full justify-start hover:bg-gray-200"
+              className="w-full justify-start hover:bg-gray-100"
             >
-              <User className="mr-2 h-6 w-6" />
+              <FaUserAlt />
               <span className="hidden md:block">Profile</span>
             </Button>
           </Link>
@@ -99,7 +109,7 @@ export function SocialMediaSidebarComponent() {
       {/* User info + settings */}
       <div className="space-y-1 p-2">
         {user && (
-          <div className="flex items-center space-x-2 rounded-md border hover:bg-gray-200">
+          <div className="flex items-center space-x-2 rounded-md border hover:bg-gray-100">
             <Link
               href={`/${userId}/profile`}
               className="flex items-center gap-2"
@@ -123,9 +133,9 @@ export function SocialMediaSidebarComponent() {
           <Link href={`/${userId}/userSettings`}>
             <Button
               variant="ghost"
-              className="w-full justify-start hover:bg-gray-200"
+              className="w-full justify-start hover:bg-gray-100"
             >
-              <Settings className="mr-2 h-6 w-6" />
+              <IoSettingsSharp />
               <span className="logout hidden md:block">Setting</span>
             </Button>
           </Link>
@@ -133,9 +143,9 @@ export function SocialMediaSidebarComponent() {
           <Link href="/">
             <Button
               variant="ghost"
-              className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-gray-200 font-bold"
+              className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-gray-100 font-bold"
             >
-              <LogOut className="mr-2 h-6 w-6" />
+              <IoLogOut />
               <span className="logout hidden md:block">Logout</span>
             </Button>
           </Link>

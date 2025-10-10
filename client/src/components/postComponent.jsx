@@ -31,7 +31,6 @@ const PostComponent = () => {
     }
   };
 
-  
   // Create Post
   const createPost = async () => {
     if (!content.trim()) return;
@@ -193,7 +192,7 @@ const PostComponent = () => {
         />
         <button
           onClick={createPost}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-gray-600 text-white px-4 py-2 rounded"
         >
           Post
         </button>
@@ -231,7 +230,7 @@ const PostComponent = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => updatePost(post._id)}
-                      className="bg-yellow-600 text-white px-3 py-1 rounded"
+                      className="bg-gray-600 text-white px-3 py-1 rounded"
                     >
                       Save
                     </button>
@@ -271,7 +270,7 @@ const PostComponent = () => {
                         setEditingPost(post._id);
                         setEditContent(post.content);
                       }}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded"
+                      className="bg-gray-600 text-white px-3 py-1 rounded"
                     >
                       Edit
                     </button>
@@ -307,7 +306,7 @@ const PostComponent = () => {
                             />
                             <button
                               onClick={() => updateComment(post._id, c._id)}
-                              className="px-2 py-1 bg-yellow-500 text-white rounded"
+                              className="px-2 py-1 bg-gray-600 text-white rounded"
                             >
                               Save
                             </button>
@@ -320,13 +319,17 @@ const PostComponent = () => {
                           </div>
                         ) : (
                           <>
-                            <span>
-                              <strong>{c.user.fullName || "User"}:</strong>{" "}
-                              {c.text}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {new Date(c.createdAt).toLocaleString()}
-                            </span>
+                            <div className="flex gap-4 content-between items-center w-full">
+                              <span>
+                                <strong>{c.user.fullName || "User"}:</strong>{" "}
+                                <span>{c.text}</span>
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                <span>
+                                  {new Date(c.createdAt).toLocaleString()}
+                                </span>
+                              </span>
+                            </div>
                             {isCommentAuthor && (
                               <div className="flex gap-2 mt-1">
                                 <button
@@ -334,7 +337,7 @@ const PostComponent = () => {
                                     setEditingComment(c._id);
                                     setEditCommentText(c.text);
                                   }}
-                                  className="px-2 py-1 bg-yellow-500 text-white rounded"
+                                  className="px-2 py-1 bg-gray-600 text-white rounded"
                                 >
                                   Edit
                                 </button>

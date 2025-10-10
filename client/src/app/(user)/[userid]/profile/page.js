@@ -243,10 +243,10 @@ export default function UserProfile() {
   if (!user) return <p className="text-red-500">User not found</p>;
 
   return (
-    <div className="p-6 min-h-screen bg-green-100">
+    <div className="p-6 min-h-full bg-green-100">
       {/* User Info */}
       <div className="mb-6 flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-blue-300 flex items-center justify-center text-blue-700 font-bold text-2xl">
+        <div className="w-16 h-16 rounded-full bg-blue-300 flex items-center justify-center text-gray-600 font-bold text-2xl">
           {user.fullName?.[0]?.toUpperCase()}
         </div>
         <div>
@@ -264,7 +264,7 @@ export default function UserProfile() {
         {/* Edit Button */}
         <button
           onClick={() => setEditing((prev) => !prev)}
-          className="ml-auto px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="ml-auto px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
         >
           {editing ? "Cancel" : "Edit Profile"}
         </button>
