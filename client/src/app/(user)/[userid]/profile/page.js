@@ -23,6 +23,11 @@ export default function UserProfile() {
     work: [],
   });
   const [newHobby, setNewHobby] = useState("");
+  const [following, setFollowing] = useState("");
+  const [followers, setFollowers] = useState("");
+
+  const [showFollowing, setShowFollowing] = useState(false);
+  const [showFollowers, setShowFollowers] = useState(false);
 
   // Fetch profile (user info + posts)
   useEffect(() => {
@@ -34,8 +39,11 @@ export default function UserProfile() {
         const { data } = await axios.get(
           `http://localhost:8000/users/${userId}/profile`
         );
+        console.log(data);
         setUser(data.user);
         setPosts(data.posts);
+        setFollowing(data.user.following);
+        setFollowers(data.user.followers);
 
         // Initialize form fields
         setProfileForm({
@@ -169,6 +177,29 @@ export default function UserProfile() {
     }));
   };
 
+  const displayFollowing = () => {
+    if (showFollowing === false) {
+      setShowFollowing(true);
+      setShowFollowers(false);
+    }
+
+    if (showFollowing === true) {
+      setShowFollowing(false);
+      setShowFollowers(false);
+    }
+  };
+
+  const displayFollowers = () => {
+    if (showFollowers == false) {
+      setShowFollowing(false);
+      setShowFollowers(true);
+    }
+
+    if (showFollowers == true) {
+      setShowFollowing(false);
+      setShowFollowers(false);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -437,6 +468,59 @@ export default function UserProfile() {
         </form>
       )}
 
+      {/* display following and follower  */}
+      <div className="flex font-bold text-sm bg-white">
+        <div
+          className="flex flex-col bg-white p-2  cursor-pointer hover:bg-gray-100"
+          onClick={displayFollowing}
+        >
+          following <span>{following.length}</span>
+        </div>
+
+        <div
+          className="flex flex-col bg-white p-2  cursor-pointer hover:bg-gray-100"
+          onClick={displayFollowers}
+        >
+          followers <span>{followers.length}</span>
+        </div>
+      </div>
+      {/* show following and flooowers list  */}
+      <div>
+        <div>
+          {showFollowing && (
+            <div className="h-48 overflow-auto">
+              <h1 className="font-bold">Following</h1>
+
+              {following.map((val, ind) => (
+                <div key={val._id}>
+                  {" "}
+                  <div className="flex flex-col gap-2 hover:bg-green-200 p-2 text-sm rounded-xl bg-gray-100">
+                    <p>{val.fullName}</p>
+                    <p>{val.email}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div>
+          {showFollowers && (
+            <div className="h-48 overflow-auto">
+              <h1 className="font-bold">Followers</h1>
+
+              {followers.map((val, ind) => (
+                <div key={val._id}>
+                  <div className="flex flex-col gap-2 hover:bg-green-200 p-2 text-sm rounded-xl bg-gray-100">
+                    {" "}
+                    <p>{val.fullName}</p>
+                    <p>{val.email}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
       {/* User Posts */}
       {posts.length > 0 ? (
         posts.map((post) => {
