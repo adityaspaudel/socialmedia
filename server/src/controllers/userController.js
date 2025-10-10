@@ -79,9 +79,11 @@ const getUserProfile = async (req, res) => {
     const { userId } = req.params;
 
     // Fetch user and select all needed fields
-    const user = await User.findById(userId).select(
-      "fullName username email phoneNumber bio profilePic address hobbies education work followers following"
-    );
+    const user = await User.findById(userId)
+      .select(
+        "fullName username email phoneNumber bio profilePic address hobbies education work followers following"
+      )
+      .populate("following followers", "fullName email");
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
@@ -245,6 +247,53 @@ const getAllRegisteredUser = async (req, res) => {
   }
 };
 
+const getUserFollowing = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // ✅ Find user by ID and populate following
+    const user = await User.findById(userId)
+      .populate("following", "fullName username email profilePic") // only specific fields
+      .select("fullName following"); // select fields to return
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: user.following.length,
+      following: user.following,
+    });
+  } catch (error) {
+    console.error("Error fetching following:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getUserFollowers = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // ✅ Find user by ID and populate followers
+    const user = await User.findById(userId)
+      .populate("followers", "fullName username email profilePic") // only specific fields
+      .select("fullName followers"); // select fields to return
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: user.followers.length,
+      followers: user.followers,
+    });
+  } catch (error) {
+    console.error("Error fetching followers:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 module.exports = {
   userRegistration,
   userLogin,
@@ -254,4 +303,6 @@ module.exports = {
   toggleFollowUnfollow,
   getUserById,
   getAllRegisteredUser,
+  getUserFollowing,
+  getUserFollowers,
 };

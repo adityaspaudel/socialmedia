@@ -10,6 +10,8 @@ const {
   toggleFollowUnfollow,
   getUserById,
   getAllRegisteredUser,
+  getUserFollowing,
+  getUserFollowers,
 } = require("../controllers/userController");
 
 // userRegistration route
@@ -35,5 +37,6 @@ router.get("/user/:userId", getUserById);
 
 // getAllRegisteredUser route
 router.get("/getAllUsers", getAllRegisteredUser);
+
 
 module.exports = router;
