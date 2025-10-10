@@ -76,18 +76,21 @@ export default function IndividualPost() {
   const liked = currentPost.likes.includes(userId);
 
   return (
-    <div className="p-6 max-w-2xl mx-auto border rounded shadow bg-green-100">
+    <div className="flex flex-col gap-2 items-center content-center p-8 max-w-2xl border rounded shadow min-h-full bg-green-100">
       <div
-        className="text-2xl font-bold cursor-pointer hover:bg-slate-300 w-8"
-        onClick={() => router.back()}
+        className="flex  content-start items-start text-2xl font-bold  w-full"
         title="go back"
       >
-        🔙
+        <span
+          onClick={() => router.back()}
+          className="hover:bg-slate-100 h-8 w-8 cursor-pointer"
+        >
+          🔙
+        </span>
       </div>
-      <br />
 
       {/* Post Details */}
-      <div className="max-w-md mx-auto mt-6 p-4 bg-white rounded-lg shadow border">
+      <div className="p-4 w-full bg-white rounded-lg shadow border">
         {/* Author & Date */}
         <div className="mb-2">
           <h2 className="text-lg font-bold text-gray-800">
