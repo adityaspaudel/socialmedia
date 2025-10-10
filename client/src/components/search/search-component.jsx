@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
 
-const SearchComponent2 = () => {
+const SearchComponent = () => {
   const [fullName, setFullName] = useState("");
   const [results, setResults] = useState([]);
   const [followState, setFollowState] = useState({});
@@ -52,7 +52,7 @@ const SearchComponent2 = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-green-100 min-h-screen w-full">
       <input
         type="text"
         name="fullName"
@@ -91,4 +91,4 @@ const SearchComponent2 = () => {
   );
 };
 
-export default SearchComponent2;
+export default SearchComponent;

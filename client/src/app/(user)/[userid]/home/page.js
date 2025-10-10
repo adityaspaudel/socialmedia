@@ -18,7 +18,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-2  bg-green-100 p-4">
+    <div className="flex flex-col gap-2 h-full bg-green-100 p-4">
       <div className="font-bold text-2xl flex flex-col content-center items-center">
         Home
       </div>

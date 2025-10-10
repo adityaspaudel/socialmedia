@@ -120,7 +120,7 @@ export function SocialMediaSidebarComponent() {
         )}
 
         <div>
-          <Link href={`/${userId}/usersettings`}>
+          <Link href={`/${userId}/userSettings`}>
             <Button
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"

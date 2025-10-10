@@ -1,4 +1,4 @@
-import SearchComponent2 from "@/components/search/search-component";
+import SearchComponent from "@/components/search/search-component";
 import { SocialMediaSidebarComponent } from "@/components/social-media-sidebar";
 import React from "react";
 
@@ -9,7 +9,7 @@ const UserSearch = () => {
 
       {/*  */}
 
-      <SearchComponent2 />
+      <SearchComponent />
     </div>
   );
 };
