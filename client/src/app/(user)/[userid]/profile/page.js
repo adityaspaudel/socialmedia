@@ -488,12 +488,13 @@ export default function UserProfile() {
       <div>
         <div>
           {showFollowing && (
-            <div>
+            <div className="h-48 overflow-auto">
+              <h1 className="font-bold">Following</h1>
+
               {following.map((val, ind) => (
                 <div key={val._id}>
                   {" "}
-                  <h1 className="font-bold">Following</h1>
-                  <div className="flex flex-col gap-2 hover:bg-green-200 p-2">
+                  <div className="flex flex-col gap-2 hover:bg-green-200 p-2 text-sm rounded-xl bg-gray-100">
                     <p>{val.fullName}</p>
                     <p>{val.email}</p>
                   </div>
@@ -503,14 +504,14 @@ export default function UserProfile() {
           )}
         </div>
         <div>
-
           {showFollowers && (
-            <div>
+            <div className="h-48 overflow-auto">
+              <h1 className="font-bold">Followers</h1>
+
               {followers.map((val, ind) => (
                 <div key={val._id}>
-                  <h1 className="font-bold">Followers</h1>
-
-                  <div className="flex flex-col gap-2 hover:bg-green-200 p-2">
+                  <div className="flex flex-col gap-2 hover:bg-green-200 p-2 text-sm rounded-xl bg-gray-100">
+                    {" "}
                     <p>{val.fullName}</p>
                     <p>{val.email}</p>
                   </div>
