@@ -1,13 +1,23 @@
 "use client";
 
-import { Bell, Home, Search, Mail, User, Settings, LogOut } from "lucide-react";
-import { FaConnectdevelop } from "react-icons/fa";
+import { FaConnectdevelop, FaUserAlt } from "react-icons/fa";
+import {
+  IoHomeSharp,
+  IoLogOut,
+  IoSettings,
+  IoSettingsSharp,
+} from "react-icons/io5";
+import { RiSearchFill } from "react-icons/ri";
+import { FaBell } from "react-icons/fa";
+import { IoMail } from "react-icons/io5";
+
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 export function SocialMediaSidebarComponent() {
   const params = useParams();
@@ -49,7 +59,7 @@ export function SocialMediaSidebarComponent() {
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
             >
-              <Home className="mr-2 h-6 w-6" />
+              <IoHomeSharp />
               <span className="hidden md:block">Home</span>
             </Button>
           </Link>
@@ -58,7 +68,7 @@ export function SocialMediaSidebarComponent() {
               variant="ghost"
               className="flex gap-2 w-full justify-start hover:bg-gray-200"
             >
-              <Search className="mr-2 h-6 w-6" />
+              <RiSearchFill />
               <input
                 className="w-full bg-transparent focus:outline-none hidden md:block"
                 type="text"
@@ -71,7 +81,7 @@ export function SocialMediaSidebarComponent() {
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
             >
-              <Bell className="mr-2 h-6 w-6" />
+              <FaBell />
               <span className="hidden md:block">Notifications</span>
             </Button>
           </Link>
@@ -80,7 +90,7 @@ export function SocialMediaSidebarComponent() {
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
             >
-              <Mail className="mr-2 h-6 w-6" />
+              <IoMail />
               <span className=" hidden md:block">Messages</span>
             </Button>
           </Link>
@@ -89,7 +99,7 @@ export function SocialMediaSidebarComponent() {
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
             >
-              <User className="mr-2 h-6 w-6" />
+              <FaUserAlt />
               <span className="hidden md:block">Profile</span>
             </Button>
           </Link>
@@ -125,7 +135,7 @@ export function SocialMediaSidebarComponent() {
               variant="ghost"
               className="w-full justify-start hover:bg-gray-200"
             >
-              <Settings className="mr-2 h-6 w-6" />
+              <IoSettingsSharp />
               <span className="logout hidden md:block">Setting</span>
             </Button>
           </Link>
@@ -135,7 +145,7 @@ export function SocialMediaSidebarComponent() {
               variant="ghost"
               className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-gray-200 font-bold"
             >
-              <LogOut className="mr-2 h-6 w-6" />
+              <IoLogOut />
               <span className="logout hidden md:block">Logout</span>
             </Button>
           </Link>
