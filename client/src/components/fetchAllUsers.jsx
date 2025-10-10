@@ -74,7 +74,7 @@ export default function AllUsers() {
   if (error) return <p className="p-6 text-red-600">{error}</p>;
 
   return (
-    <div className="p-6 min-h-screen bg-green-100">
+    <div className="p-6 min-h-full bg-green-100 ">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">All Users</h2>
       {users.length === 0 ? (
         <p className="text-gray-600">No users found.</p>

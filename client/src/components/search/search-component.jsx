@@ -52,7 +52,7 @@ const SearchComponent = () => {
   };
 
   return (
-    <div className="p-4 bg-green-100 min-h-screen w-full">
+    <div className="p-4 bg-green-100 min-h-full min-w-full">
       <input
         type="text"
         name="fullName"

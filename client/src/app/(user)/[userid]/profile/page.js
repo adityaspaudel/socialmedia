@@ -243,7 +243,7 @@ export default function UserProfile() {
   if (!user) return <p className="text-red-500">User not found</p>;
 
   return (
-    <div className="p-6 min-h-screen bg-green-100">
+    <div className="p-6 min-h-full bg-green-100">
       {/* User Info */}
       <div className="mb-6 flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-blue-300 flex items-center justify-center text-blue-700 font-bold text-2xl">
