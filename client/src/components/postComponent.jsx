@@ -210,7 +210,7 @@ const PostComponent = () => {
               className="flex flex-col gap-2 border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 bg-white"
             >
               {/* Author Info */}
-              <Link href={`/${userId}/home/${post._id}`} className="block">
+              <Link href={`/${userId}/posts/${post._id}`} className="block">
                 <h3 className="font-semibold text-gray-800 text-lg">
                   {post.author?.fullName || "Unknown"}
                 </h3>
