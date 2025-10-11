@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
+import Link from "next/link";
 
 export default function UserProfile() {
   const { userId } = useParams();
@@ -243,7 +244,7 @@ export default function UserProfile() {
   if (!user) return <p className="text-red-500">User not found</p>;
 
   return (
-    <div className="p-6 min-h-full bg-green-100">
+    <div className="p-8 min-h-full bg-green-100">
       {/* User Info */}
       <div className="mb-6 flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-blue-300 flex items-center justify-center text-gray-600 font-bold text-2xl">
@@ -484,7 +485,7 @@ export default function UserProfile() {
           followers <span>{followers.length}</span>
         </div>
       </div>
-      {/* show following and flooowers list  */}
+      {/* show following and followers list  */}
       <div>
         <div>
           {showFollowing && (
@@ -531,7 +532,10 @@ export default function UserProfile() {
               key={post._id}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 p-6 mb-6 border border-gray-200"
             >
-              <div className="flex items-center justify-between mb-3">
+              <Link
+                href={`/${userId}/posts/${post._id}`}
+                className="flex items-center justify-between mb-3"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">
                     {post.author?.fullName?.[0]?.toUpperCase() || "U"}
@@ -545,7 +549,7 @@ export default function UserProfile() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </Link>
 
               <p className="text-gray-700 leading-relaxed mb-4">
                 {post.content}
