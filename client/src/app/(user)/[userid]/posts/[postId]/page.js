@@ -90,19 +90,29 @@ export default function IndividualPost() {
       </div>
 
       {/* Post Details */}
-      <div className="p-4 w-full bg-white rounded-lg shadow border">
+      <div className=" flex flex-col gap-2 p-4 w-full bg-white rounded-lg shadow border">
         {/* Author & Date */}
-        <div className="mb-2">
-          <h2 className="text-lg font-bold text-gray-800">
-            {currentPost.author.fullName}
-          </h2>
-          <p className="text-sm text-gray-500">
-            {new Date(currentPost.createdAt).toLocaleString()}
-          </p>
-        </div>
+        <div className="mb-2 flex flex-col gap-2">
+          <div className="flex gap-2">
+            <img
+              className="rounded-[50%]"
+              src="/cartoon-cute.jpg"
+              height="40px"
+              width="40px"
+            />
 
-        {/* Post Content */}
-        <p className="text-gray-700 mb-4">{currentPost.content}</p>
+            <div className="flex flex-col">
+              <h2 className="text-lg font-bold text-gray-800">
+                {currentPost.author.fullName}
+              </h2>
+              <p className="text-sm text-gray-500">
+                {new Date(currentPost.createdAt).toLocaleString()}
+              </p>
+            </div>
+          </div>
+          {/* Post Content */}
+          <p className="text-gray-700 mb-4">{currentPost.content}</p>
+        </div>
 
         {/* Likes */}
         <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">

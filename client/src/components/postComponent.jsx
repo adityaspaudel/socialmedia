@@ -211,41 +211,52 @@ const PostComponent = () => {
             >
               {/* Author Info */}
               <Link href={`/${userId}/posts/${post._id}`} className="block">
-                <h3 className="font-semibold text-gray-800 text-lg">
-                  {post.author?.fullName || "Unknown"}
-                </h3>
-                <p className="text-gray-500 text-sm">
-                  {new Date(post.createdAt).toLocaleString()}
-                </p>
-              </Link>
-
-              {/* Post Content */}
-              {editingPost === post._id ? (
-                <div className="flex flex-col gap-2">
-                  <textarea
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
-                    className="border p-2 rounded"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => updatePost(post._id)}
-                      className="bg-gray-600 text-white px-3 py-1 rounded"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setEditingPost(null)}
-                      className="bg-gray-400 text-white px-3 py-1 rounded"
-                    >
-                      Cancel
-                    </button>
+                <div className="flex gap-2">
+                  <div className="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">
+                    <img
+                      className="rounded-[50%]"
+                      src="/cartoon-cute.jpg"
+                      height="80px"
+                      width="80px"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 text-lg">
+                      {post.author?.fullName || "Unknown"}
+                    </h3>
+                    <p className="text-gray-500 text-sm">
+                      {new Date(post.createdAt).toLocaleString()}
+                    </p>
                   </div>
                 </div>
-              ) : (
-                <p className="mt-2 text-gray-900 text-lg">{post.content}</p>
-              )}
 
+                {/* Post Content */}
+                {editingPost === post._id ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      className="border p-2 rounded"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => updatePost(post._id)}
+                        className="bg-gray-600 text-white px-3 py-1 rounded"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingPost(null)}
+                        className="bg-gray-400 text-white px-3 py-1 rounded"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="mt-2 text-gray-900 text-lg">{post.content}</p>
+                )}
+              </Link>
               {/* Like + Edit/Delete Post */}
               <div className="mt-3 flex gap-4 text-sm text-gray-600">
                 <button

@@ -247,8 +247,13 @@ export default function UserProfile() {
     <div className="p-8 min-h-full bg-green-100">
       {/* User Info */}
       <div className="mb-6 flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-blue-300 flex items-center justify-center text-gray-600 font-bold text-2xl">
-          {user.fullName?.[0]?.toUpperCase()}
+        <div className="w-16 h-16 rounded-full bg-blue-300 flex items-center justify-center text-gray-600 font-bold text-2xl ">
+          <img
+            className="rounded-[50%]"
+            src="/cartoon-cute.jpg"
+            height="80px"
+            width="80px"
+          />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-800">{user.fullName}</h2>
@@ -534,11 +539,16 @@ export default function UserProfile() {
             >
               <Link
                 href={`/${userId}/posts/${post._id}`}
-                className="flex items-center justify-between mb-3"
+                className="flex flex-col gap-4 items-center justify-between mb-3"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-start content-start w-full gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">
-                    {post.author?.fullName?.[0]?.toUpperCase() || "U"}
+                    <img
+                      className="rounded-[50%]"
+                      src="/cartoon-cute.jpg"
+                      height="80px"
+                      width="80px"
+                    />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">
@@ -549,12 +559,11 @@ export default function UserProfile() {
                     </p>
                   </div>
                 </div>
+
+                <p className="flex items-start content-start w-full text-gray-700 leading-relaxed mb-4">
+                  {post.content}
+                </p>
               </Link>
-
-              <p className="text-gray-700 leading-relaxed mb-4">
-                {post.content}
-              </p>
-
               <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
                 <button
                   onClick={() => toggleLike(post._id)}
